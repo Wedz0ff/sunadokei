@@ -572,20 +572,6 @@ function MainTimerApp() {
                 />
               </div>
 
-              {/* Authentic Tibia Health / Progress Bar */}
-              <div className={`w-full tibia-bar-bg rounded-xs overflow-hidden ${compact ? 'mt-1' : 'mt-1.5'}`}>
-                <div
-                  className={`h-full transition-all duration-100 ${
-                    status === 'finished'
-                      ? 'tibia-bar-fill-red'
-                      : status === 'paused'
-                      ? 'bg-[#eab308]'
-                      : 'tibia-bar-fill-green'
-                  }`}
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
-
               {/* Status information row */}
               {!compact && (
                 <div className="w-full flex justify-between items-center text-[10px] text-[#909090] mt-2 px-1">

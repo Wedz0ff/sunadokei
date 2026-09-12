@@ -66,21 +66,6 @@ export const HourglassDisplay: React.FC<HourglassDisplayProps> = ({
           >
             {formattedTime}
           </span>
-
-
-          {/* Authentic Tibia Health / Progress Bar */}
-          <div className="w-full tibia-bar-bg mt-4 rounded-xs overflow-hidden">
-            <div
-              className={`h-full transition-all duration-100 ${
-                isFinished
-                  ? 'tibia-bar-fill-red'
-                  : isPaused
-                  ? 'bg-[#eab308]'
-                  : 'tibia-bar-fill-green'
-              }`}
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
         </div>
 
         <span
