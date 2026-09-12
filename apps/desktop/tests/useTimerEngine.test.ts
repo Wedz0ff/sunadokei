@@ -305,4 +305,31 @@ describe('useTimerEngine hook', () => {
 
     vi.useRealTimers();
   });
+
+  it('stops a running timer and resets to initial duration', () => {
+    const { result } = renderHook(() => useTimerEngine('20s'));
+
+    let currentTime = 1000000;
+    vi.spyOn(Date, 'now').mockImplementation(() => currentTime);
+
+    act(() => {
+      result.current.start();
+    });
+
+    currentTime += 5000;
+    act(() => {
+      stepFrame(currentTime);
+    });
+
+    expect(result.current.status).toBe('running');
+    expect(result.current.remainingMs).toBe(15000);
+
+    act(() => {
+      result.current.stop();
+    });
+
+    expect(result.current.status).toBe('idle');
+    expect(result.current.remainingMs).toBe(20000);
+    expect(result.current.targetEndTime).toBeNull();
+  });
 });

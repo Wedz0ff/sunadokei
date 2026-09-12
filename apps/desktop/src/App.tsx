@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTimerEngine } from './hooks/useTimerEngine';
 import { useGlobalShortcuts } from './hooks/useGlobalShortcuts';
 import { useHostSync } from './hooks/useHostSync';
 import { useWindowControls } from './hooks/useWindowControls';
-import { TimerInput } from './components/TimerInput';
 import { SettingsModal } from './components/SettingsModal';
 import { SettingsWindow } from './components/SettingsWindow';
 import { ShareSessionModal } from './components/ShareSessionModal';
-import { formatDuration } from '@brachio/shared';
+import { formatDuration, parseTimeString } from '@brachio/shared';
 import { SoundTone } from './utils/audio';
 import { isTauri } from '@tauri-apps/api/core';
 import {
   Play,
   Pause,
+  Square,
   RotateCcw,
   Settings,
   Share2,
@@ -21,7 +21,8 @@ import {
   PinOff,
   Maximize2,
   Minimize2,
-  Ghost
+  Ghost,
+  Edit3
 } from 'lucide-react';
 
 const STORAGE_KEYS = {
@@ -103,6 +104,12 @@ function MainTimerApp() {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
+
+  // Inline time editing state
+  const [isEditingTime, setIsEditingTime] = useState(false);
+  const [editTimeValue, setEditTimeValue] = useState('');
+  const [editError, setEditError] = useState<string | null>(null);
+  const editInputRef = useRef<HTMLInputElement>(null);
 
   // Window Controls & Click-Through
   const {
@@ -187,6 +194,7 @@ function MainTimerApp() {
     targetEndTime,
     start,
     pause,
+    stop,
     resetAndRestart,
     resetAndPause,
     togglePause
@@ -234,6 +242,48 @@ function MainTimerApp() {
     setIsSettingsOpen(true);
   };
 
+  // Start inline editing of the duration directly on the time display
+  const handleStartEditing = () => {
+    if (status === 'running') {
+      pause();
+    }
+    setEditTimeValue(inputString);
+    setEditError(null);
+    setIsEditingTime(true);
+    setTimeout(() => {
+      editInputRef.current?.focus();
+      editInputRef.current?.select();
+    }, 20);
+  };
+
+  // Save the edited time duration
+  const handleSaveEditTime = () => {
+    const trimmed = editTimeValue.trim();
+    if (!trimmed) {
+      setIsEditingTime(false);
+      return;
+    }
+    const parsed = parseTimeString(trimmed);
+    if (!parsed.valid) {
+      setEditError(parsed.error || 'Invalid time');
+      return;
+    }
+
+    setInputString(trimmed);
+    setIsEditingTime(false);
+    setEditError(null);
+  };
+
+  const handleEditKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSaveEditTime();
+    } else if (e.key === 'Escape') {
+      setIsEditingTime(false);
+      setEditError(null);
+    }
+  };
+
   const progressPercent = durationMs > 0 ? Math.min(100, Math.max(0, (remainingMs / durationMs) * 100)) : 0;
 
   return (
@@ -263,7 +313,7 @@ function MainTimerApp() {
         </div>
       )}
 
-      {/* Header bar - with drag region for titlebarless/frameless dragging */}
+      {/* Header bar - clean draggable region (no text input here anymore) */}
       <header
         data-tauri-drag-region
         className={`relative z-10 w-full flex justify-between items-center ${
@@ -271,16 +321,8 @@ function MainTimerApp() {
         }`}
       >
         <div data-tauri-drag-region className="flex items-center gap-2">
-          {!compact && (
-            <TimerInput
-              value={inputString}
-              onChange={setInputString}
-              onSubmit={resetAndRestart}
-              placeholder="e.g. 1min40s"
-            />
-          )}
           {isLive && (
-            <div className="flex items-center gap-1.5 px-1.5 py-0.5 bg-green-500/10 border border-green-500/20 rounded text-[11px] font-medium text-green-400">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded text-[11px] font-medium text-green-400">
               <Radio size={11} className="animate-pulse" />
               <span>LIVE</span>
               <span className="text-zinc-400">({viewerCount})</span>
@@ -338,76 +380,201 @@ function MainTimerApp() {
         </div>
       </header>
 
-      {/* Center time display - draggable in frameless mode */}
+      {/* Center time display - click directly on the time to edit! */}
       <main
         data-tauri-drag-region
-        className={`relative z-10 flex flex-col items-center cursor-default ${
-          compact ? 'my-auto py-1' : ''
+        className={`relative z-10 flex flex-col items-center justify-center my-auto ${
+          compact ? 'py-0' : 'py-2'
         }`}
       >
-        <span
-          data-tauri-drag-region
-          className={`font-mono font-bold tracking-tight select-none ${
-            compact ? 'text-4xl' : 'text-7xl'
-          } ${
-            status === 'finished' ? 'text-rose-400 animate-pulse' : 'text-white'
-          }`}
-        >
-          {formatDuration(remainingMs)}
-        </span>
-        {!compact && (
-          <span
-            data-tauri-drag-region
-            className={`text-xs mt-1 uppercase font-semibold tracking-wider ${
-              status === 'running'
-                ? 'text-blue-400'
-                : status === 'finished'
-                ? 'text-rose-400'
-                : status === 'paused'
-                ? 'text-amber-400'
-                : 'text-zinc-400'
-            }`}
+        {isEditingTime ? (
+          <div className="flex flex-col items-center animate-in fade-in zoom-in-95 duration-100">
+            <input
+              ref={editInputRef}
+              type="text"
+              value={editTimeValue}
+              onChange={(e) => {
+                setEditTimeValue(e.target.value);
+                setEditError(null);
+              }}
+              onKeyDown={handleEditKeyDown}
+              onBlur={handleSaveEditTime}
+              placeholder="e.g. 1min40s"
+              className={`font-mono font-bold text-center bg-zinc-900/80 text-white rounded-xl px-4 py-1 border-2 shadow-2xl focus:outline-none ${
+                editError ? 'border-rose-500' : 'border-blue-500 ring-2 ring-blue-500/30'
+              } ${compact ? 'text-4xl w-48' : 'text-7xl w-80'}`}
+            />
+            <div className="mt-1.5 text-[11px] text-zinc-400 flex items-center gap-1.5 font-sans">
+              {editError ? (
+                <span className="text-rose-400">{editError}</span>
+              ) : (
+                <span>Press <kbd className="px-1 py-0.5 bg-zinc-800 rounded text-zinc-200 border border-zinc-700">Enter</kbd> to set, <kbd className="px-1 py-0.5 bg-zinc-800 rounded text-zinc-200 border border-zinc-700">Esc</kbd> to cancel</span>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div
+            onClick={handleStartEditing}
+            title="Click to change duration"
+            className="group relative flex flex-col items-center cursor-pointer px-4 py-1.5 rounded-2xl hover:bg-white/5 transition"
           >
-            {status}
-          </span>
+            <div className="flex items-center gap-2">
+              <span
+                data-tauri-drag-region
+                className={`font-mono font-bold tracking-tight select-none transition-transform group-hover:scale-[1.02] ${
+                  compact ? 'text-5xl' : 'text-7xl'
+                } ${
+                  status === 'finished' ? 'text-rose-400 animate-pulse' : 'text-white'
+                }`}
+              >
+                {formatDuration(remainingMs)}
+              </span>
+              <Edit3
+                size={compact ? 12 : 16}
+                className="opacity-0 group-hover:opacity-60 text-zinc-400 transition-opacity"
+              />
+            </div>
+
+            {!compact && (
+              <span
+                data-tauri-drag-region
+                className={`text-[11px] mt-1 uppercase font-semibold tracking-wider flex items-center gap-1.5 ${
+                  status === 'running'
+                    ? 'text-blue-400'
+                    : status === 'finished'
+                    ? 'text-rose-400'
+                    : status === 'paused'
+                    ? 'text-amber-400'
+                    : 'text-zinc-400 group-hover:text-blue-300'
+                }`}
+              >
+                {status === 'idle' ? 'Click numbers to edit time' : status}
+              </span>
+            )}
+          </div>
         )}
       </main>
 
-      {/* Bottom controls */}
+      {/* Bottom controls with Pause, Stop, and Reset buttons */}
       <footer
         data-tauri-drag-region
         className={`relative z-10 flex items-center justify-center gap-2 ${
-          compact ? 'p-1.5 pb-2' : 'p-4 gap-3'
+          compact ? 'p-1.5 pb-2.5' : 'p-4 gap-3'
         }`}
       >
-        {status === 'running' ? (
-          <button
-            onClick={pause}
-            className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg flex items-center justify-center gap-1.5 font-medium transition active:scale-95 ${
-              compact ? 'px-3 py-1 text-xs' : 'px-4 py-2 text-sm'
-            }`}
-          >
-            <Pause size={compact ? 12 : 16} /> Pause
-          </button>
-        ) : (
-          <button
-            onClick={start}
-            className={`bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center justify-center gap-1.5 font-medium shadow-lg shadow-blue-600/30 transition active:scale-95 ${
-              compact ? 'px-3 py-1 text-xs' : 'px-4 py-2 text-sm'
-            }`}
-          >
-            <Play size={compact ? 12 : 16} /> Start
-          </button>
+        {/* Running state */}
+        {status === 'running' && (
+          <>
+            <button
+              onClick={pause}
+              title="Pause countdown"
+              className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg flex items-center justify-center gap-1.5 font-medium transition active:scale-95 text-zinc-100 ${
+                compact ? 'px-3 py-1 text-xs' : 'px-4 py-2 text-sm'
+              }`}
+            >
+              <Pause size={compact ? 12 : 16} /> Pause
+            </button>
+            <button
+              onClick={stop}
+              title="Stop and reset to beginning"
+              className={`bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/60 text-rose-300 rounded-lg flex items-center justify-center gap-1.5 font-medium transition active:scale-95 ${
+                compact ? 'px-2.5 py-1 text-xs' : 'px-3.5 py-2 text-sm'
+              }`}
+            >
+              <Square size={compact ? 11 : 14} /> Stop
+            </button>
+            <button
+              onClick={resetAndRestart}
+              title="Reset and restart immediately (Cmd+Shift+R)"
+              className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-300 hover:text-white flex items-center justify-center gap-1 transition active:scale-95 ${
+                compact ? 'px-2 py-1 text-xs' : 'px-3 py-2 text-sm'
+              }`}
+            >
+              <RotateCcw size={compact ? 11 : 14} /> Reset
+            </button>
+          </>
         )}
-        <button
-          onClick={resetAndRestart}
-          title="Reset timer (Cmd+Shift+R)"
-          className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-300 hover:text-white flex items-center justify-center gap-1 text-xs transition active:scale-95 ${
-            compact ? 'px-2.5 py-1' : 'px-3 py-2 text-sm'
-          }`}
-        >
-          <RotateCcw size={compact ? 12 : 14} /> Reset
-        </button>
+
+        {/* Paused state */}
+        {status === 'paused' && (
+          <>
+            <button
+              onClick={start}
+              title="Resume countdown"
+              className={`bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center justify-center gap-1.5 font-medium shadow-lg shadow-blue-600/30 transition active:scale-95 ${
+                compact ? 'px-3 py-1 text-xs' : 'px-4 py-2 text-sm'
+              }`}
+            >
+              <Play size={compact ? 12 : 16} /> Resume
+            </button>
+            <button
+              onClick={stop}
+              title="Stop and reset to beginning"
+              className={`bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-lg flex items-center justify-center gap-1.5 font-medium transition active:scale-95 ${
+                compact ? 'px-2.5 py-1 text-xs' : 'px-3.5 py-2 text-sm'
+              }`}
+            >
+              <Square size={compact ? 11 : 14} /> Stop
+            </button>
+            <button
+              onClick={resetAndRestart}
+              title="Reset and restart immediately (Cmd+Shift+R)"
+              className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-300 hover:text-white flex items-center justify-center gap-1 transition active:scale-95 ${
+                compact ? 'px-2 py-1 text-xs' : 'px-3 py-2 text-sm'
+              }`}
+            >
+              <RotateCcw size={compact ? 11 : 14} /> Reset
+            </button>
+          </>
+        )}
+
+        {/* Finished / Alarm State */}
+        {status === 'finished' && (
+          <>
+            <button
+              onClick={stop}
+              title="Stop alarm and reset"
+              className={`bg-rose-600 hover:bg-rose-500 text-white rounded-lg flex items-center justify-center gap-1.5 font-medium shadow-lg shadow-rose-600/40 transition active:scale-95 animate-bounce ${
+                compact ? 'px-3 py-1 text-xs' : 'px-5 py-2 text-sm'
+              }`}
+            >
+              <Square size={compact ? 12 : 16} /> Stop Alarm
+            </button>
+            <button
+              onClick={resetAndRestart}
+              title="Restart from beginning"
+              className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-200 flex items-center justify-center gap-1 transition active:scale-95 ${
+                compact ? 'px-2.5 py-1 text-xs' : 'px-3.5 py-2 text-sm'
+              }`}
+            >
+              <RotateCcw size={compact ? 11 : 14} /> Restart
+            </button>
+          </>
+        )}
+
+        {/* Idle state */}
+        {status === 'idle' && (
+          <>
+            <button
+              onClick={start}
+              title="Start countdown"
+              className={`bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center justify-center gap-1.5 font-medium shadow-lg shadow-blue-600/30 transition active:scale-95 ${
+                compact ? 'px-4 py-1 text-xs' : 'px-6 py-2 text-sm'
+              }`}
+            >
+              <Play size={compact ? 12 : 16} /> Start
+            </button>
+            <button
+              onClick={resetAndRestart}
+              title="Reset timer (Cmd+Shift+R)"
+              className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-300 hover:text-white flex items-center justify-center gap-1 text-xs transition active:scale-95 ${
+                compact ? 'px-2.5 py-1' : 'px-3.5 py-2 text-sm'
+              }`}
+            >
+              <RotateCcw size={compact ? 11 : 14} /> Reset
+            </button>
+          </>
+        )}
       </footer>
 
       {/* Settings In-App Modal (Fallback for non-Tauri browser previews) */}

@@ -96,6 +96,12 @@ export function useTimerEngine(
     }
   }, [status, pause, start]);
 
+  const stop = useCallback(() => {
+    setStatus('idle');
+    setTargetEndTime(null);
+    setRemainingMs(durationMs);
+  }, [durationMs]);
+
   // Main high-precision animation loop with background setTimeout fallback
   useEffect(() => {
     if (status !== 'running' || !targetEndTime) return;
@@ -156,6 +162,7 @@ export function useTimerEngine(
     targetEndTime,
     start,
     pause,
+    stop,
     resetAndRestart,
     resetAndPause,
     togglePause
