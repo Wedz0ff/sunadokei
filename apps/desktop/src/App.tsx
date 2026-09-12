@@ -5,9 +5,11 @@ import { useHostSync } from './hooks/useHostSync';
 import { useWindowControls } from './hooks/useWindowControls';
 import { TimerInput } from './components/TimerInput';
 import { SettingsModal } from './components/SettingsModal';
+import { SettingsWindow } from './components/SettingsWindow';
 import { ShareSessionModal } from './components/ShareSessionModal';
 import { formatDuration } from '@brachio/shared';
 import { SoundTone } from './utils/audio';
+import { isTauri } from '@tauri-apps/api/core';
 import {
   Play,
   Pause,
@@ -27,7 +29,10 @@ const STORAGE_KEYS = {
   SOUND_TONE: 'brachio_sound_tone',
   SOUND_VOLUME: 'brachio_sound_volume',
   SERVER_URL: 'brachio_server_url',
-  WEB_VIEWER_BASE_URL: 'brachio_web_viewer_base_url'
+  WEB_VIEWER_BASE_URL: 'brachio_web_viewer_base_url',
+  ALWAYS_ON_TOP: 'brachio_always_on_top',
+  DECORATIONS: 'brachio_decorations',
+  COMPACT: 'brachio_compact'
 };
 
 const DEFAULT_HOTKEYS = {
@@ -38,6 +43,19 @@ const DEFAULT_HOTKEYS = {
 };
 
 export default function App() {
+  // If this window is launched as the dedicated settings window, render SettingsWindow
+  const isSettingsWindow =
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('window') === 'settings';
+
+  if (isSettingsWindow) {
+    return <SettingsWindow />;
+  }
+
+  return <MainTimerApp />;
+}
+
+function MainTimerApp() {
   const [hotkeys, setHotkeys] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.HOTKEYS);
@@ -99,6 +117,35 @@ export default function App() {
     toggleCompact,
     toggleClickThrough
   } = useWindowControls();
+
+  // Listen for storage changes from the separate Settings window
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (!e.key || !e.newValue) return;
+      if (e.key === STORAGE_KEYS.HOTKEYS) {
+        try {
+          setHotkeys(JSON.parse(e.newValue));
+        } catch {}
+      } else if (e.key === STORAGE_KEYS.SOUND_TONE) {
+        setSoundTone(e.newValue as SoundTone);
+      } else if (e.key === STORAGE_KEYS.SOUND_VOLUME) {
+        setSoundVolume(parseFloat(e.newValue));
+      } else if (e.key === STORAGE_KEYS.SERVER_URL) {
+        setServerUrl(e.newValue);
+      } else if (e.key === STORAGE_KEYS.WEB_VIEWER_BASE_URL) {
+        setWebViewerBaseUrl(e.newValue);
+      } else if (e.key === STORAGE_KEYS.ALWAYS_ON_TOP) {
+        setAlwaysOnTop(e.newValue === 'true');
+      } else if (e.key === STORAGE_KEYS.DECORATIONS) {
+        setDecorations(e.newValue === 'true');
+      } else if (e.key === STORAGE_KEYS.COMPACT) {
+        setCompact(e.newValue === 'true');
+      }
+    };
+
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, [setAlwaysOnTop, setDecorations, setCompact]);
 
   // Persist settings
   useEffect(() => {
@@ -169,6 +216,23 @@ export default function App() {
     onTogglePause: togglePause,
     onToggleClickThrough: toggleClickThrough
   });
+
+  const openSettings = async () => {
+    if (isTauri()) {
+      try {
+        const { WebviewWindow } = await import('@tauri-apps/api/webviewWindow');
+        const win = await WebviewWindow.getByLabel('settings');
+        if (win) {
+          await win.show();
+          await win.setFocus();
+          return;
+        }
+      } catch (err) {
+        console.warn('Failed to open native settings window, falling back to modal:', err);
+      }
+    }
+    setIsSettingsOpen(true);
+  };
 
   const progressPercent = durationMs > 0 ? Math.min(100, Math.max(0, (remainingMs / durationMs) * 100)) : 0;
 
@@ -264,7 +328,7 @@ export default function App() {
 
           {/* Settings Button */}
           <button
-            onClick={() => setIsSettingsOpen(true)}
+            onClick={openSettings}
             title="Settings"
             aria-label="Settings"
             className="p-1.5 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition"
@@ -346,7 +410,7 @@ export default function App() {
         </button>
       </footer>
 
-      {/* Settings Modal */}
+      {/* Settings In-App Modal (Fallback for non-Tauri browser previews) */}
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}

@@ -19,6 +19,17 @@
         "resizable": true,
         "decorations": true,
         "alwaysOnTop": false
+      },
+      {
+        "label": "settings",
+        "title": "Preferences",
+        "url": "/?window=settings",
+        "width": 480,
+        "height": 590,
+        "resizable": false,
+        "visible": false,
+        "decorations": true,
+        "center": true
       }
     ],
     "security": {
