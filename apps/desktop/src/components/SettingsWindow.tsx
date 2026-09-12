@@ -161,7 +161,7 @@ export function SettingsWindow() {
         Window.getByLabel('main').then((mainWin) => {
           mainWin?.setDecorations(!val && decorations);
           if (val) {
-            mainWin?.setSize(new LogicalSize(180, 56));
+            mainWin?.setSize(new LogicalSize(160, 44));
           } else if (compact) {
             mainWin?.setSize(new LogicalSize(280, 150));
           } else {
@@ -407,7 +407,7 @@ export function SettingsWindow() {
                     <div>
                       <span className="text-xs text-[#ffffff]">Ultra Compact Mode (Time Only)</span>
                       <p className="text-[10px] text-[#888888] mt-0.5">
-                        Display only the countdown digits and progress bar in a micro HUD overlay (180×56px).
+                        Display only the countdown digits in a micro HUD overlay (160×44px).
                       </p>
                     </div>
                   </div>

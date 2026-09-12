@@ -356,20 +356,6 @@ function MainTimerApp() {
           </span>
         </div>
 
-        {/* Authentic Tibia Health / Progress Bar */}
-        <div className="w-full tibia-bar-bg mt-1 rounded-xs overflow-hidden h-[3px]">
-          <div
-            className={`h-full transition-all duration-100 ${
-              status === 'finished'
-                ? 'tibia-bar-fill-red'
-                : status === 'paused'
-                ? 'bg-[#eab308]'
-                : 'tibia-bar-fill-green'
-            }`}
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-
         {/* Settings In-App Modal */}
         <SettingsModal
           isOpen={isSettingsOpen}

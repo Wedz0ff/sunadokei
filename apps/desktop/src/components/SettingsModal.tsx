@@ -222,7 +222,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <Shrink size={12} className={ultraCompact ? 'text-[#54e054]' : 'text-[#888888]'} />
                   <div>
                     <span className="text-xs text-[#c0c0c0]">Ultra Compact Mode</span>
-                    <p className="text-[10px] text-[#888888]">Display only the timer and progress bar in a micro HUD (180×56px)</p>
+                    <p className="text-[10px] text-[#888888]">Display only the timer digits in a micro HUD (160×44px)</p>
                   </div>
                 </div>
                 <input

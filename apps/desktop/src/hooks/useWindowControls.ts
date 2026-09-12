@@ -70,7 +70,7 @@ export function useWindowControls() {
         const win = getCurrentWindow();
         let size = new LogicalSize(420, 280);
         if (ultraCompact) {
-          size = new LogicalSize(180, 56);
+          size = new LogicalSize(160, 44);
         } else if (compact) {
           size = new LogicalSize(280, 150);
         }
