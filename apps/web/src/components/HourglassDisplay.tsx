@@ -24,7 +24,7 @@ export const HourglassDisplay: React.FC<HourglassDisplayProps> = ({
       case 'paused':
         return 'tibia-btn text-[#ffcc00] px-4 py-1 text-xs uppercase';
       case 'finished':
-        return 'tibia-btn-red text-[#ffffff] px-4 py-1 text-xs uppercase animate-pulse';
+        return 'tibia-btn-red text-[#ffffff] px-4 py-1 text-xs uppercase';
       default:
         return 'tibia-btn text-[#c0c0c0] px-4 py-1 text-xs uppercase';
     }
@@ -60,7 +60,7 @@ export const HourglassDisplay: React.FC<HourglassDisplayProps> = ({
           <span
             data-testid="digital-time"
             className={`w-full text-center block text-7xl md:text-9xl font-tibia font-bold leading-none select-none ${
-              isFinished ? 'text-[#ff5454] animate-pulse' : 'text-[#ffffff]'
+              isFinished ? 'text-[#ff5454]' : 'text-[#ffffff]'
             }`}
             style={{ textShadow: '2px 2px 0 #000000' }}
           >

@@ -347,7 +347,7 @@ function MainTimerApp() {
             data-tauri-drag-region
             className={`w-full text-center font-tibia font-bold select-none block leading-none text-3xl tracking-normal pointer-events-none ${
               status === 'finished'
-                ? 'text-[#ff5454] animate-pulse'
+                ? 'text-[#ff5454]'
                 : 'text-[#ffffff]'
             }`}
             style={{ textShadow: '2px 2px 0 #000000' }}
@@ -573,7 +573,7 @@ function MainTimerApp() {
                     compact ? 'text-4xl' : 'text-7xl md:text-8xl'
                   } ${
                     status === 'finished'
-                      ? 'text-[#ff5454] animate-pulse'
+                      ? 'text-[#ff5454]'
                       : 'text-[#ffffff]'
                   }`}
                   style={{ textShadow: '2px 2px 0 #000000' }}
@@ -697,7 +697,7 @@ function MainTimerApp() {
             <button
               onClick={stop}
               title="Stop alarm and reset"
-              className={`tibia-btn-red ${compact ? 'px-3 py-1 text-[11px]' : 'px-5 py-1.5 text-xs'} font-tibia uppercase flex items-center gap-1 animate-bounce`}
+              className={`tibia-btn-red ${compact ? 'px-3 py-1 text-[11px]' : 'px-5 py-1.5 text-xs'} font-tibia uppercase flex items-center gap-1`}
             >
               <Square size={compact ? 10 : 12} /> Stop Alarm
             </button>
