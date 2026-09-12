@@ -14,6 +14,7 @@ describe('useWindowControls', () => {
     expect(result.current.decorations).toBe(true);
     expect(result.current.clickThrough).toBe(false);
     expect(result.current.compact).toBe(false);
+    expect(result.current.ultraCompact).toBe(false);
   });
 
   it('toggles always on top and saves to localStorage', () => {
@@ -49,6 +50,25 @@ describe('useWindowControls', () => {
     expect(localStorage.getItem('brachio_compact')).toBe('true');
   });
 
+  it('toggles ultra-compact mode and saves to localStorage', () => {
+    const { result } = renderHook(() => useWindowControls());
+
+    act(() => {
+      result.current.toggleUltraCompact();
+    });
+
+    expect(result.current.ultraCompact).toBe(true);
+    expect(result.current.compact).toBe(false);
+    expect(localStorage.getItem('brachio_ultra_compact')).toBe('true');
+
+    act(() => {
+      result.current.toggleCompact();
+    });
+
+    expect(result.current.compact).toBe(true);
+    expect(result.current.ultraCompact).toBe(false);
+  });
+
   it('toggles click-through mode and ensures always-on-top is active while ghosted', () => {
     const { result } = renderHook(() => useWindowControls());
 
@@ -66,4 +86,5 @@ describe('useWindowControls', () => {
 
     expect(result.current.clickThrough).toBe(false);
   });
+
 });

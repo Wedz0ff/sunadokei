@@ -10,7 +10,8 @@ import {
   Ghost,
   Check,
   Sliders,
-  Sparkles
+  Sparkles,
+  Shrink
 } from 'lucide-react';
 import { isTauri } from '@tauri-apps/api/core';
 import { SoundTone, playAlertSound } from '../utils/audio';
@@ -23,7 +24,8 @@ const STORAGE_KEYS = {
   WEB_VIEWER_BASE_URL: 'brachio_web_viewer_base_url',
   ALWAYS_ON_TOP: 'brachio_always_on_top',
   DECORATIONS: 'brachio_decorations',
-  COMPACT: 'brachio_compact'
+  COMPACT: 'brachio_compact',
+  ULTRA_COMPACT: 'brachio_ultra_compact'
 };
 
 const DEFAULT_HOTKEYS = {
@@ -57,6 +59,10 @@ export function SettingsWindow() {
 
   const [compact, setCompact] = useState(() => {
     return localStorage.getItem(STORAGE_KEYS.COMPACT) === 'true';
+  });
+
+  const [ultraCompact, setUltraCompact] = useState(() => {
+    return localStorage.getItem(STORAGE_KEYS.ULTRA_COMPACT) === 'true';
   });
 
   const [soundTone, setSoundTone] = useState<SoundTone>(() => {
@@ -129,14 +135,43 @@ export function SettingsWindow() {
   const handleUpdateCompact = (val: boolean) => {
     setCompact(val);
     saveAndNotify(STORAGE_KEYS.COMPACT, String(val));
+    if (val) {
+      setUltraCompact(false);
+      saveAndNotify(STORAGE_KEYS.ULTRA_COMPACT, 'false');
+    }
     if (isTauri()) {
       import('@tauri-apps/api/window').then(({ Window, LogicalSize }) => {
         Window.getByLabel('main').then((mainWin) => {
+          mainWin?.setDecorations(decorations);
           mainWin?.setSize(val ? new LogicalSize(280, 150) : new LogicalSize(420, 280));
         });
       });
     }
   };
+
+  const handleUpdateUltraCompact = (val: boolean) => {
+    setUltraCompact(val);
+    saveAndNotify(STORAGE_KEYS.ULTRA_COMPACT, String(val));
+    if (val) {
+      setCompact(false);
+      saveAndNotify(STORAGE_KEYS.COMPACT, 'false');
+    }
+    if (isTauri()) {
+      import('@tauri-apps/api/window').then(({ Window, LogicalSize }) => {
+        Window.getByLabel('main').then((mainWin) => {
+          mainWin?.setDecorations(!val && decorations);
+          if (val) {
+            mainWin?.setSize(new LogicalSize(180, 56));
+          } else if (compact) {
+            mainWin?.setSize(new LogicalSize(280, 150));
+          } else {
+            mainWin?.setSize(new LogicalSize(420, 280));
+          }
+        });
+      });
+    }
+  };
+
 
   const handleUpdateHotkeys = (newHotkeys: typeof DEFAULT_HOTKEYS) => {
     setHotkeys(newHotkeys);
@@ -362,6 +397,28 @@ export function SettingsWindow() {
                     className="w-4 h-4 cursor-pointer accent-[#54e054]"
                   />
                 </div>
+
+                {/* Ultra Compact Mode */}
+                <div className="flex items-center justify-between tibia-panel p-2.5">
+                  <div className="flex items-start gap-2.5">
+                    <div className="p-1.5 tibia-slot text-[#54e054]">
+                      <Shrink size={13} />
+                    </div>
+                    <div>
+                      <span className="text-xs text-[#ffffff]">Ultra Compact Mode (Time Only)</span>
+                      <p className="text-[10px] text-[#888888] mt-0.5">
+                        Display only the countdown digits and progress bar in a micro HUD overlay (180×56px).
+                      </p>
+                    </div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={ultraCompact}
+                    onChange={(e) => handleUpdateUltraCompact(e.target.checked)}
+                    className="w-4 h-4 cursor-pointer accent-[#54e054]"
+                  />
+                </div>
+
 
                 {/* Click-Through Mode Info */}
                 <div className="tibia-slot p-3 flex items-start gap-2.5">

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Volume2, Keyboard, Globe, RotateCcw, Monitor, Pin, Eye, Ghost } from 'lucide-react';
+import { X, Volume2, Keyboard, Globe, RotateCcw, Monitor, Pin, Eye, Ghost, Shrink } from 'lucide-react';
 import { SoundTone, playAlertSound } from '../utils/audio';
 
 export interface SettingsModalProps {
@@ -23,6 +23,8 @@ export interface SettingsModalProps {
   onUpdateDecorations: (val: boolean) => void;
   compact: boolean;
   onUpdateCompact: (val: boolean) => void;
+  ultraCompact?: boolean;
+  onUpdateUltraCompact?: (val: boolean) => void;
   clickThrough: boolean;
   onUpdateClickThrough: (val: boolean) => void;
   soundTone: SoundTone;
@@ -53,6 +55,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onUpdateDecorations,
   compact,
   onUpdateCompact,
+  ultraCompact,
+  onUpdateUltraCompact,
   clickThrough,
   onUpdateClickThrough,
   soundTone,
@@ -211,6 +215,24 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   className="w-3.5 h-3.5 rounded cursor-pointer accent-[#54e054]"
                 />
               </label>
+
+              {/* Ultra Compact Mode */}
+              <label className="flex items-center justify-between tibia-panel p-2 cursor-pointer hover:brightness-110">
+                <div className="flex items-center gap-2">
+                  <Shrink size={12} className={ultraCompact ? 'text-[#54e054]' : 'text-[#888888]'} />
+                  <div>
+                    <span className="text-xs text-[#c0c0c0]">Ultra Compact Mode</span>
+                    <p className="text-[10px] text-[#888888]">Display only the timer and progress bar in a micro HUD (180×56px)</p>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={ultraCompact || false}
+                  onChange={(e) => onUpdateUltraCompact?.(e.target.checked)}
+                  className="w-3.5 h-3.5 rounded cursor-pointer accent-[#54e054]"
+                />
+              </label>
+
 
               {/* Click-Through Mode */}
               <label className="flex items-center justify-between tibia-panel p-2 cursor-pointer hover:brightness-110">

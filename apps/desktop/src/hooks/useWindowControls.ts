@@ -15,6 +15,10 @@ export function useWindowControls() {
     return localStorage.getItem('brachio_compact') === 'true';
   });
 
+  const [ultraCompact, setUltraCompactState] = useState<boolean>(() => {
+    return localStorage.getItem('brachio_ultra_compact') === 'true';
+  });
+
   const [clickThrough, setClickThroughState] = useState<boolean>(false);
   const prevAlwaysOnTopRef = useRef<boolean>(alwaysOnTop);
 
@@ -31,18 +35,19 @@ export function useWindowControls() {
       .catch(() => {});
   }, [alwaysOnTop, clickThrough]);
 
-  // Apply decorations (titlebar) to native window
+  // Apply decorations (titlebar) to native window - disabled in ultra-compact mode
   useEffect(() => {
     if (!isTauri()) return;
     import('@tauri-apps/api/window')
       .then(({ getCurrentWindow }) => {
         const win = getCurrentWindow();
-        win.setDecorations(decorations).catch((err) => {
+        const shouldDecorate = ultraCompact ? false : decorations;
+        win.setDecorations(shouldDecorate).catch((err) => {
           console.warn('Failed to set decorations:', err);
         });
       })
       .catch(() => {});
-  }, [decorations]);
+  }, [decorations, ultraCompact]);
 
   // Apply ignoreCursorEvents (click-through) to native window
   useEffect(() => {
@@ -57,19 +62,24 @@ export function useWindowControls() {
       .catch(() => {});
   }, [clickThrough]);
 
-  // Apply window sizing for compact mode
+  // Apply window sizing for compact and ultra-compact modes
   useEffect(() => {
     if (!isTauri()) return;
     import('@tauri-apps/api/window')
       .then(({ getCurrentWindow, LogicalSize }) => {
         const win = getCurrentWindow();
-        const size = compact ? new LogicalSize(280, 150) : new LogicalSize(420, 280);
+        let size = new LogicalSize(420, 280);
+        if (ultraCompact) {
+          size = new LogicalSize(180, 56);
+        } else if (compact) {
+          size = new LogicalSize(280, 150);
+        }
         win.setSize(size).catch((err) => {
           console.warn('Failed to set window size:', err);
         });
       })
       .catch(() => {});
-  }, [compact]);
+  }, [compact, ultraCompact]);
 
   const setAlwaysOnTop = useCallback((val: boolean) => {
     setAlwaysOnTopState(val);
@@ -100,12 +110,41 @@ export function useWindowControls() {
   const setCompact = useCallback((val: boolean) => {
     setCompactState(val);
     localStorage.setItem('brachio_compact', String(val));
+    if (val) {
+      setUltraCompactState(false);
+      localStorage.setItem('brachio_ultra_compact', 'false');
+    }
   }, []);
 
   const toggleCompact = useCallback(() => {
     setCompactState((prev) => {
       const next = !prev;
       localStorage.setItem('brachio_compact', String(next));
+      if (next) {
+        setUltraCompactState(false);
+        localStorage.setItem('brachio_ultra_compact', 'false');
+      }
+      return next;
+    });
+  }, []);
+
+  const setUltraCompact = useCallback((val: boolean) => {
+    setUltraCompactState(val);
+    localStorage.setItem('brachio_ultra_compact', String(val));
+    if (val) {
+      setCompactState(false);
+      localStorage.setItem('brachio_compact', 'false');
+    }
+  }, []);
+
+  const toggleUltraCompact = useCallback(() => {
+    setUltraCompactState((prev) => {
+      const next = !prev;
+      localStorage.setItem('brachio_ultra_compact', String(next));
+      if (next) {
+        setCompactState(false);
+        localStorage.setItem('brachio_compact', 'false');
+      }
       return next;
     });
   }, []);
@@ -129,6 +168,7 @@ export function useWindowControls() {
     alwaysOnTop,
     decorations,
     compact,
+    ultraCompact,
     clickThrough,
     setAlwaysOnTop,
     toggleAlwaysOnTop,
@@ -136,6 +176,8 @@ export function useWindowControls() {
     toggleDecorations,
     setCompact,
     toggleCompact,
+    setUltraCompact,
+    toggleUltraCompact,
     toggleClickThrough
   };
 }

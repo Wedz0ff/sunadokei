@@ -21,7 +21,8 @@ import {
   Maximize2,
   Minimize2,
   Ghost,
-  Edit3
+  Edit3,
+  Shrink
 } from 'lucide-react';
 
 const STORAGE_KEYS = {
@@ -32,8 +33,10 @@ const STORAGE_KEYS = {
   WEB_VIEWER_BASE_URL: 'brachio_web_viewer_base_url',
   ALWAYS_ON_TOP: 'brachio_always_on_top',
   DECORATIONS: 'brachio_decorations',
-  COMPACT: 'brachio_compact'
+  COMPACT: 'brachio_compact',
+  ULTRA_COMPACT: 'brachio_ultra_compact'
 };
+
 
 const DEFAULT_HOTKEYS = {
   resetAndRestart: 'CommandOrControl+Shift+R',
@@ -115,12 +118,15 @@ function MainTimerApp() {
     alwaysOnTop,
     decorations,
     compact,
+    ultraCompact,
     clickThrough,
     setAlwaysOnTop,
     toggleAlwaysOnTop,
     setDecorations,
     setCompact,
     toggleCompact,
+    setUltraCompact,
+    toggleUltraCompact,
     toggleClickThrough
   } = useWindowControls();
 
@@ -146,8 +152,11 @@ function MainTimerApp() {
         setDecorations(e.newValue === 'true');
       } else if (e.key === STORAGE_KEYS.COMPACT) {
         setCompact(e.newValue === 'true');
+      } else if (e.key === STORAGE_KEYS.ULTRA_COMPACT) {
+        setUltraCompact(e.newValue === 'true');
       }
     };
+
 
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
@@ -285,6 +294,148 @@ function MainTimerApp() {
 
   const progressPercent = durationMs > 0 ? Math.min(100, Math.max(0, (remainingMs / durationMs) * 100)) : 0;
 
+  {/* Ultra Compact View: Render ONLY the time digits and health/progress bar! */}
+  if (ultraCompact) {
+    return (
+      <div
+        data-tauri-drag-region
+        onDoubleClick={toggleUltraCompact}
+        className={`relative w-screen h-screen flex flex-col justify-center items-center select-none overflow-hidden font-tibia group cursor-move px-2 py-1 ${
+          clickThrough ? 'opacity-90 ring-2 ring-purple-500' : ''
+        }`}
+        style={{
+          background: "url('/tibia/background-dark.png')",
+          borderWidth: '2px',
+          borderImage: "url('/tibia/2-frame.png') 2 / 2px / 0 repeat",
+          imageRendering: 'pixelated'
+        }}
+        title="Drag anywhere to move. Double-click to expand to full view."
+      >
+        {/* Hover Quick Actions */}
+        <div className="absolute top-1 right-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleAlwaysOnTop();
+            }}
+            title={alwaysOnTop ? 'Disable Always on Top' : 'Enable Always on Top'}
+            className={`tibia-btn p-0.5 text-[9px] rounded-xs ${
+              alwaysOnTop ? 'text-[#ffcc00]' : 'text-[#888888]'
+            }`}
+          >
+            {alwaysOnTop ? <Pin size={9} className="text-[#ffcc00]" /> : <PinOff size={9} />}
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleUltraCompact();
+            }}
+            title="Expand to Full View (or double-click)"
+            className="tibia-btn p-0.5 text-[9px] rounded-xs text-[#c0c0c0] hover:text-[#ffffff]"
+          >
+            <Maximize2 size={9} />
+          </button>
+        </div>
+
+        {/* Time Digits - Click to edit */}
+        {isEditingTime ? (
+          <div className="w-full flex items-center justify-center">
+            <input
+              ref={editInputRef}
+              type="text"
+              value={editTimeValue}
+              onChange={(e) => {
+                setEditTimeValue(e.target.value);
+                setEditError(null);
+              }}
+              onKeyDown={handleEditKeyDown}
+              onBlur={handleSaveEditTime}
+              placeholder="1min40s"
+              className={`tibia-slot w-full text-center text-[#ffffff] px-1 py-0 outline-none font-tibia text-2xl ${
+                editError ? 'text-[#ff5454]' : 'text-[#ffffff]'
+              }`}
+              style={{ textShadow: '1px 1px 0 #000' }}
+            />
+          </div>
+        ) : (
+          <div
+            onClick={handleStartEditing}
+            title="Click to edit duration (Double-click to expand)"
+            className="relative w-full flex items-center justify-center cursor-pointer"
+          >
+            <span
+              data-tauri-drag-region
+              className={`w-full text-center font-tibia font-bold select-none block leading-none text-3xl tracking-normal ${
+                status === 'finished'
+                  ? 'text-[#ff5454] animate-pulse'
+                  : 'text-[#ffffff]'
+              }`}
+              style={{ textShadow: '2px 2px 0 #000000' }}
+            >
+              {formatDuration(remainingMs)}
+            </span>
+            <Edit3
+              size={10}
+              className="absolute right-0 opacity-0 group-hover:opacity-75 text-[#909090] transition-opacity pointer-events-none"
+            />
+          </div>
+        )}
+
+        {/* Authentic Tibia Health / Progress Bar */}
+        <div className="w-full tibia-bar-bg mt-1 rounded-xs overflow-hidden h-[3px]">
+          <div
+            className={`h-full transition-all duration-100 ${
+              status === 'finished'
+                ? 'tibia-bar-fill-red'
+                : status === 'paused'
+                ? 'bg-[#eab308]'
+                : 'tibia-bar-fill-green'
+            }`}
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+
+        {/* Settings In-App Modal */}
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          hotkeys={hotkeys}
+          onUpdateHotkeys={setHotkeys}
+          alwaysOnTop={alwaysOnTop}
+          onUpdateAlwaysOnTop={setAlwaysOnTop}
+          decorations={decorations}
+          onUpdateDecorations={setDecorations}
+          compact={compact}
+          onUpdateCompact={setCompact}
+          ultraCompact={ultraCompact}
+          onUpdateUltraCompact={setUltraCompact}
+          clickThrough={clickThrough}
+          onUpdateClickThrough={toggleClickThrough}
+          soundTone={soundTone}
+          onUpdateSoundTone={setSoundTone}
+          soundVolume={soundVolume}
+          onUpdateSoundVolume={setSoundVolume}
+          serverUrl={serverUrl}
+          onUpdateServerUrl={setServerUrl}
+          webViewerBaseUrl={webViewerBaseUrl}
+          onUpdateWebViewerBaseUrl={setWebViewerBaseUrl}
+        />
+
+        {/* Share Session Modal */}
+        <ShareSessionModal
+          isOpen={isShareOpen}
+          onClose={() => setIsShareOpen(false)}
+          isLive={isLive}
+          roomCode={roomCode}
+          viewerCount={viewerCount}
+          onStartLive={openSession}
+          onStopLive={closeSession}
+          webViewerBaseUrl={webViewerBaseUrl}
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       className={`relative w-screen h-screen flex flex-col justify-between overflow-hidden select-none transition-all font-tibia ${
@@ -363,6 +514,16 @@ function MainTimerApp() {
             {compact ? <Maximize2 size={compact ? 10 : 11} /> : <Minimize2 size={compact ? 10 : 11} />}
           </button>
 
+          {/* Ultra Compact Toggle Button */}
+          <button
+            onClick={toggleUltraCompact}
+            title="Switch to Ultra Compact View (Time Only)"
+            aria-label="Toggle Ultra Compact Mode"
+            className={`tibia-btn ${compact ? 'px-1 py-0.5' : 'px-1.5 py-0.5'} text-[10px] rounded-xs text-[#c0c0c0] hover:text-[#ffffff]`}
+          >
+            <Shrink size={compact ? 10 : 11} />
+          </button>
+
           {/* Share Button */}
           <button
             onClick={() => setIsShareOpen(true)}
@@ -374,6 +535,7 @@ function MainTimerApp() {
           >
             <Share2 size={compact ? 10 : 11} />
           </button>
+
 
           {/* Settings Button */}
           <button
@@ -608,6 +770,8 @@ function MainTimerApp() {
         onUpdateDecorations={setDecorations}
         compact={compact}
         onUpdateCompact={setCompact}
+        ultraCompact={ultraCompact}
+        onUpdateUltraCompact={setUltraCompact}
         clickThrough={clickThrough}
         onUpdateClickThrough={toggleClickThrough}
         soundTone={soundTone}
