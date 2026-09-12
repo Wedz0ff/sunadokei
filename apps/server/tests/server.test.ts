@@ -2,6 +2,9 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { WebSocket } from 'ws';
 import { createRelayServer } from '../src/server.js';
 import type { Server } from 'http';
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
 
 describe('Relay Server WebSocket', () => {
   let server: Server;
@@ -445,5 +448,34 @@ describe('Relay Server WebSocket', () => {
 
     await new Promise<void>((resolve) => serverInstance.httpServer.close(() => resolve()));
     viewerWs.close();
+  });
+
+  it('serves static files and falls back to index.html for SPA routes', async () => {
+    // Create temporary static directory with index.html and a style.css
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sunadokei-test-'));
+    fs.writeFileSync(path.join(tmpDir, 'index.html'), '<!doctype html><html><body>Sunadokei SPA</body></html>');
+    fs.writeFileSync(path.join(tmpDir, 'style.css'), 'body { background: black; }');
+
+    const staticServer = await createRelayServer(0, { staticDir: tmpDir });
+    const staticPort = staticServer.port;
+
+    try {
+      // Direct file request
+      const cssRes = await fetch(`http://localhost:${staticPort}/style.css`);
+      expect(cssRes.status).toBe(200);
+      expect(cssRes.headers.get('content-type')).toContain('text/css');
+      const cssText = await cssRes.text();
+      expect(cssText).toBe('body { background: black; }');
+
+      // SPA fallback request (e.g. /join/ABC-123)
+      const spaRes = await fetch(`http://localhost:${staticPort}/join/ABC-123`);
+      expect(spaRes.status).toBe(200);
+      expect(spaRes.headers.get('content-type')).toContain('text/html');
+      const htmlText = await spaRes.text();
+      expect(htmlText).toContain('Sunadokei SPA');
+    } finally {
+      await new Promise<void>((resolve) => staticServer.httpServer.close(() => resolve()));
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
   });
 });

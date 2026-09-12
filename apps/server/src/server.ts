@@ -1,23 +1,110 @@
 import http from 'http';
+import fs from 'fs';
+import path from 'path';
 import { WebSocketServer, WebSocket } from 'ws';
 import { RoomManager } from './roomManager.js';
 
-export function createRelayServer(port = 8080): Promise<{ httpServer: http.Server; wss: WebSocketServer; port: number; roomManager: RoomManager }> {
+const MIME_TYPES: Record<string, string> = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'application/javascript; charset=utf-8',
+  '.mjs': 'application/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.ttf': 'font/ttf',
+  '.webp': 'image/webp',
+  '.mp3': 'audio/mpeg',
+  '.wav': 'audio/wav'
+};
+
+function resolveStaticDir(customDir?: string): string | null {
+  if (customDir && fs.existsSync(customDir)) {
+    return path.resolve(customDir);
+  }
+  if (process.env.STATIC_DIR && fs.existsSync(process.env.STATIC_DIR)) {
+    return path.resolve(process.env.STATIC_DIR);
+  }
+  const candidates = [
+    path.resolve(process.cwd(), 'public'),
+    path.resolve(process.cwd(), 'apps/web/dist'),
+    path.resolve(process.cwd(), '../web/dist'),
+    path.resolve(process.cwd(), 'dist/web')
+  ];
+  for (const c of candidates) {
+    if (fs.existsSync(c)) return c;
+  }
+  return null;
+}
+
+export function createRelayServer(
+  port = 8080,
+  options: { staticDir?: string } = {}
+): Promise<{ httpServer: http.Server; wss: WebSocketServer; port: number; roomManager: RoomManager }> {
   const roomManager = new RoomManager();
   const cleanupInterval = setInterval(() => {
     roomManager.cleanInactiveRooms();
   }, 60000);
   cleanupInterval.unref?.();
 
+  const staticDir = resolveStaticDir(options.staticDir);
+
   const server = http.createServer((req, res) => {
+    const parsedUrl = new URL(req.url || '/', 'http://localhost');
+    const pathname = parsedUrl.pathname;
+
     // Health check endpoint
-    if (req.url === '/health') {
+    if (pathname === '/health') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ status: 'ok' }));
       return;
     }
+
+    // Static SPA file serving
+    if (staticDir) {
+      const safePath = path.normalize(pathname).replace(/^(\.\.[\/\\])+/, '');
+      let targetFile = path.join(staticDir, safePath);
+
+      // Security check: stay within staticDir
+      if (!targetFile.startsWith(staticDir)) {
+        res.writeHead(403);
+        res.end('Forbidden');
+        return;
+      }
+
+      // If directory or root requested, serve index.html
+      if (fs.existsSync(targetFile) && fs.statSync(targetFile).isDirectory()) {
+        targetFile = path.join(targetFile, 'index.html');
+      }
+
+      // SPA fallback: if file doesn't exist, fallback to index.html (e.g. /join/:roomCode)
+      if (!fs.existsSync(targetFile)) {
+        targetFile = path.join(staticDir, 'index.html');
+      }
+
+      if (fs.existsSync(targetFile) && fs.statSync(targetFile).isFile()) {
+        const ext = path.extname(targetFile).toLowerCase();
+        const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+        const isAsset = pathname.startsWith('/assets/') || pathname.startsWith('/tibia/');
+        const cacheControl = isAsset ? 'public, max-age=31536000, immutable' : 'no-cache';
+
+        res.writeHead(200, {
+          'Content-Type': contentType,
+          'Cache-Control': cacheControl
+        });
+        fs.createReadStream(targetFile).pipe(res);
+        return;
+      }
+    }
+
     res.writeHead(404);
-    res.end();
+    res.end('Not Found');
   });
 
   const wss = new WebSocketServer({ server });
