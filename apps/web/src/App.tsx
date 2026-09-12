@@ -170,7 +170,7 @@ export const App: React.FC = () => {
         <div className="w-full max-w-sm shadow-2xl">
           <div className="tibia-widget-top px-3 py-1.5 flex items-center gap-2">
             <span>🐲</span>
-            <span className="tibia-widget-top-text text-xs text-[#c0c0c0]">Tibia Live Viewer</span>
+            <span className="tibia-widget-top-text text-xs text-[#c0c0c0]">Sunadokei 砂時計 Live Viewer</span>
           </div>
 
           <div className="tibia-panel p-6 space-y-5">
@@ -179,7 +179,7 @@ export const App: React.FC = () => {
                 <Hourglass className="h-7 w-7 animate-pulse" />
               </div>
               <h1 className="text-sm font-tibia text-[#ffffff]" style={{ textShadow: '1px 1px #000' }}>
-                Brachio Hourglass Viewer
+                Sunadokei 砂時計
               </h1>
               <p className="mt-1.5 text-xs text-[#909090]">
                 Enter a room code to join an active synchronized countdown.

@@ -25,7 +25,7 @@ describe('ShareSessionModal component', () => {
   it('renders start session view when not live', () => {
     render(<ShareSessionModal {...defaultProps} />);
 
-    expect(screen.getByText('Live Session Sharing')).toBeDefined();
+    expect(screen.getByText('Sunadokei 砂時計 - Live Sharing')).toBeDefined();
     expect(
       screen.getByText(/Open a live session so remote viewers can watch your countdown/i)
     ).toBeDefined();

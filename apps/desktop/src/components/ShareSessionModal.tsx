@@ -77,7 +77,7 @@ export const ShareSessionModal: React.FC<ShareSessionModalProps> = ({
         <div className="tibia-widget-top flex items-center justify-between px-2 py-1 mb-2">
           <h2 className="tibia-widget-top-text flex items-center gap-1.5">
             <Radio className={isLive ? 'text-[#54e054] animate-pulse' : 'text-[#888888]'} size={13} />
-            Live Session Sharing
+            Sunadokei 砂時計 - Live Sharing
           </h2>
           <button
             onClick={onClose}

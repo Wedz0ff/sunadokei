@@ -57,7 +57,7 @@ describe('App component', () => {
   it('renders landing page with room code input when no room in URL', () => {
     render(<App />);
 
-    expect(screen.getByText('Brachio Hourglass Viewer')).toBeDefined();
+    expect(screen.getByText('Sunadokei 砂時計')).toBeDefined();
     expect(screen.getByPlaceholderText('e.g. TRK-892')).toBeDefined();
     expect(screen.getByRole('button', { name: /join live viewer/i })).toBeDefined();
   });
@@ -90,6 +90,6 @@ describe('App component', () => {
     const leaveBtn = screen.getByRole('button', { name: /change room/i });
     fireEvent.click(leaveBtn);
 
-    expect(screen.getByText('Brachio Hourglass Viewer')).toBeDefined();
+    expect(screen.getByText('Sunadokei 砂時計')).toBeDefined();
   });
 });

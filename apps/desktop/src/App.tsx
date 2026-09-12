@@ -443,7 +443,7 @@ function MainTimerApp() {
           {/* Red dragon icon / title */}
           <span className={compact ? 'text-xs' : 'text-sm'}>🐲</span>
           <span data-tauri-drag-region className={`tibia-widget-top-text text-[#c0c0c0] ${compact ? 'text-[10px]' : 'text-[11px]'}`}>
-            Hourglass Tracker
+            Sunadokei 砂時計
           </span>
           {isLive && (
             <span className="px-1.5 py-0.2 bg-[#064e3b] text-[#54e054] text-[9px] border border-[#10b981]/50 rounded-xs">

@@ -267,7 +267,7 @@ export function SettingsWindow() {
             <div className="w-1.5 h-1.5 bg-[#54e054]" />
           </div>
           <div>
-            <h1 className="tibia-widget-top-text">Preferences - Tibia Hourglass Tracker</h1>
+            <h1 className="tibia-widget-top-text">Preferences - Sunadokei 砂時計</h1>
           </div>
         </div>
         <button

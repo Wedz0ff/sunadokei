@@ -146,7 +146,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       >
         <div className="tibia-widget-top flex items-center justify-between px-2 py-1 mb-2">
           <h2 id="settings-heading" className="tibia-widget-top-text flex items-center gap-1.5">
-            Preferences
+            Sunadokei 砂時計 - Preferences
           </h2>
           <button
             onClick={onClose}
