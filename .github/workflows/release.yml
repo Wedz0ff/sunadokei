@@ -1,25 +1,19 @@
-name: Release Desktop App
+name: Release Desktop App (Windows)
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag (e.g. v0.1.0)'
+        required: false
+        default: 'v0.1.0'
 
 permissions:
   contents: write
 
 jobs:
-  release:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: 'macos-latest'
-            args: '--target universal-apple-darwin'
-          - platform: 'windows-latest'
-            args: ''
-
-    runs-on: ${{ matrix.platform }}
+  release-windows:
+    runs-on: windows-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -53,8 +47,6 @@ jobs:
 
       - name: Setup Rust stable
         uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'x86_64-apple-darwin,aarch64-apple-darwin' || '' }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
@@ -67,15 +59,14 @@ jobs:
       - name: Build desktop frontend
         run: pnpm --filter @brachio/desktop build
 
-      - name: Build Tauri app & create draft release
+      - name: Build Tauri Windows app & draft release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           projectPath: './apps/desktop'
-          tagName: ${{ github.ref_name }}
-          releaseName: 'Sunadokei ${{ github.ref_name }}'
-          releaseBody: 'Download Sunadokei for macOS and Windows below.'
+          tagName: ${{ github.event.inputs.release_tag || 'v0.1.0' }}
+          releaseName: 'Sunadokei ${{ github.event.inputs.release_tag || 'v0.1.0' }}'
+          releaseBody: 'Download Sunadokei for Windows (.exe / .msi) below.'
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.args }}
