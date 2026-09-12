@@ -16,58 +16,75 @@ export const HourglassDisplay: React.FC<HourglassDisplayProps> = ({
   const isFinished = status.toLowerCase() === 'finished';
   const isPaused = status.toLowerCase() === 'paused';
 
-  // Determine accent color or indicator based on status
   const getStatusBadgeClass = () => {
     switch (status.toLowerCase()) {
       case 'running':
       case 'live':
-        return 'bg-[#0f2357]/90 text-[#93c5fd] border border-[#3b82f6] shadow-[0_0_10px_rgba(37,99,235,0.3)]';
+        return 'tibia-btn-green text-[#ffffff] px-4 py-1 text-xs uppercase';
       case 'paused':
-        return 'bg-[#451a03]/90 text-[#fcd34d] border border-[#f59e0b] shadow-[0_0_10px_rgba(217,119,6,0.3)]';
+        return 'tibia-btn text-[#ffcc00] px-4 py-1 text-xs uppercase';
       case 'finished':
-        return 'bg-[#450a0a]/90 text-[#fca5a5] border border-[#ef4444] animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.5)]';
+        return 'tibia-btn-red text-[#ffffff] px-4 py-1 text-xs uppercase animate-pulse';
       default:
-        return 'bg-[#1b1c22]/90 text-[#dfd7c2] border border-[#3c3e4c]';
+        return 'tibia-btn text-[#c0c0c0] px-4 py-1 text-xs uppercase';
     }
-  };
-
-  const getDrainGradient = () => {
-    if (isFinished) {
-      return 'bg-gradient-to-t from-[#5a0c0c]/85 to-[#991b1b]/55 border-t-2 border-[#ef4444] shadow-[0_0_20px_rgba(239,68,68,0.4)]';
-    }
-    if (isPaused) {
-      return 'bg-gradient-to-t from-[#572704]/85 to-[#b45309]/45 border-t-2 border-[#f59e0b] shadow-[0_0_15px_rgba(245,158,11,0.3)]';
-    }
-    return 'bg-gradient-to-t from-[#0f2357]/90 to-[#1d4ed8]/50 border-t-2 border-[#60a5fa] shadow-[0_0_20px_rgba(59,130,246,0.4)]';
   };
 
   return (
     <div
       data-testid="hourglass-display"
-      className="relative w-full h-full min-h-[300px] flex items-center justify-center overflow-hidden bg-[#1b1c22] text-[#dfd7c2] select-none tibia-window"
+      className="relative w-full h-full min-h-[300px] flex items-center justify-center overflow-hidden font-tibia select-none"
+      style={{
+        background: "url('/tibia/background-regular.png')",
+        borderWidth: '4px',
+        borderImage: "url('/tibia/4-frame.png') 4 / 4px / 0 repeat",
+        imageRendering: 'pixelated'
+      }}
     >
-      {/* Hourglass fluid drain background (Tibia mana sand / dragon blood) */}
+      {/* Background fluid / mana sand drain */}
       <div
         data-testid="drain-background"
-        className={`absolute bottom-0 left-0 right-0 transition-all duration-150 ease-linear pointer-events-none ${getDrainGradient()}`}
+        className={`absolute bottom-0 left-0 right-0 transition-all duration-150 pointer-events-none opacity-20 ${
+          isFinished
+            ? 'bg-red-600'
+            : isPaused
+            ? 'bg-amber-600'
+            : 'bg-blue-600'
+        }`}
         style={{ height: `${progressPercent}%` }}
       />
 
-      {/* Digital countdown digits in carved stone slab */}
-      <div className="relative z-10 flex flex-col items-center">
-        <div className="tibia-inset px-8 py-3 md:px-12 md:py-6 rounded-xl border-2 border-[#07080a] flex items-center justify-center shadow-2xl">
+      {/* Digital countdown digits in authentic sunken Tibia stone slab */}
+      <div className="relative z-10 flex flex-col items-center w-full max-w-lg px-4">
+        <div className="w-full tibia-panel p-6 md:p-8 flex flex-col items-center shadow-xl">
           <span
             data-testid="digital-time"
-            className={`text-8xl md:text-9xl font-digits tracking-wider leading-none select-none tibia-text-shadow ${
-              isFinished ? 'text-[#fca5a5] animate-pulse' : 'text-[#fef08a]'
+            className={`text-7xl md:text-9xl font-tibia font-bold tracking-wider leading-none select-none ${
+              isFinished ? 'text-[#ff5454] animate-pulse' : 'text-[#ffffff]'
             }`}
+            style={{ textShadow: '2px 2px 0 #000000' }}
           >
             {formattedTime}
           </span>
+
+          {/* Authentic Tibia Health / Progress Bar */}
+          <div className="w-full tibia-bar-bg mt-4 rounded-xs overflow-hidden">
+            <div
+              className={`h-full transition-all duration-100 ${
+                isFinished
+                  ? 'tibia-bar-fill-red'
+                  : isPaused
+                  ? 'bg-[#eab308]'
+                  : 'tibia-bar-fill-green'
+              }`}
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
         </div>
+
         <span
           data-testid="status-badge"
-          className={`mt-5 px-4 py-1.5 rounded-md font-pixel text-[10px] uppercase tracking-wider ${getStatusBadgeClass()}`}
+          className={`mt-4 rounded-xs ${getStatusBadgeClass()}`}
         >
           {status}
         </span>

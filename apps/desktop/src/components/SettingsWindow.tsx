@@ -224,21 +224,20 @@ export function SettingsWindow() {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-[#121316] text-[#dfd7c2] select-none overflow-hidden font-sans">
+    <div className="w-screen h-screen flex flex-col tibia-window-frame text-[#c0c0c0] select-none overflow-hidden font-tibia p-1">
       {/* Top Window Header */}
-      <header className="px-5 py-3 border-b-2 border-[#090a0c] bg-[#16171c] flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-3">
-          <div className="w-4 h-4 rounded bg-[#c89b3c] border border-[#fef08a] shadow flex items-center justify-center">
-            <div className="w-1.5 h-1.5 bg-[#2a1d04]" />
+      <header className="tibia-widget-top px-3 py-1.5 flex items-center justify-between mb-1">
+        <div className="flex items-center gap-2">
+          <div className="w-3.5 h-3.5 tibia-slot flex items-center justify-center">
+            <div className="w-1.5 h-1.5 bg-[#54e054]" />
           </div>
           <div>
-            <h1 className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] tibia-text-shadow">Preferences</h1>
-            <p className="text-[9px] font-pixel text-[#9e9785] mt-0.5">Tibia Hourglass Tracker</p>
+            <h1 className="tibia-widget-top-text">Preferences - Tibia Hourglass Tracker</h1>
           </div>
         </div>
         <button
           onClick={closeSettingsWindow}
-          className="tibia-btn-gold px-3.5 py-1.5 font-pixel text-[10px] uppercase rounded transition active:scale-95 shadow"
+          className="tibia-btn-green px-3 py-0.5 text-xs font-bold uppercase tracking-wider shadow"
         >
           Done
         </button>
@@ -246,9 +245,9 @@ export function SettingsWindow() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Left Navigation Sidebar */}
-        <nav className="w-60 border-r-2 border-[#090a0c] bg-[#16171c] p-3 flex flex-col justify-between">
-          <div className="space-y-1.5">
-            <div className="px-2 py-1 text-[9px] font-pixel uppercase tracking-wider text-[#cca34c]">
+        <nav className="w-56 tibia-panel p-2 flex flex-col justify-between mr-1">
+          <div className="space-y-1">
+            <div className="px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-[#888888]">
               Category
             </div>
             {[
@@ -262,16 +261,16 @@ export function SettingsWindow() {
                 <button
                   key={id}
                   onClick={() => setActiveTab(id)}
-                  className={`w-full text-left px-3 py-2 rounded text-xs transition flex items-center gap-2.5 ${
+                  className={`w-full text-left px-2 py-1.5 text-xs transition flex items-center gap-2 ${
                     isActive
-                      ? 'tibia-btn-gold text-[#fef08a] shadow'
-                      : 'tibia-btn text-[#9e9785] hover:text-[#dfd7c2]'
+                      ? 'tibia-btn-green text-[#ffffff] font-bold shadow'
+                      : 'tibia-btn text-[#c0c0c0] hover:text-[#ffffff]'
                   }`}
                 >
-                  <Icon size={14} className={isActive ? 'text-[#fef08a]' : 'text-[#9e9785]'} />
+                  <Icon size={13} className={isActive ? 'text-[#ffffff]' : 'text-[#888888]'} />
                   <div className="overflow-hidden">
-                    <div className="font-pixel text-[10px] truncate">{label}</div>
-                    <div className={`text-[9px] truncate font-pixel mt-0.5 ${isActive ? 'text-[#fef08a]/80' : 'text-[#6e695b]'}`}>
+                    <div className="text-xs truncate">{label}</div>
+                    <div className={`text-[10px] truncate ${isActive ? 'text-[#ffffff]/80' : 'text-[#888888]'}`}>
                       {desc}
                     </div>
                   </div>
@@ -280,109 +279,100 @@ export function SettingsWindow() {
             })}
           </div>
 
-          <div className="tibia-inset p-3 rounded border border-[#3c3e4c] space-y-1">
-            <div className="flex items-center gap-1.5 text-[#cca34c] font-pixel text-[9px]">
-              <Sparkles size={11} className="text-[#f59e0b]" /> Instant Sync
+          <div className="tibia-slot p-2 space-y-1">
+            <div className="flex items-center gap-1.5 text-[#54e054] text-[10px]">
+              <Sparkles size={11} className="text-[#54e054]" /> Instant Sync
             </div>
-            <p className="text-[9px] font-pixel text-[#9e9785] leading-normal">
+            <p className="text-[10px] text-[#888888] leading-normal">
               All settings apply immediately to the main timer window in real time.
             </p>
           </div>
         </nav>
 
         {/* Content Area */}
-        <main className="flex-1 p-6 overflow-y-auto bg-[#1b1c22]">
+        <main className="flex-1 tibia-panel p-4 overflow-y-auto">
           {/* Window & Display Tab */}
           {activeTab === 'display' && (
-            <div className="space-y-5 max-w-2xl">
+            <div className="space-y-4 max-w-2xl">
               <div>
-                <h2 className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] tibia-text-shadow">Window & Display</h2>
-                <p className="text-[10px] font-pixel text-[#9e9785] mt-1">Customize window appearance, always-on-top behavior, and mouse interaction.</p>
+                <h2 className="text-xs uppercase tracking-wide text-[#ffffff] tibia-text font-bold">Window & Display</h2>
+                <p className="text-[10px] text-[#888888] mt-0.5">Customize window appearance, always-on-top behavior, and mouse interaction.</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {/* Always on Top */}
-                <div className="flex items-center justify-between tibia-panel p-4 rounded-lg border border-[#3c3e4c]">
-                  <div className="flex items-start gap-3.5">
-                    <div className="p-2 rounded bg-[#262834] text-[#e8b855] border border-[#3c3e4c]">
-                      <Pin size={15} />
+                <div className="flex items-center justify-between tibia-panel p-2.5">
+                  <div className="flex items-start gap-2.5">
+                    <div className="p-1.5 tibia-slot text-[#54e054]">
+                      <Pin size={13} />
                     </div>
                     <div>
-                      <span className="font-pixel text-[10px] text-[#dfd7c2]">Always on Top</span>
-                      <p className="text-[9px] font-pixel text-[#9e9785] mt-1">
+                      <span className="text-xs text-[#ffffff]">Always on Top</span>
+                      <p className="text-[10px] text-[#888888] mt-0.5">
                         Keep the timer window floating above games, code editors, and full-screen windows.
                       </p>
                     </div>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={alwaysOnTop}
-                      onChange={(e) => handleUpdateAlwaysOnTop(e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-[#262834] border border-[#3c3e4c] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-[#2b1f05] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#dfd7c2] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#c89b3c]"></div>
-                  </label>
+                  <input
+                    type="checkbox"
+                    checked={alwaysOnTop}
+                    onChange={(e) => handleUpdateAlwaysOnTop(e.target.checked)}
+                    className="w-4 h-4 cursor-pointer accent-[#54e054]"
+                  />
                 </div>
 
                 {/* Window Title Bar */}
-                <div className="flex items-center justify-between tibia-panel p-4 rounded-lg border border-[#3c3e4c]">
-                  <div className="flex items-start gap-3.5">
-                    <div className="p-2 rounded bg-[#262834] text-[#e8b855] border border-[#3c3e4c]">
-                      <Eye size={15} />
+                <div className="flex items-center justify-between tibia-panel p-2.5">
+                  <div className="flex items-start gap-2.5">
+                    <div className="p-1.5 tibia-slot text-[#54e054]">
+                      <Eye size={13} />
                     </div>
                     <div>
-                      <span className="font-pixel text-[10px] text-[#dfd7c2]">Show Title Bar</span>
-                      <p className="text-[9px] font-pixel text-[#9e9785] mt-1">
-                        Toggle between native OS window borders and a sleek frameless minimalist window (still draggable).
+                      <span className="text-xs text-[#ffffff]">Show Title Bar</span>
+                      <p className="text-[10px] text-[#888888] mt-0.5">
+                        Toggle between native OS window borders and a sleek frameless minimalist window.
                       </p>
                     </div>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={decorations}
-                      onChange={(e) => handleUpdateDecorations(e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-[#262834] border border-[#3c3e4c] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-[#2b1f05] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#dfd7c2] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#c89b3c]"></div>
-                  </label>
+                  <input
+                    type="checkbox"
+                    checked={decorations}
+                    onChange={(e) => handleUpdateDecorations(e.target.checked)}
+                    className="w-4 h-4 cursor-pointer accent-[#54e054]"
+                  />
                 </div>
 
                 {/* Compact Mode */}
-                <div className="flex items-center justify-between tibia-panel p-4 rounded-lg border border-[#3c3e4c]">
-                  <div className="flex items-start gap-3.5">
-                    <div className="p-2 rounded bg-[#262834] text-[#e8b855] border border-[#3c3e4c]">
-                      <Sliders size={15} />
+                <div className="flex items-center justify-between tibia-panel p-2.5">
+                  <div className="flex items-start gap-2.5">
+                    <div className="p-1.5 tibia-slot text-[#54e054]">
+                      <Sliders size={13} />
                     </div>
                     <div>
-                      <span className="font-pixel text-[10px] text-[#dfd7c2]">Compact Mode</span>
-                      <p className="text-[9px] font-pixel text-[#9e9785] mt-1">
-                        Shrink the timer into a sleek mini-widget (240px × 95px) taking minimal space on your desktop.
+                      <span className="text-xs text-[#ffffff]">Compact Mode</span>
+                      <p className="text-[10px] text-[#888888] mt-0.5">
+                        Shrink the timer into a sleek mini-widget taking minimal space on your desktop.
                       </p>
                     </div>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={compact}
-                      onChange={(e) => handleUpdateCompact(e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-[#262834] border border-[#3c3e4c] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-[#2b1f05] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#dfd7c2] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#c89b3c]"></div>
-                  </label>
+                  <input
+                    type="checkbox"
+                    checked={compact}
+                    onChange={(e) => handleUpdateCompact(e.target.checked)}
+                    className="w-4 h-4 cursor-pointer accent-[#54e054]"
+                  />
                 </div>
 
                 {/* Click-Through Mode Info */}
-                <div className="bg-[#3b0764]/40 border border-[#a855f7]/50 rounded-lg p-4 flex items-start gap-3.5">
-                  <div className="p-2 rounded bg-[#581c87]/50 text-[#d8b4fe] border border-[#a855f7]/60">
-                    <Ghost size={15} />
+                <div className="tibia-slot p-3 flex items-start gap-2.5">
+                  <div className="p-1.5 tibia-panel text-[#5477ff]">
+                    <Ghost size={13} />
                   </div>
                   <div className="space-y-1">
-                    <span className="font-pixel text-[10px] text-[#e9d5ff]">Click-Through (Ghost Overlay Mode)</span>
-                    <p className="text-[#d8b4fe] text-[9px] font-pixel leading-relaxed">
+                    <span className="text-xs text-[#ffffff]">Click-Through (Ghost Overlay Mode)</span>
+                    <p className="text-[#888888] text-[10px] leading-relaxed">
                       Allows mouse clicks and drags to pass directly through the timer to any window underneath. Use global hotkey{' '}
-                      <kbd className="px-1.5 py-0.5 bg-[#1b1c22] text-[#fef08a] rounded font-pixel text-[9px] border border-[#c89b3c]">
+                      <kbd className="px-1 py-0.5 tibia-btn text-[#ffffff] text-[10px]">
                         {formatHotkeyLabel(hotkeys.toggleClickThrough)}
                       </kbd>{' '}
                       to toggle ghost mode on and off at any time.
@@ -395,24 +385,24 @@ export function SettingsWindow() {
 
           {/* Hotkeys Tab */}
           {activeTab === 'hotkeys' && (
-            <div className="space-y-5 max-w-2xl">
+            <div className="space-y-4 max-w-2xl">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] tibia-text-shadow">Global Shortcuts</h2>
-                  <p className="text-[9px] font-pixel text-[#9e9785] mt-1">
+                  <h2 className="text-xs uppercase tracking-wide text-[#ffffff] tibia-text font-bold">Global Shortcuts</h2>
+                  <p className="text-[10px] text-[#888888] mt-0.5">
                     These hotkeys trigger at the OS level even when the timer window is minimized or unfocused.
                   </p>
                 </div>
                 <button
                   onClick={() => handleUpdateHotkeys(DEFAULT_HOTKEYS)}
-                  className="tibia-btn px-2.5 py-1 text-[9px] font-pixel rounded flex items-center gap-1.5 transition text-[#9e9785] hover:text-[#fef08a]"
+                  className="tibia-btn px-2.5 py-1 text-[10px] flex items-center gap-1 text-[#888888] hover:text-[#ffffff]"
                   title="Reset hotkeys to default"
                 >
                   <RotateCcw size={10} /> Reset Defaults
                 </button>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {[
                   { key: 'resetAndRestart' as const, label: 'Reset & Restart', desc: 'Instantly resets timer to initial duration and restarts countdown' },
                   { key: 'resetAndPause' as const, label: 'Reset & Pause', desc: 'Resets timer to initial duration and remains paused' },
@@ -423,18 +413,18 @@ export function SettingsWindow() {
                   return (
                     <div
                       key={key}
-                      className="flex justify-between items-center tibia-panel p-3.5 rounded-lg border border-[#3c3e4c]"
+                      className="flex justify-between items-center tibia-panel p-2.5"
                     >
                       <div>
-                        <div className="font-pixel text-[10px] text-[#dfd7c2]">{label}</div>
-                        <div className="text-[9px] font-pixel text-[#9e9785] mt-1">{desc}</div>
+                        <div className="text-xs text-[#ffffff]">{label}</div>
+                        <div className="text-[10px] text-[#888888] mt-0.5">{desc}</div>
                       </div>
                       <button
                         onClick={() => setRecordingKey(isRecording ? null : key)}
-                        className={`px-3 py-1.5 font-pixel text-[9px] uppercase rounded transition min-w-[140px] text-center ${
+                        className={`px-3 py-1 text-xs uppercase transition min-w-[130px] text-center ${
                           isRecording
-                            ? 'tibia-btn-ruby text-white animate-pulse'
-                            : 'tibia-btn text-[#fef08a]'
+                            ? 'tibia-btn-red text-[#ffffff] animate-pulse'
+                            : 'tibia-btn text-[#c0c0c0]'
                         }`}
                       >
                         {isRecording ? 'PRESS KEYS...' : formatHotkeyLabel(hotkeys[key])}
@@ -448,20 +438,20 @@ export function SettingsWindow() {
 
           {/* Audio Alerts Tab */}
           {activeTab === 'sound' && (
-            <div className="space-y-5 max-w-2xl">
+            <div className="space-y-4 max-w-2xl">
               <div>
-                <h2 className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] tibia-text-shadow">Audio Alerts</h2>
-                <p className="text-[9px] font-pixel text-[#9e9785] mt-1">Select sound tone and playback volume when countdown reaches zero.</p>
+                <h2 className="text-xs uppercase tracking-wide text-[#ffffff] tibia-text font-bold">Audio Alerts</h2>
+                <p className="text-[10px] text-[#888888] mt-0.5">Select sound tone and playback volume when countdown reaches zero.</p>
               </div>
 
-              <div className="tibia-panel p-5 rounded-lg border border-[#3c3e4c] space-y-4">
+              <div className="tibia-panel p-4 space-y-3">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-pixel uppercase text-[#cca34c] mb-1.5">Alert Tone</label>
+                    <label className="block text-[10px] uppercase text-[#888888] mb-1">Alert Tone</label>
                     <select
                       value={soundTone}
                       onChange={(e) => handleUpdateSoundTone(e.target.value as SoundTone)}
-                      className="w-full tibia-inset border border-[#3c3e4c] rounded px-3 py-2 text-[10px] font-pixel uppercase text-[#dfd7c2] focus:outline-none focus:border-[#c89b3c]"
+                      className="w-full tibia-slot px-2 py-1 text-xs uppercase text-[#ffffff] font-tibia outline-none"
                     >
                       <option value="bell">Level Bell (D5 → A5)</option>
                       <option value="chime">Digital Chime (C5 → E5 → G5)</option>
@@ -471,9 +461,9 @@ export function SettingsWindow() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-[10px] font-pixel uppercase text-[#cca34c] mb-1.5">
+                    <div className="flex justify-between text-[10px] uppercase text-[#888888] mb-1">
                       <label>Volume Level</label>
-                      <span className="text-[#fef08a] font-digits text-sm">{Math.round(soundVolume * 100)}%</span>
+                      <span className="text-[#ffffff] text-xs">{Math.round(soundVolume * 100)}%</span>
                     </div>
                     <input
                       type="range"
@@ -483,7 +473,7 @@ export function SettingsWindow() {
                       value={soundVolume}
                       onChange={(e) => handleUpdateSoundVolume(parseFloat(e.target.value))}
                       disabled={soundTone === 'none'}
-                      className="w-full h-2 rounded cursor-pointer accent-[#c89b3c] disabled:opacity-30 mt-2"
+                      className="w-full h-2 rounded cursor-pointer accent-[#54e054] disabled:opacity-30 mt-2"
                     />
                   </div>
                 </div>
@@ -492,7 +482,7 @@ export function SettingsWindow() {
                   <button
                     onClick={() => playAlertSound(soundVolume, soundTone)}
                     disabled={soundTone === 'none'}
-                    className="tibia-btn px-3.5 py-1.5 font-pixel text-[10px] uppercase rounded flex items-center gap-2 transition disabled:opacity-40"
+                    className="tibia-btn px-3 py-1 text-xs uppercase flex items-center gap-2 transition disabled:opacity-40"
                   >
                     <Volume2 size={13} /> Play Preview Sound
                   </button>
@@ -503,37 +493,37 @@ export function SettingsWindow() {
 
           {/* Live Sync Tab */}
           {activeTab === 'sync' && (
-            <div className="space-y-5 max-w-2xl">
+            <div className="space-y-4 max-w-2xl">
               <div>
-                <h2 className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] tibia-text-shadow">Live Session Sharing</h2>
-                <p className="text-[9px] font-pixel text-[#9e9785] mt-1">Configure relay endpoints for broadcasting live synchronized timers to web viewers.</p>
+                <h2 className="text-xs uppercase tracking-wide text-[#ffffff] tibia-text font-bold">Live Session Sharing</h2>
+                <p className="text-[10px] text-[#888888] mt-0.5">Configure relay endpoints for broadcasting live synchronized timers to web viewers.</p>
               </div>
 
-              <div className="tibia-panel p-5 rounded-lg border border-[#3c3e4c] space-y-4">
+              <div className="tibia-panel p-4 space-y-3">
                 <div>
-                  <label className="block text-[10px] font-pixel uppercase text-[#cca34c] mb-1.5">WebSocket Relay Server</label>
+                  <label className="block text-[10px] uppercase text-[#888888] mb-1">WebSocket Relay Server</label>
                   <input
                     type="text"
                     value={serverUrl}
                     onChange={(e) => handleUpdateServerUrl(e.target.value)}
                     placeholder="ws://localhost:8080"
-                    className="w-full tibia-inset border border-[#3c3e4c] rounded px-3 py-1.5 text-sm font-digits text-[#fef08a] focus:outline-none focus:border-[#c89b3c]"
+                    className="w-full tibia-slot px-2 py-1 text-xs text-[#ffffff] font-tibia outline-none"
                   />
-                  <p className="text-[9px] font-pixel text-[#9e9785] mt-1">
+                  <p className="text-[10px] text-[#888888] mt-0.5">
                     WebSocket server address that hosts rooms and syncs timer state with viewers.
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-pixel uppercase text-[#cca34c] mb-1.5">Web Viewer Base URL</label>
+                  <label className="block text-[10px] uppercase text-[#888888] mb-1">Web Viewer Base URL</label>
                   <input
                     type="text"
                     value={webViewerBaseUrl}
                     onChange={(e) => handleUpdateWebViewerBaseUrl(e.target.value)}
                     placeholder="http://localhost:5173"
-                    className="w-full tibia-inset border border-[#3c3e4c] rounded px-3 py-1.5 text-sm font-digits text-[#fef08a] focus:outline-none focus:border-[#c89b3c]"
+                    className="w-full tibia-slot px-2 py-1 text-xs text-[#ffffff] font-tibia outline-none"
                   />
-                  <p className="text-[9px] font-pixel text-[#9e9785] mt-1">
+                  <p className="text-[10px] text-[#888888] mt-0.5">
                     Base URL for the generated join links copied when sharing sessions (e.g. http://192.168.1.100:5173).
                   </p>
                 </div>
@@ -544,13 +534,13 @@ export function SettingsWindow() {
       </div>
 
       {/* Bottom Status Footer */}
-      <footer className="px-5 py-2.5 border-t-2 border-[#090a0c] bg-[#16171c] flex items-center justify-between text-xs text-[#9e9785]">
-        <span className="flex items-center gap-1.5 font-pixel text-[9px] text-[#34d399]">
-          <Check size={12} className="text-[#34d399]" /> Preferences are saved automatically
+      <footer className="tibia-widget-top px-3 py-1 mt-1 flex items-center justify-between text-xs text-[#888888]">
+        <span className="flex items-center gap-1.5 text-[10px] text-[#54e054]">
+          <Check size={11} className="text-[#54e054]" /> Preferences are saved automatically
         </span>
         <button
           onClick={closeSettingsWindow}
-          className="tibia-btn-gold px-4 py-1.5 text-[#fef08a] rounded font-pixel text-[10px] uppercase transition active:scale-95 shadow"
+          className="tibia-btn-green px-3 py-0.5 text-xs font-bold uppercase tracking-wider shadow"
         >
           Done
         </button>

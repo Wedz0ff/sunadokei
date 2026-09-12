@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Tibia';
+  src: url('/tibia/tibia-font.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TibiaOutlined';
+  src: url('/tibia/tibia-outlined.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TibiaOutlinedFill';
+  src: url('/tibia/tibia-outlined-fill.ttf') format('truetype');
+  font-display: swap;
+}
+
 html,
 body,
 #root {
@@ -10,45 +28,181 @@ body,
   margin: 0;
   padding: 0;
   background-color: #121316;
-  color: #dfd7c2;
+  color: #c0c0c0;
+  user-select: none;
+  font-family: 'Tibia', monospace;
+  -webkit-font-smoothing: none;
+}
+
+/* Authentic Tibia Client UI Classes */
+.tibia-window-frame {
+  background: url('/tibia/background-regular.png');
+  border-width: 4px;
+  border-image: url('/tibia/4-frame.png') 4 / 4px / 0 repeat;
+  image-rendering: pixelated;
   user-select: none;
 }
 
-/* Tibia RPG Beveled Frames & Buttons */
-.tibia-window {
-  background-color: #1b1c22;
-  border: 2px solid #090a0c;
-  box-shadow: inset 1px 1px 0px #525567, inset -1px -1px 0px #090a0c, 0 10px 30px rgba(0, 0, 0, 0.85);
+.tibia-widget-top {
+  background: url('/tibia/background-dark.png');
+  border-width: 2px 3px 1px;
+  border-image: url('/tibia/4-frame-top.png') 4 / 4px 4px 4px 4px / 0 repeat;
+  image-rendering: pixelated;
+  user-select: none;
+}
+
+.tibia-widget-top-text {
+  font-family: 'Tibia', monospace;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.05rem;
+  color: #c0c0c0;
+  text-shadow: 1px 1px 0px #000000;
+  image-rendering: pixelated;
 }
 
 .tibia-panel {
-  background-color: #16171c;
-  border: 2px solid #090a0c;
-  box-shadow: inset 1px 1px 0px #3c3e4c, inset -1px -1px 0px #090a0c;
+  background: url('/tibia/background-dark.png');
+  border-width: 2px;
+  border-image: url('/tibia/2-frame.png') 2 / 2px / 0 repeat;
+  image-rendering: pixelated;
 }
 
-.tibia-inset {
-  background-color: #0e0f12;
-  border: 2px solid #07080a;
-  box-shadow: inset 2px 2px 0px #050507, inset -1px -1px 0px #353744;
+.tibia-slot {
+  background: url('/tibia/background-darker.png');
+  border-width: 1px;
+  border-image: url('/tibia/slot-frame.png') 1 / 1px / 0 repeat;
+  image-rendering: pixelated;
 }
 
 .tibia-btn {
-  background-color: #262834;
-  border: 2px solid #090a0c;
-  box-shadow: inset 1px 1px 0px #5a5d72, inset -1px -1px 0px #131418;
-  color: #dfd7c2;
-  transition: all 75ms ease-out;
+  background: url('/tibia/background-regular.png');
+  border-width: 1px;
+  border-image: url('/tibia/1-frame.png') 1 / 1px / 0 repeat;
+  image-rendering: pixelated;
+  font-family: 'Tibia', monospace;
+  color: #c0c0c0;
+  text-shadow: 1px 1px 0px #000000;
+  cursor: pointer;
+  user-select: none;
+  transition: filter 50ms;
 }
 
 .tibia-btn:hover {
-  background-color: #313342;
+  filter: brightness(1.1);
   color: #ffffff;
 }
 
 .tibia-btn:active {
-  box-shadow: inset 2px 2px 0px #090a0c, inset -1px -1px 0px #5a5d72;
+  border-image: url('/tibia/1-frame-pressed.png') 1 / 1px / 0 repeat;
   transform: translateY(1px);
+}
+
+.tibia-btn-green {
+  background: url('/tibia/background-green.png');
+  border-width: 1px;
+  border-image: url('/tibia/1-frame-green.png') 1 / 1px / 0 repeat;
+  image-rendering: pixelated;
+  font-family: 'Tibia', monospace;
+  color: #ffffff;
+  text-shadow: 1px 1px 0px #000000;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tibia-btn-green:hover {
+  filter: brightness(1.15);
+}
+
+.tibia-btn-green:active {
+  border-image: url('/tibia/1-frame-pressed-green.png') 1 / 1px / 0 repeat;
+  transform: translateY(1px);
+}
+
+.tibia-btn-red {
+  background: url('/tibia/background-red.png');
+  border-width: 1px;
+  border-image: url('/tibia/1-frame-red.png') 1 / 1px / 0 repeat;
+  image-rendering: pixelated;
+  font-family: 'Tibia', monospace;
+  color: #ffffff;
+  text-shadow: 1px 1px 0px #000000;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tibia-btn-red:hover {
+  filter: brightness(1.15);
+}
+
+.tibia-btn-red:active {
+  border-image: url('/tibia/1-frame-pressed-red.png') 1 / 1px / 0 repeat;
+  transform: translateY(1px);
+}
+
+.tibia-btn-blue {
+  background: url('/tibia/background-blue.png');
+  border-width: 1px;
+  border-image: url('/tibia/1-frame-blue.png') 1 / 1px / 0 repeat;
+  image-rendering: pixelated;
+  font-family: 'Tibia', monospace;
+  color: #ffffff;
+  text-shadow: 1px 1px 0px #000000;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tibia-btn-blue:hover {
+  filter: brightness(1.15);
+}
+
+.tibia-btn-blue:active {
+  border-image: url('/tibia/1-frame-pressed-blue.png') 1 / 1px / 0 repeat;
+  transform: translateY(1px);
+}
+
+.tibia-text {
+  font-family: 'Tibia', monospace;
+  text-shadow: 1px 1px 0px #000000;
+  -webkit-font-smoothing: none;
+}
+
+.tibia-bar-bg {
+  background: #000000;
+  border-bottom: 1px solid #5a5a5a;
+  height: 4px;
+}
+
+.tibia-bar-fill-green {
+  background: #54e054;
+  height: 100%;
+}
+
+.tibia-bar-fill-blue {
+  background: #5477ff;
+  height: 100%;
+}
+
+.tibia-bar-fill-red {
+  background: #ff5454;
+  height: 100%;
+}
+
+
+/* Compatibility & Utility Classes */
+.tibia-window {
+  background: url('/tibia/background-regular.png');
+  border-width: 4px;
+  border-image: url('/tibia/4-frame.png') 4 / 4px / 0 repeat;
+  image-rendering: pixelated;
+  user-select: none;
+}
+
+.tibia-inset {
+  background: url('/tibia/background-darker.png');
+  border-width: 1px;
+  border-image: url('/tibia/slot-frame.png') 1 / 1px / 0 repeat;
+  image-rendering: pixelated;
 }
 
 .tibia-gold-rim {
@@ -56,6 +210,7 @@ body,
 }
 
 .tibia-text-shadow {
-  text-shadow: 1px 1px 0px #000000, -1px -1px 0px #000000, 1px -1px 0px #000000, -1px 1px 0px #000000;
+  text-shadow: 1px 1px 0px #000000;
 }
+
 

@@ -7,9 +7,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        pixel: ['"Press Start 2P"', 'cursive', 'monospace'],
-        retro: ['Silkscreen', 'monospace'],
-        digits: ['VT323', 'monospace'],
+        tibia: ['Tibia', 'monospace'],
+        tibiaOutlined: ['TibiaOutlined', 'monospace'],
+        tibiaOutlinedFill: ['TibiaOutlinedFill', 'monospace'],
+        pixel: ['Tibia', '"Press Start 2P"', 'monospace'],
+        retro: ['Tibia', 'Silkscreen', 'monospace'],
+        digits: ['Tibia', 'VT323', 'monospace'],
       },
       colors: {
         tibia: {

@@ -133,91 +133,92 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 select-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 select-none font-tibia">
       <div
-        className="tibia-window bg-[#1b1c22] border-2 border-[#090a0c] rounded-xl p-6 w-full max-w-md shadow-2xl relative text-[#dfd7c2] animate-in fade-in zoom-in-95 duration-150"
+        className="tibia-window-frame p-1 w-full max-w-md shadow-2xl relative text-[#c0c0c0]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="settings-heading"
       >
-        <button
-          onClick={onClose}
-          className="tibia-btn absolute top-4 right-4 p-1 rounded text-[#9e9785] hover:text-[#dfd7c2]"
-          aria-label="Close Settings"
-        >
-          <X size={15} />
-        </button>
+        <div className="tibia-widget-top flex items-center justify-between px-2 py-1 mb-2">
+          <h2 id="settings-heading" className="tibia-widget-top-text flex items-center gap-1.5">
+            Preferences
+          </h2>
+          <button
+            onClick={onClose}
+            className="tibia-btn px-1.5 py-0.5 text-[11px] leading-none"
+            aria-label="Close Settings"
+          >
+            <X size={12} />
+          </button>
+        </div>
 
-        <h2 id="settings-heading" className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] mb-5 flex items-center gap-2 tibia-text-shadow">
-          Preferences
-        </h2>
-
-        <div className="space-y-5 max-h-[72vh] overflow-y-auto pr-1">
+        <div className="p-2 space-y-3 max-h-[72vh] overflow-y-auto">
           {/* Window & Display Section */}
-          <section className="space-y-3">
-            <h3 className="text-[10px] font-pixel uppercase tracking-wider text-[#cca34c] flex items-center gap-1.5">
-              <Monitor size={13} /> Window & Display
+          <section className="space-y-2">
+            <h3 className="text-xs text-[#c0c0c0] flex items-center gap-1.5">
+              <Monitor size={12} /> Window & Display
             </h3>
 
-            <div className="space-y-2 text-xs">
+            <div className="space-y-1.5 text-xs">
               {/* Always on Top */}
-              <label className="flex items-center justify-between tibia-panel p-2.5 rounded border border-[#3c3e4c] cursor-pointer hover:brightness-110">
-                <div className="flex items-center gap-2.5">
-                  <Pin size={13} className={alwaysOnTop ? 'text-[#e8b855]' : 'text-[#9e9785]'} />
+              <label className="flex items-center justify-between tibia-panel p-2 cursor-pointer hover:brightness-110">
+                <div className="flex items-center gap-2">
+                  <Pin size={12} className={alwaysOnTop ? 'text-[#54e054]' : 'text-[#888888]'} />
                   <div>
-                    <span className="font-pixel text-[10px] text-[#dfd7c2]">Always on Top</span>
-                    <p className="text-[9px] font-pixel text-[#9e9785] mt-0.5">Keep timer floating above all other windows</p>
+                    <span className="text-xs text-[#c0c0c0]">Always on Top</span>
+                    <p className="text-[10px] text-[#888888]">Keep timer floating above all other windows</p>
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={alwaysOnTop}
                   onChange={(e) => onUpdateAlwaysOnTop(e.target.checked)}
-                  className="w-4 h-4 rounded cursor-pointer accent-[#c89b3c]"
+                  className="w-3.5 h-3.5 rounded cursor-pointer accent-[#54e054]"
                 />
               </label>
 
               {/* Window Title Bar */}
-              <label className="flex items-center justify-between tibia-panel p-2.5 rounded border border-[#3c3e4c] cursor-pointer hover:brightness-110">
-                <div className="flex items-center gap-2.5">
-                  <Eye size={13} className={decorations ? 'text-[#e8b855]' : 'text-[#9e9785]'} />
+              <label className="flex items-center justify-between tibia-panel p-2 cursor-pointer hover:brightness-110">
+                <div className="flex items-center gap-2">
+                  <Eye size={12} className={decorations ? 'text-[#54e054]' : 'text-[#888888]'} />
                   <div>
-                    <span className="font-pixel text-[10px] text-[#dfd7c2]">Show Title Bar</span>
-                    <p className="text-[9px] font-pixel text-[#9e9785] mt-0.5">Uncheck to remove OS borders (frameless mode)</p>
+                    <span className="text-xs text-[#c0c0c0]">Show Title Bar</span>
+                    <p className="text-[10px] text-[#888888]">Uncheck to remove OS borders (frameless mode)</p>
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={decorations}
                   onChange={(e) => onUpdateDecorations(e.target.checked)}
-                  className="w-4 h-4 rounded cursor-pointer accent-[#c89b3c]"
+                  className="w-3.5 h-3.5 rounded cursor-pointer accent-[#54e054]"
                 />
               </label>
 
               {/* Compact Mode */}
-              <label className="flex items-center justify-between tibia-panel p-2.5 rounded border border-[#3c3e4c] cursor-pointer hover:brightness-110">
-                <div className="flex items-center gap-2.5">
-                  <Monitor size={13} className={compact ? 'text-[#e8b855]' : 'text-[#9e9785]'} />
+              <label className="flex items-center justify-between tibia-panel p-2 cursor-pointer hover:brightness-110">
+                <div className="flex items-center gap-2">
+                  <Monitor size={12} className={compact ? 'text-[#54e054]' : 'text-[#888888]'} />
                   <div>
-                    <span className="font-pixel text-[10px] text-[#dfd7c2]">Compact Mode</span>
-                    <p className="text-[9px] font-pixel text-[#9e9785] mt-0.5">Slim mini-widget display for minimal footprint</p>
+                    <span className="text-xs text-[#c0c0c0]">Compact Mode</span>
+                    <p className="text-[10px] text-[#888888]">Slim mini-widget display for minimal footprint</p>
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={compact}
                   onChange={(e) => onUpdateCompact(e.target.checked)}
-                  className="w-4 h-4 rounded cursor-pointer accent-[#c89b3c]"
+                  className="w-3.5 h-3.5 rounded cursor-pointer accent-[#54e054]"
                 />
               </label>
 
               {/* Click-Through Mode */}
-              <label className="flex items-center justify-between tibia-panel p-2.5 rounded border border-[#3c3e4c] cursor-pointer hover:brightness-110">
-                <div className="flex items-center gap-2.5">
-                  <Ghost size={13} className={clickThrough ? 'text-[#c084fc]' : 'text-[#9e9785]'} />
+              <label className="flex items-center justify-between tibia-panel p-2 cursor-pointer hover:brightness-110">
+                <div className="flex items-center gap-2">
+                  <Ghost size={12} className={clickThrough ? 'text-[#5477ff]' : 'text-[#888888]'} />
                   <div>
-                    <span className="font-pixel text-[10px] text-[#dfd7c2]">Click-Through (Ghost Mode)</span>
-                    <p className="text-[9px] font-pixel text-[#9e9785] mt-0.5">
+                    <span className="text-xs text-[#c0c0c0]">Click-Through (Ghost Mode)</span>
+                    <p className="text-[10px] text-[#888888]">
                       Clicks pass through. Hotkey: {formatHotkeyLabel(hotkeys.toggleClickThrough)}
                     </p>
                   </div>
@@ -226,30 +227,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   type="checkbox"
                   checked={clickThrough}
                   onChange={(e) => onUpdateClickThrough(e.target.checked)}
-                  className="w-4 h-4 rounded cursor-pointer accent-[#a855f7]"
+                  className="w-3.5 h-3.5 rounded cursor-pointer accent-[#5477ff]"
                 />
               </label>
             </div>
           </section>
 
-          <hr className="border-[#3c3e4c]" />
-
           {/* Hotkeys Section */}
-          <section className="space-y-3">
+          <section className="space-y-2">
             <div className="flex justify-between items-center">
-              <h3 className="text-[10px] font-pixel uppercase tracking-wider text-[#cca34c] flex items-center gap-1.5">
-                <Keyboard size={13} /> Global Shortcuts
+              <h3 className="text-xs text-[#c0c0c0] flex items-center gap-1.5">
+                <Keyboard size={12} /> Global Shortcuts
               </h3>
               <button
                 onClick={() => onUpdateHotkeys(DEFAULT_HOTKEYS)}
-                className="text-[9px] font-pixel text-[#9e9785] hover:text-[#fef08a] flex items-center gap-1 transition"
+                className="text-[10px] text-[#888888] hover:text-[#ffffff] flex items-center gap-1 transition"
                 title="Reset hotkeys to default"
               >
                 <RotateCcw size={10} /> Reset Defaults
               </button>
             </div>
 
-            <div className="space-y-2 text-xs">
+            <div className="space-y-1.5 text-xs">
               {[
                 { key: 'resetAndRestart' as const, label: 'Reset & Restart' },
                 { key: 'resetAndPause' as const, label: 'Reset & Pause' },
@@ -260,15 +259,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 return (
                   <div
                     key={key}
-                    className="flex items-center justify-between tibia-panel p-2.5 rounded border border-[#3c3e4c]"
+                    className="flex items-center justify-between tibia-panel p-2"
                   >
-                    <span className="font-pixel text-[10px] text-[#dfd7c2]">{label}</span>
+                    <span className="text-xs text-[#c0c0c0]">{label}</span>
                     <button
                       onClick={() => setRecordingKey(isRecording ? null : key)}
-                      className={`font-pixel text-[9px] px-2.5 py-1.5 rounded transition ${
+                      className={`text-xs px-2 py-1 transition ${
                         isRecording
-                          ? 'tibia-btn-ruby text-white animate-pulse'
-                          : 'tibia-btn text-[#fef08a]'
+                          ? 'tibia-btn-red text-[#ffffff] animate-pulse'
+                          : 'tibia-btn text-[#c0c0c0]'
                       }`}
                     >
                       {isRecording ? 'PRESS KEYS...' : formatHotkeyLabel(hotkeys[key])}
@@ -279,18 +278,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           </section>
 
-          <hr className="border-[#3c3e4c]" />
-
           {/* Audio Alerts Section */}
-          <section className="space-y-3">
-            <h3 className="text-[10px] font-pixel uppercase tracking-wider text-[#cca34c] flex items-center gap-1.5">
-              <Volume2 size={13} /> Audio Alerts
+          <section className="space-y-2">
+            <h3 className="text-xs text-[#c0c0c0] flex items-center gap-1.5">
+              <Volume2 size={12} /> Audio Alerts
             </h3>
 
-            <div className="space-y-3 text-xs">
-              <div className="space-y-1.5">
-                <span className="font-pixel text-[9px] text-[#9e9785] uppercase">Sound Tone</span>
-                <div className="grid grid-cols-4 gap-1.5">
+            <div className="space-y-2 text-xs">
+              <div className="space-y-1">
+                <span className="text-[10px] text-[#888888] uppercase">Sound Tone</span>
+                <div className="grid grid-cols-4 gap-1">
                   {(['bell', 'digital', 'chime', 'none'] as SoundTone[]).map((tone) => (
                     <button
                       key={tone}
@@ -300,10 +297,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                           playAlertSound(soundVolume, tone);
                         }
                       }}
-                      className={`py-1.5 px-2 rounded font-pixel text-[9px] uppercase transition ${
+                      className={`py-1 px-1.5 text-xs uppercase transition ${
                         soundTone === tone
-                          ? 'tibia-btn-gold text-[#fef08a]'
-                          : 'tibia-btn text-[#9e9785]'
+                          ? 'tibia-btn-green text-[#ffffff]'
+                          : 'tibia-btn text-[#c0c0c0]'
                       }`}
                     >
                       {tone}
@@ -313,10 +310,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
 
               {soundTone !== 'none' && (
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-[9px] font-pixel text-[#9e9785]">
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] text-[#888888]">
                     <span>VOLUME</span>
-                    <span className="text-[#fef08a]">{Math.round(soundVolume * 100)}%</span>
+                    <span className="text-[#ffffff]">{Math.round(soundVolume * 100)}%</span>
                   </div>
                   <input
                     type="range"
@@ -325,42 +322,40 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     step="0.05"
                     value={soundVolume}
                     onChange={(e) => onUpdateSoundVolume(parseFloat(e.target.value))}
-                    className="w-full accent-[#c89b3c]"
+                    className="w-full accent-[#54e054]"
                   />
                 </div>
               )}
             </div>
           </section>
 
-          <hr className="border-[#3c3e4c]" />
-
           {/* Relay Server Section */}
-          <section className="space-y-3">
-            <h3 className="text-[10px] font-pixel uppercase tracking-wider text-[#cca34c] flex items-center gap-1.5">
-              <Globe size={13} /> Live Session Relay
+          <section className="space-y-2">
+            <h3 className="text-xs text-[#c0c0c0] flex items-center gap-1.5">
+              <Globe size={12} /> Live Session Relay
             </h3>
 
             <div className="space-y-2 text-xs">
               <div className="space-y-1">
-                <span className="font-pixel text-[9px] text-[#9e9785] uppercase">WebSocket URL</span>
+                <span className="text-[10px] text-[#888888] uppercase">WebSocket URL</span>
                 <input
                   type="text"
                   value={serverUrl}
                   onChange={(e) => onUpdateServerUrl(e.target.value)}
                   placeholder="ws://localhost:8080"
-                  className="w-full tibia-inset px-3 py-1.5 rounded font-digits text-sm text-[#fef08a] border border-[#3c3e4c] focus:outline-none focus:border-[#c89b3c]"
+                  className="w-full tibia-slot px-2 py-1 text-xs text-[#ffffff] font-tibia outline-none"
                 />
               </div>
 
               {webViewerBaseUrl !== undefined && onUpdateWebViewerBaseUrl && (
                 <div className="space-y-1">
-                  <span className="font-pixel text-[9px] text-[#9e9785] uppercase">Web Viewer Base URL</span>
+                  <span className="text-[10px] text-[#888888] uppercase">Web Viewer Base URL</span>
                   <input
                     type="text"
                     value={webViewerBaseUrl}
                     onChange={(e) => onUpdateWebViewerBaseUrl(e.target.value)}
                     placeholder="http://localhost:5173"
-                    className="w-full tibia-inset px-3 py-1.5 rounded font-digits text-sm text-[#fef08a] border border-[#3c3e4c] focus:outline-none focus:border-[#c89b3c]"
+                    className="w-full tibia-slot px-2 py-1 text-xs text-[#ffffff] font-tibia outline-none"
                   />
                 </div>
               )}
@@ -368,10 +363,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </section>
         </div>
 
-        <div className="mt-5 flex justify-end">
+        <div className="p-2 pt-0 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 tibia-btn-gold text-[#fef08a] rounded font-pixel text-[10px] uppercase transition active:scale-95 shadow"
+            className="px-4 py-1 tibia-btn-green text-[#ffffff] text-xs uppercase font-bold tracking-wider shadow"
           >
             Done
           </button>
@@ -380,3 +375,4 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     </div>
   );
 };
+

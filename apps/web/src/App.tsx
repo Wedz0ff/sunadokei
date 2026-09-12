@@ -160,78 +160,98 @@ export const App: React.FC = () => {
   // If no room code is selected, render the Join Room landing page
   if (!roomCode) {
     return (
-      <div className="flex min-h-screen w-full flex-col items-center justify-center bg-[#121316] px-4 text-[#dfd7c2]">
-        <div className="w-full max-w-md space-y-6 rounded-xl border-2 border-[#090a0c] bg-[#1b1c22] p-8 shadow-2xl tibia-window">
-          <div className="flex flex-col items-center text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[#2a2210] text-[#e8b855] border-2 border-[#c89b3c] mb-4 shadow-inner">
-              <Hourglass className="h-8 w-8 animate-pulse" />
-            </div>
-            <h1 className="text-lg font-pixel tracking-wider text-[#fef08a] uppercase tibia-text-shadow">
-              Brachio Hourglass Viewer
-            </h1>
-            <p className="mt-2 text-xs font-pixel text-[#9e9785]">
-              Enter a room code to join an active synchronized countdown.
-            </p>
+      <div
+        className="flex min-h-screen w-full flex-col items-center justify-center p-4 font-tibia text-[#c0c0c0] select-none"
+        style={{
+          background: "url('/tibia/background-regular.png')",
+          imageRendering: 'pixelated'
+        }}
+      >
+        <div className="w-full max-w-sm shadow-2xl">
+          <div className="tibia-widget-top px-3 py-1.5 flex items-center gap-2">
+            <span>🐲</span>
+            <span className="tibia-widget-top-text text-xs text-[#c0c0c0]">Tibia Live Viewer</span>
           </div>
 
-          <form onSubmit={handleJoinSubmit} className="mt-6 space-y-4">
-            <div>
-              <label
-                htmlFor="room-code-input"
-                className="block text-[10px] font-pixel uppercase tracking-wider text-[#cca34c] mb-2"
-              >
-                Room Code
-              </label>
-              <input
-                id="room-code-input"
-                type="text"
-                value={inputCode}
-                onChange={(e) => setInputCode(e.target.value.toUpperCase())}
-                placeholder="e.g. TRK-892"
-                maxLength={10}
-                autoFocus
-                className="w-full rounded-lg border-2 border-[#c89b3c] bg-[#0e0f12] px-4 py-2.5 text-center text-2xl font-digits tracking-widest text-[#fef08a] placeholder-[#6e695b] outline-none shadow-inner focus:ring-1 focus:ring-[#f59e0b]"
-              />
+          <div className="tibia-panel p-6 space-y-5">
+            <div className="flex flex-col items-center text-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xs bg-[#242424] text-[#ffcc00] border border-[#5a5a5a] mb-3 shadow-inner">
+                <Hourglass className="h-7 w-7 animate-pulse" />
+              </div>
+              <h1 className="text-sm font-tibia text-[#ffffff]" style={{ textShadow: '1px 1px #000' }}>
+                Brachio Hourglass Viewer
+              </h1>
+              <p className="mt-1.5 text-xs text-[#909090]">
+                Enter a room code to join an active synchronized countdown.
+              </p>
             </div>
 
-            <button
-              type="submit"
-              disabled={!inputCode.trim()}
-              className="group flex w-full items-center justify-center gap-2 rounded-lg tibia-btn-gold px-4 py-3 font-pixel text-[11px] uppercase transition duration-150 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <span>Join Live Viewer</span>
-              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-            </button>
-          </form>
+            <form onSubmit={handleJoinSubmit} className="space-y-4">
+              <div>
+                <label
+                  htmlFor="room-code-input"
+                  className="block text-xs uppercase text-[#c0c0c0] mb-1.5"
+                >
+                  Room Code
+                </label>
+                <input
+                  id="room-code-input"
+                  type="text"
+                  value={inputCode}
+                  onChange={(e) => setInputCode(e.target.value.toUpperCase())}
+                  placeholder="e.g. TRK-892"
+                  maxLength={10}
+                  autoFocus
+                  className="tibia-slot w-full px-3 py-2 text-center text-xl font-tibia text-[#ffffff] outline-none shadow-inner"
+                  style={{ textShadow: '1px 1px #000' }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={!inputCode.trim()}
+                className="tibia-btn-green w-full py-2.5 text-xs uppercase flex items-center justify-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span>Join Live Viewer</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative flex h-screen w-screen flex-col overflow-hidden bg-[#121316] text-[#dfd7c2]">
-      {/* Top Navigation Bar */}
-      <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-3 bg-[#16171c]/90 border-b-2 border-[#090a0c] shadow-md">
+    <div
+      className="relative flex h-screen w-screen flex-col overflow-hidden text-[#c0c0c0] font-tibia select-none"
+      style={{
+        background: "url('/tibia/background-regular.png')",
+        imageRendering: 'pixelated'
+      }}
+    >
+      {/* Top Navigation Bar - Tibia Client Top Widget */}
+      <header className="relative z-20 w-full tibia-widget-top flex items-center justify-between px-3 py-1">
         {/* Left: Room details */}
-        <div className="flex items-center gap-2.5">
-          <div className="flex items-center gap-2 rounded tibia-inset px-3 py-1 font-digits text-lg tracking-wider text-[#fef08a]">
-            <span className="text-[10px] font-pixel text-[#cca34c]">ROOM:</span>
+        <div className="flex items-center gap-2">
+          <div className="tibia-slot px-2.5 py-0.5 text-xs text-[#ffffff] flex items-center gap-1.5">
+            <span className="text-[#909090]">ROOM:</span>
             <span>{roomCode}</span>
           </div>
 
           <button
             onClick={handleCopyLink}
             title="Copy share link"
-            className="flex items-center gap-1.5 rounded tibia-btn px-2.5 py-1 text-[10px] font-pixel uppercase transition"
+            className="tibia-btn px-2 py-0.5 text-xs flex items-center gap-1"
           >
             {copied ? (
               <>
-                <Check className="h-3.5 w-3.5 text-[#34d399]" />
-                <span className="text-[#34d399]">Copied</span>
+                <Check className="h-3 w-3 text-[#54e054]" />
+                <span className="text-[#54e054]">Copied</span>
               </>
             ) : (
               <>
-                <Share2 className="h-3.5 w-3.5" />
+                <Share2 className="h-3 w-3" />
                 <span>Share</span>
               </>
             )}
@@ -239,13 +259,13 @@ export const App: React.FC = () => {
         </div>
 
         {/* Right: Controls & Badges */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {/* Host Online / Offline status */}
           <div
-            className={`flex items-center gap-1.5 rounded border px-2.5 py-1 text-[9px] font-pixel uppercase shadow ${
+            className={`px-2 py-0.5 text-[11px] border rounded-xs flex items-center gap-1 ${
               hostOnline
-                ? 'border-[#059669] bg-[#064e3b]/90 text-[#6ee7b7]'
-                : 'border-[#d97706] bg-[#451a03]/90 text-[#fcd34d]'
+                ? 'border-[#10b981]/40 bg-[#064e3b]/80 text-[#54e054]'
+                : 'border-[#f59e0b]/40 bg-[#451a03]/80 text-[#ffcc00]'
             }`}
           >
             {hostOnline ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
@@ -253,10 +273,10 @@ export const App: React.FC = () => {
           </div>
 
           {/* Viewer count badge */}
-          <div className="flex items-center gap-1.5 rounded tibia-inset px-2.5 py-1 text-[9px] font-pixel text-[#93c5fd]">
-            <Users className="h-3 w-3 text-[#60a5fa]" />
+          <div className="tibia-slot px-2 py-0.5 text-[11px] text-[#5bc0de] flex items-center gap-1">
+            <Users className="h-3 w-3" />
             <span>
-              {viewerCount} {viewerCount === 1 ? 'VIEWER' : 'VIEWERS'}
+              {viewerCount} {viewerCount === 1 ? 'viewer' : 'viewers'}
             </span>
           </div>
 
@@ -265,10 +285,8 @@ export const App: React.FC = () => {
             onClick={toggleAudio}
             aria-label={isAudioMuted ? 'Unmute alerts' : 'Mute alerts'}
             title={isAudioMuted ? 'Click to enable sound alerts' : 'Click to mute sound alerts'}
-            className={`flex items-center gap-1.5 rounded px-2.5 py-1 text-[9px] font-pixel uppercase transition ${
-              isAudioMuted
-                ? 'tibia-btn text-[#9e9785]'
-                : 'tibia-btn-mana text-[#bfdbfe]'
+            className={`px-2 py-0.5 text-xs flex items-center gap-1 ${
+              isAudioMuted ? 'tibia-btn text-[#909090]' : 'tibia-btn-green text-[#ffffff]'
             }`}
           >
             {isAudioMuted ? (
@@ -278,7 +296,7 @@ export const App: React.FC = () => {
               </>
             ) : (
               <>
-                <Volume2 className="h-3 w-3 text-[#93c5fd] animate-pulse" />
+                <Volume2 className="h-3 w-3 text-[#ffffff] animate-pulse" />
                 <span>Audio On</span>
               </>
             )}
@@ -287,7 +305,7 @@ export const App: React.FC = () => {
           {/* Leave room button */}
           <button
             onClick={handleLeaveRoom}
-            className="rounded tibia-btn px-2.5 py-1 text-[9px] font-pixel uppercase transition text-[#9e9785] hover:text-[#dfd7c2]"
+            className="tibia-btn px-2 py-0.5 text-xs text-[#909090] hover:text-[#ffffff]"
           >
             Change Room
           </button>
