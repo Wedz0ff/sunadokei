@@ -60,7 +60,7 @@ describe('ShareSessionModal component', () => {
     expect(defaultProps.onStopLive).toHaveBeenCalledTimes(1);
   });
 
-  it('copies shareable URL to clipboard when Copy button is clicked', () => {
+  it('copies shareable URL to clipboard when Copy button is clicked', async () => {
     const writeTextMock = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, 'clipboard', {
       value: { writeText: writeTextMock },
@@ -83,7 +83,7 @@ describe('ShareSessionModal component', () => {
     fireEvent.click(copyButton);
 
     expect(writeTextMock).toHaveBeenCalledWith('http://localhost:5173/join/TEST99');
-    expect(screen.getByText('Copied')).toBeDefined();
+    expect(await screen.findByText('Copied')).toBeDefined();
   });
 
   it('closes modal when Escape key is pressed', () => {

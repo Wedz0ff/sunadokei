@@ -25,9 +25,25 @@ export function useHostSync(
     currentTimerRef.current = currentTimer;
   }, [currentTimer]);
 
+  const sendStateUpdate = useCallback(() => {
+    if (!isLive || !hostToken || !wsRef.current || wsRef.current.readyState !== 1) return;
+
+    wsRef.current.send(
+      JSON.stringify({
+        type: 'HOST_UPDATE_STATE',
+        hostToken,
+        status: currentTimerRef.current.status,
+        durationMs: currentTimerRef.current.durationMs,
+        remainingMs: currentTimerRef.current.remainingMs,
+        targetEndTime: currentTimerRef.current.targetEndTime
+      })
+    );
+  }, [isLive, hostToken]);
+
   const openSession = useCallback(() => {
     if (wsRef.current) {
       wsRef.current.close();
+      wsRef.current = null;
     }
 
     const ws = new WebSocket(serverUrl);
@@ -59,10 +75,13 @@ export function useHostSync(
     };
 
     ws.onclose = () => {
-      setIsLive(false);
-      setRoomCode(null);
-      setHostToken(null);
-      setViewerCount(0);
+      if (wsRef.current === ws) {
+        setIsLive(false);
+        setRoomCode(null);
+        setHostToken(null);
+        setViewerCount(0);
+        wsRef.current = null;
+      }
     };
 
     ws.onerror = () => {
@@ -82,8 +101,9 @@ export function useHostSync(
           );
         } catch {}
       }
-      wsRef.current.close();
+      const activeWs = wsRef.current;
       wsRef.current = null;
+      activeWs.close();
     }
     setIsLive(false);
     setRoomCode(null);
@@ -101,28 +121,26 @@ export function useHostSync(
     };
   }, []);
 
-  // Broadcast state changes whenever timer state changes
+  // Broadcast state changes on discrete timer transitions (decoupled from high-frequency rAF remainingMs)
   useEffect(() => {
-    if (!isLive || !hostToken || !wsRef.current || wsRef.current.readyState !== 1) return;
-
-    wsRef.current.send(
-      JSON.stringify({
-        type: 'HOST_UPDATE_STATE',
-        hostToken,
-        status: currentTimer.status,
-        durationMs: currentTimer.durationMs,
-        remainingMs: currentTimer.remainingMs,
-        targetEndTime: currentTimer.targetEndTime
-      })
-    );
+    sendStateUpdate();
   }, [
     currentTimer.status,
     currentTimer.durationMs,
-    currentTimer.remainingMs,
     currentTimer.targetEndTime,
-    isLive,
-    hostToken
+    sendStateUpdate
   ]);
+
+  // Periodic drift keep-alive heartbeat while running (every 2 seconds)
+  useEffect(() => {
+    if (!isLive || currentTimer.status !== 'running') return;
+
+    const interval = setInterval(() => {
+      sendStateUpdate();
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [isLive, currentTimer.status, sendStateUpdate]);
 
   return {
     isLive,
