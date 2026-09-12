@@ -13,6 +13,14 @@ export interface HotkeyConfig {
   resetAndRestart: string;
   resetAndPause: string;
   togglePause: string;
+  toggleClickThrough: string;
+}
+
+export interface WindowConfig {
+  alwaysOnTop: boolean;
+  decorations: boolean;
+  clickThrough: boolean;
+  compact: boolean;
 }
 
 export interface AudioConfig {

@@ -6,12 +6,14 @@ export interface ShortcutActions {
   onResetAndRestart: () => void;
   onResetAndPause: () => void;
   onTogglePause: () => void;
+  onToggleClickThrough?: () => void;
 }
 
 export interface ShortcutMap {
   resetAndRestart: string;
   resetAndPause: string;
   togglePause: string;
+  toggleClickThrough?: string;
 }
 
 function matchesBrowserEvent(e: KeyboardEvent, shortcut: string): boolean {
@@ -95,6 +97,12 @@ export function useGlobalShortcuts(shortcuts: ShortcutMap, actions: ShortcutActi
               if (event.state === 'Pressed') actionsRef.current.onTogglePause();
             });
           }
+
+          if (shortcuts.toggleClickThrough) {
+            await register(shortcuts.toggleClickThrough, (event) => {
+              if (event.state === 'Pressed') actionsRef.current.onToggleClickThrough?.();
+            });
+          }
         } catch (err) {
           console.warn('Failed to register native Tauri global shortcuts:', err);
         }
@@ -123,6 +131,12 @@ export function useGlobalShortcuts(shortcuts: ShortcutMap, actions: ShortcutActi
         } else if (matchesBrowserEvent(e, shortcutsRef.current.togglePause)) {
           e.preventDefault();
           actionsRef.current.onTogglePause();
+        } else if (
+          shortcutsRef.current.toggleClickThrough &&
+          matchesBrowserEvent(e, shortcutsRef.current.toggleClickThrough)
+        ) {
+          e.preventDefault();
+          actionsRef.current.onToggleClickThrough?.();
         }
       };
 
@@ -132,5 +146,5 @@ export function useGlobalShortcuts(shortcuts: ShortcutMap, actions: ShortcutActi
         window.removeEventListener('keydown', handleKeyDown);
       };
     }
-  }, [shortcuts.resetAndRestart, shortcuts.resetAndPause, shortcuts.togglePause]);
+  }, [shortcuts.resetAndRestart, shortcuts.resetAndPause, shortcuts.togglePause, shortcuts.toggleClickThrough]);
 }

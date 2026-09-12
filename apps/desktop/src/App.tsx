@@ -2,12 +2,25 @@ import { useState, useEffect } from 'react';
 import { useTimerEngine } from './hooks/useTimerEngine';
 import { useGlobalShortcuts } from './hooks/useGlobalShortcuts';
 import { useHostSync } from './hooks/useHostSync';
+import { useWindowControls } from './hooks/useWindowControls';
 import { TimerInput } from './components/TimerInput';
 import { SettingsModal } from './components/SettingsModal';
 import { ShareSessionModal } from './components/ShareSessionModal';
 import { formatDuration } from '@brachio/shared';
 import { SoundTone } from './utils/audio';
-import { Play, Pause, RotateCcw, Settings, Share2, Radio } from 'lucide-react';
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  Settings,
+  Share2,
+  Radio,
+  Pin,
+  PinOff,
+  Maximize2,
+  Minimize2,
+  Ghost
+} from 'lucide-react';
 
 const STORAGE_KEYS = {
   HOTKEYS: 'brachio_hotkeys',
@@ -20,14 +33,15 @@ const STORAGE_KEYS = {
 const DEFAULT_HOTKEYS = {
   resetAndRestart: 'CommandOrControl+Shift+R',
   resetAndPause: 'CommandOrControl+Shift+P',
-  togglePause: 'CommandOrControl+Space'
+  togglePause: 'CommandOrControl+Space',
+  toggleClickThrough: 'CommandOrControl+Shift+C'
 };
 
 export default function App() {
   const [hotkeys, setHotkeys] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.HOTKEYS);
-      return saved ? JSON.parse(saved) : DEFAULT_HOTKEYS;
+      return saved ? { ...DEFAULT_HOTKEYS, ...JSON.parse(saved) } : DEFAULT_HOTKEYS;
     } catch {
       return DEFAULT_HOTKEYS;
     }
@@ -71,6 +85,20 @@ export default function App() {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
+
+  // Window Controls & Click-Through
+  const {
+    alwaysOnTop,
+    decorations,
+    compact,
+    clickThrough,
+    setAlwaysOnTop,
+    toggleAlwaysOnTop,
+    setDecorations,
+    setCompact,
+    toggleCompact,
+    toggleClickThrough
+  } = useWindowControls();
 
   // Persist settings
   useEffect(() => {
@@ -138,13 +166,18 @@ export default function App() {
   useGlobalShortcuts(hotkeys, {
     onResetAndRestart: resetAndRestart,
     onResetAndPause: resetAndPause,
-    onTogglePause: togglePause
+    onTogglePause: togglePause,
+    onToggleClickThrough: toggleClickThrough
   });
 
   const progressPercent = durationMs > 0 ? Math.min(100, Math.max(0, (remainingMs / durationMs) * 100)) : 0;
 
   return (
-    <div className="relative w-screen h-screen flex flex-col justify-between items-center bg-zinc-950 text-white overflow-hidden select-none">
+    <div
+      className={`relative w-screen h-screen flex flex-col justify-between items-center bg-zinc-950 text-white overflow-hidden select-none transition-all ${
+        clickThrough ? 'opacity-90 ring-2 ring-purple-500/60' : ''
+      }`}
+    >
       {/* Background visual drain (Hourglass style) */}
       <div
         className={`absolute bottom-0 left-0 right-0 transition-colors duration-200 pointer-events-none ${
@@ -153,23 +186,68 @@ export default function App() {
         style={{ height: `${progressPercent}%` }}
       />
 
-      {/* Header bar */}
-      <header className="relative z-10 w-full p-3 flex justify-between items-center">
-        <TimerInput
-          value={inputString}
-          onChange={setInputString}
-          onSubmit={resetAndRestart}
-          placeholder="e.g. 1min40s"
-        />
+      {/* Click-Through Ghost Mode Banner */}
+      {clickThrough && (
+        <div
+          data-tauri-drag-region
+          className="absolute top-0 left-0 right-0 z-30 bg-purple-900/90 text-purple-200 text-[10px] font-semibold py-0.5 px-2 flex items-center justify-between pointer-events-none backdrop-blur-xs"
+        >
+          <span className="flex items-center gap-1">
+            <Ghost size={10} className="animate-pulse" /> Click-Through Active
+          </span>
+          <span>Press {hotkeys.toggleClickThrough.replace('CommandOrControl', '⌘/Ctrl')} to unlock</span>
+        </div>
+      )}
 
-        <div className="flex gap-2 items-center">
+      {/* Header bar - with drag region for titlebarless/frameless dragging */}
+      <header
+        data-tauri-drag-region
+        className={`relative z-10 w-full flex justify-between items-center ${
+          compact ? 'p-1.5' : 'p-3'
+        }`}
+      >
+        <div data-tauri-drag-region className="flex items-center gap-2">
+          {!compact && (
+            <TimerInput
+              value={inputString}
+              onChange={setInputString}
+              onSubmit={resetAndRestart}
+              placeholder="e.g. 1min40s"
+            />
+          )}
           {isLive && (
-            <div className="flex items-center gap-1.5 px-2 py-1 bg-green-500/10 border border-green-500/20 rounded text-xs font-medium text-green-400">
-              <Radio size={12} className="animate-pulse" />
+            <div className="flex items-center gap-1.5 px-1.5 py-0.5 bg-green-500/10 border border-green-500/20 rounded text-[11px] font-medium text-green-400">
+              <Radio size={11} className="animate-pulse" />
               <span>LIVE</span>
               <span className="text-zinc-400">({viewerCount})</span>
             </div>
           )}
+        </div>
+
+        <div className="flex gap-1.5 items-center">
+          {/* Always on Top Pin Button */}
+          <button
+            onClick={toggleAlwaysOnTop}
+            title={alwaysOnTop ? 'Disable Always on Top' : 'Enable Always on Top'}
+            aria-label="Toggle Always on Top"
+            className={`p-1.5 rounded transition ${
+              alwaysOnTop ? 'text-blue-400 bg-blue-500/10 hover:bg-blue-500/20' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+            }`}
+          >
+            {alwaysOnTop ? <Pin size={compact ? 13 : 15} /> : <PinOff size={compact ? 13 : 15} />}
+          </button>
+
+          {/* Compact Toggle Button */}
+          <button
+            onClick={toggleCompact}
+            title={compact ? 'Expand to Full View' : 'Switch to Compact View'}
+            aria-label="Toggle Compact Mode"
+            className="p-1.5 rounded text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+          >
+            {compact ? <Maximize2 size={13} /> : <Minimize2 size={15} />}
+          </button>
+
+          {/* Share Button */}
           <button
             onClick={() => setIsShareOpen(true)}
             title="Live Session Sharing"
@@ -178,68 +256,93 @@ export default function App() {
               isLive ? 'text-green-400 hover:text-green-300' : 'text-zinc-400 hover:text-white'
             }`}
           >
-            <Share2 size={16} />
+            <Share2 size={compact ? 13 : 15} />
             {isLive && (
               <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
             )}
           </button>
+
+          {/* Settings Button */}
           <button
             onClick={() => setIsSettingsOpen(true)}
             title="Settings"
             aria-label="Settings"
             className="p-1.5 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition"
           >
-            <Settings size={16} />
+            <Settings size={compact ? 13 : 15} />
           </button>
         </div>
       </header>
 
-      {/* Center time display */}
-      <main className="relative z-10 flex flex-col items-center">
+      {/* Center time display - draggable in frameless mode */}
+      <main
+        data-tauri-drag-region
+        className={`relative z-10 flex flex-col items-center cursor-default ${
+          compact ? 'my-auto py-1' : ''
+        }`}
+      >
         <span
-          className={`text-7xl font-mono font-bold tracking-tight ${
+          data-tauri-drag-region
+          className={`font-mono font-bold tracking-tight select-none ${
+            compact ? 'text-4xl' : 'text-7xl'
+          } ${
             status === 'finished' ? 'text-rose-400 animate-pulse' : 'text-white'
           }`}
         >
           {formatDuration(remainingMs)}
         </span>
-        <span
-          className={`text-xs mt-1 uppercase font-semibold tracking-wider ${
-            status === 'running'
-              ? 'text-blue-400'
-              : status === 'finished'
-              ? 'text-rose-400'
-              : status === 'paused'
-              ? 'text-amber-400'
-              : 'text-zinc-400'
-          }`}
-        >
-          {status}
-        </span>
+        {!compact && (
+          <span
+            data-tauri-drag-region
+            className={`text-xs mt-1 uppercase font-semibold tracking-wider ${
+              status === 'running'
+                ? 'text-blue-400'
+                : status === 'finished'
+                ? 'text-rose-400'
+                : status === 'paused'
+                ? 'text-amber-400'
+                : 'text-zinc-400'
+            }`}
+          >
+            {status}
+          </span>
+        )}
       </main>
 
       {/* Bottom controls */}
-      <footer className="relative z-10 p-4 flex gap-3">
+      <footer
+        data-tauri-drag-region
+        className={`relative z-10 flex items-center justify-center gap-2 ${
+          compact ? 'p-1.5 pb-2' : 'p-4 gap-3'
+        }`}
+      >
         {status === 'running' ? (
           <button
             onClick={pause}
-            className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg flex items-center gap-2 font-medium transition active:scale-95"
+            className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg flex items-center justify-center gap-1.5 font-medium transition active:scale-95 ${
+              compact ? 'px-3 py-1 text-xs' : 'px-4 py-2 text-sm'
+            }`}
           >
-            <Pause size={16} /> Pause
+            <Pause size={compact ? 12 : 16} /> Pause
           </button>
         ) : (
           <button
             onClick={start}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center gap-2 font-medium shadow-lg shadow-blue-600/30 transition active:scale-95"
+            className={`bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center justify-center gap-1.5 font-medium shadow-lg shadow-blue-600/30 transition active:scale-95 ${
+              compact ? 'px-3 py-1 text-xs' : 'px-4 py-2 text-sm'
+            }`}
           >
-            <Play size={16} /> Start
+            <Play size={compact ? 12 : 16} /> Start
           </button>
         )}
         <button
           onClick={resetAndRestart}
-          className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-300 hover:text-white flex items-center gap-1.5 text-sm transition active:scale-95"
+          title="Reset timer (Cmd+Shift+R)"
+          className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-300 hover:text-white flex items-center justify-center gap-1 text-xs transition active:scale-95 ${
+            compact ? 'px-2.5 py-1' : 'px-3 py-2 text-sm'
+          }`}
         >
-          <RotateCcw size={16} /> Reset
+          <RotateCcw size={compact ? 12 : 14} /> Reset
         </button>
       </footer>
 
@@ -249,6 +352,14 @@ export default function App() {
         onClose={() => setIsSettingsOpen(false)}
         hotkeys={hotkeys}
         onUpdateHotkeys={setHotkeys}
+        alwaysOnTop={alwaysOnTop}
+        onUpdateAlwaysOnTop={setAlwaysOnTop}
+        decorations={decorations}
+        onUpdateDecorations={setDecorations}
+        compact={compact}
+        onUpdateCompact={setCompact}
+        clickThrough={clickThrough}
+        onUpdateClickThrough={toggleClickThrough}
         soundTone={soundTone}
         onUpdateSoundTone={setSoundTone}
         soundVolume={soundVolume}

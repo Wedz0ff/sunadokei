@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Volume2, Keyboard, Globe, RotateCcw } from 'lucide-react';
+import { X, Volume2, Keyboard, Globe, RotateCcw, Monitor, Pin, Eye, Ghost } from 'lucide-react';
 import { SoundTone, playAlertSound } from '../utils/audio';
 
 export interface SettingsModalProps {
@@ -9,12 +9,22 @@ export interface SettingsModalProps {
     resetAndRestart: string;
     resetAndPause: string;
     togglePause: string;
+    toggleClickThrough: string;
   };
   onUpdateHotkeys: (hotkeys: {
     resetAndRestart: string;
     resetAndPause: string;
     togglePause: string;
+    toggleClickThrough: string;
   }) => void;
+  alwaysOnTop: boolean;
+  onUpdateAlwaysOnTop: (val: boolean) => void;
+  decorations: boolean;
+  onUpdateDecorations: (val: boolean) => void;
+  compact: boolean;
+  onUpdateCompact: (val: boolean) => void;
+  clickThrough: boolean;
+  onUpdateClickThrough: (val: boolean) => void;
   soundTone: SoundTone;
   onUpdateSoundTone: (tone: SoundTone) => void;
   soundVolume: number;
@@ -28,7 +38,8 @@ export interface SettingsModalProps {
 const DEFAULT_HOTKEYS = {
   resetAndRestart: 'CommandOrControl+Shift+R',
   resetAndPause: 'CommandOrControl+Shift+P',
-  togglePause: 'CommandOrControl+Space'
+  togglePause: 'CommandOrControl+Space',
+  toggleClickThrough: 'CommandOrControl+Shift+C'
 };
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -36,6 +47,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose,
   hotkeys,
   onUpdateHotkeys,
+  alwaysOnTop,
+  onUpdateAlwaysOnTop,
+  decorations,
+  onUpdateDecorations,
+  compact,
+  onUpdateCompact,
+  clickThrough,
+  onUpdateClickThrough,
   soundTone,
   onUpdateSoundTone,
   soundVolume,
@@ -134,6 +153,87 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </h2>
 
         <div className="space-y-5 max-h-[75vh] overflow-y-auto pr-1">
+          {/* Window & Display Section */}
+          <section className="space-y-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+              <Monitor size={14} /> Window & Display
+            </h3>
+
+            <div className="space-y-2 text-xs">
+              {/* Always on Top */}
+              <label className="flex items-center justify-between bg-zinc-800/60 p-2.5 rounded border border-zinc-700/60 cursor-pointer hover:bg-zinc-800">
+                <div className="flex items-center gap-2">
+                  <Pin size={14} className={alwaysOnTop ? 'text-blue-400' : 'text-zinc-500'} />
+                  <div>
+                    <span className="font-medium text-zinc-200">Always on Top</span>
+                    <p className="text-[11px] text-zinc-500">Keep timer floating above all other windows</p>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={alwaysOnTop}
+                  onChange={(e) => onUpdateAlwaysOnTop(e.target.checked)}
+                  className="w-4 h-4 rounded bg-zinc-700 border-zinc-600 text-blue-600 focus:ring-0 cursor-pointer accent-blue-500"
+                />
+              </label>
+
+              {/* Window Title Bar */}
+              <label className="flex items-center justify-between bg-zinc-800/60 p-2.5 rounded border border-zinc-700/60 cursor-pointer hover:bg-zinc-800">
+                <div className="flex items-center gap-2">
+                  <Eye size={14} className={decorations ? 'text-blue-400' : 'text-zinc-500'} />
+                  <div>
+                    <span className="font-medium text-zinc-200">Show Title Bar</span>
+                    <p className="text-[11px] text-zinc-500">Uncheck to remove OS borders (frameless mode)</p>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={decorations}
+                  onChange={(e) => onUpdateDecorations(e.target.checked)}
+                  className="w-4 h-4 rounded bg-zinc-700 border-zinc-600 text-blue-600 focus:ring-0 cursor-pointer accent-blue-500"
+                />
+              </label>
+
+              {/* Compact Mode */}
+              <label className="flex items-center justify-between bg-zinc-800/60 p-2.5 rounded border border-zinc-700/60 cursor-pointer hover:bg-zinc-800">
+                <div className="flex items-center gap-2">
+                  <Monitor size={14} className={compact ? 'text-blue-400' : 'text-zinc-500'} />
+                  <div>
+                    <span className="font-medium text-zinc-200">Compact Mode</span>
+                    <p className="text-[11px] text-zinc-500">Slim mini-widget display for minimal screen footprint</p>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={compact}
+                  onChange={(e) => onUpdateCompact(e.target.checked)}
+                  className="w-4 h-4 rounded bg-zinc-700 border-zinc-600 text-blue-600 focus:ring-0 cursor-pointer accent-blue-500"
+                />
+              </label>
+
+              {/* Click-Through Mode */}
+              <label className="flex items-center justify-between bg-zinc-800/60 p-2.5 rounded border border-zinc-700/60 cursor-pointer hover:bg-zinc-800">
+                <div className="flex items-center gap-2">
+                  <Ghost size={14} className={clickThrough ? 'text-purple-400' : 'text-zinc-500'} />
+                  <div>
+                    <span className="font-medium text-zinc-200">Click-Through (Ghost Mode)</span>
+                    <p className="text-[11px] text-zinc-500">
+                      Clicks pass through to windows beneath. Toggle with {formatHotkeyLabel(hotkeys.toggleClickThrough)}
+                    </p>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={clickThrough}
+                  onChange={(e) => onUpdateClickThrough(e.target.checked)}
+                  className="w-4 h-4 rounded bg-zinc-700 border-zinc-600 text-purple-600 focus:ring-0 cursor-pointer accent-purple-500"
+                />
+              </label>
+            </div>
+          </section>
+
+          <hr className="border-zinc-800" />
+
           {/* Hotkeys Section */}
           <section className="space-y-3">
             <div className="flex justify-between items-center">
@@ -153,7 +253,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               {[
                 { key: 'resetAndRestart' as const, label: 'Reset & Restart' },
                 { key: 'resetAndPause' as const, label: 'Reset & Pause' },
-                { key: 'togglePause' as const, label: 'Start / Pause' }
+                { key: 'togglePause' as const, label: 'Start / Pause' },
+                { key: 'toggleClickThrough' as const, label: 'Toggle Click-Through' }
               ].map(({ key, label }) => {
                 const isRecording = recordingKey === key;
                 return (
