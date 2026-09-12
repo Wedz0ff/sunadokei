@@ -25,7 +25,5 @@
       "csp": null
     }
   },
-  "plugins": {
-    "global-shortcut": {}
-  }
+  "plugins": {}
 }
