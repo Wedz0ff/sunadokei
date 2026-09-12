@@ -160,16 +160,16 @@ export const App: React.FC = () => {
   // If no room code is selected, render the Join Room landing page
   if (!roomCode) {
     return (
-      <div className="flex min-h-screen w-full flex-col items-center justify-center bg-zinc-950 px-4 text-white">
-        <div className="w-full max-w-md space-y-8 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-8 shadow-2xl backdrop-blur-xl">
+      <div className="flex min-h-screen w-full flex-col items-center justify-center bg-[#121316] px-4 text-[#dfd7c2]">
+        <div className="w-full max-w-md space-y-6 rounded-xl border-2 border-[#090a0c] bg-[#1b1c22] p-8 shadow-2xl tibia-window">
           <div className="flex flex-col items-center text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-500 border border-blue-500/20 mb-4 shadow-inner">
+            <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[#2a2210] text-[#e8b855] border-2 border-[#c89b3c] mb-4 shadow-inner">
               <Hourglass className="h-8 w-8 animate-pulse" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
+            <h1 className="text-lg font-pixel tracking-wider text-[#fef08a] uppercase tibia-text-shadow">
               Brachio Hourglass Viewer
             </h1>
-            <p className="mt-2 text-sm text-zinc-400">
+            <p className="mt-2 text-xs font-pixel text-[#9e9785]">
               Enter a room code to join an active synchronized countdown.
             </p>
           </div>
@@ -178,7 +178,7 @@ export const App: React.FC = () => {
             <div>
               <label
                 htmlFor="room-code-input"
-                className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5"
+                className="block text-[10px] font-pixel uppercase tracking-wider text-[#cca34c] mb-2"
               >
                 Room Code
               </label>
@@ -190,14 +190,14 @@ export const App: React.FC = () => {
                 placeholder="e.g. TRK-892"
                 maxLength={10}
                 autoFocus
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-800/80 px-4 py-3 text-center text-xl font-mono uppercase tracking-widest text-white placeholder-zinc-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full rounded-lg border-2 border-[#c89b3c] bg-[#0e0f12] px-4 py-2.5 text-center text-2xl font-digits tracking-widest text-[#fef08a] placeholder-[#6e695b] outline-none shadow-inner focus:ring-1 focus:ring-[#f59e0b]"
               />
             </div>
 
             <button
               type="submit"
               disabled={!inputCode.trim()}
-              className="group flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white shadow-lg shadow-blue-600/20 transition duration-150 hover:bg-blue-500 active:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="group flex w-full items-center justify-center gap-2 rounded-lg tibia-btn-gold px-4 py-3 font-pixel text-[11px] uppercase transition duration-150 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <span>Join Live Viewer</span>
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
@@ -209,25 +209,25 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="relative flex h-screen w-screen flex-col overflow-hidden bg-zinc-950 text-white">
+    <div className="relative flex h-screen w-screen flex-col overflow-hidden bg-[#121316] text-[#dfd7c2]">
       {/* Top Navigation Bar */}
-      <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 py-4 bg-gradient-to-b from-zinc-950/80 to-transparent backdrop-blur-sm">
+      <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-3 bg-[#16171c]/90 border-b-2 border-[#090a0c] shadow-md">
         {/* Left: Room details */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 rounded-lg bg-zinc-900/90 border border-zinc-800 px-3 py-1.5 font-mono text-sm font-semibold tracking-wider text-zinc-200 shadow-sm">
-            <span className="text-zinc-500">ROOM:</span>
+        <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 rounded tibia-inset px-3 py-1 font-digits text-lg tracking-wider text-[#fef08a]">
+            <span className="text-[10px] font-pixel text-[#cca34c]">ROOM:</span>
             <span>{roomCode}</span>
           </div>
 
           <button
             onClick={handleCopyLink}
             title="Copy share link"
-            className="flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 px-2.5 py-1.5 text-xs text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+            className="flex items-center gap-1.5 rounded tibia-btn px-2.5 py-1 text-[10px] font-pixel uppercase transition"
           >
             {copied ? (
               <>
-                <Check className="h-3.5 w-3.5 text-emerald-400" />
-                <span className="text-emerald-400">Copied</span>
+                <Check className="h-3.5 w-3.5 text-[#34d399]" />
+                <span className="text-[#34d399]">Copied</span>
               </>
             ) : (
               <>
@@ -239,24 +239,24 @@ export const App: React.FC = () => {
         </div>
 
         {/* Right: Controls & Badges */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {/* Host Online / Offline status */}
           <div
-            className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium backdrop-blur-sm ${
+            className={`flex items-center gap-1.5 rounded border px-2.5 py-1 text-[9px] font-pixel uppercase shadow ${
               hostOnline
-                ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400'
-                : 'border-amber-500/20 bg-amber-500/10 text-amber-400'
+                ? 'border-[#059669] bg-[#064e3b]/90 text-[#6ee7b7]'
+                : 'border-[#d97706] bg-[#451a03]/90 text-[#fcd34d]'
             }`}
           >
-            {hostOnline ? <Wifi className="h-3.5 w-3.5" /> : <WifiOff className="h-3.5 w-3.5" />}
+            {hostOnline ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
             <span>{hostOnline ? 'Host Connected' : 'Host Offline'}</span>
           </div>
 
           {/* Viewer count badge */}
-          <div className="flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 px-3 py-1.5 text-xs text-zinc-300 shadow-sm">
-            <Users className="h-3.5 w-3.5 text-blue-400" />
+          <div className="flex items-center gap-1.5 rounded tibia-inset px-2.5 py-1 text-[9px] font-pixel text-[#93c5fd]">
+            <Users className="h-3 w-3 text-[#60a5fa]" />
             <span>
-              {viewerCount} {viewerCount === 1 ? 'viewer' : 'viewers'}
+              {viewerCount} {viewerCount === 1 ? 'VIEWER' : 'VIEWERS'}
             </span>
           </div>
 
@@ -265,20 +265,20 @@ export const App: React.FC = () => {
             onClick={toggleAudio}
             aria-label={isAudioMuted ? 'Unmute alerts' : 'Mute alerts'}
             title={isAudioMuted ? 'Click to enable sound alerts' : 'Click to mute sound alerts'}
-            className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition shadow-sm ${
+            className={`flex items-center gap-1.5 rounded px-2.5 py-1 text-[9px] font-pixel uppercase transition ${
               isAudioMuted
-                ? 'border-zinc-800 bg-zinc-900/80 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
-                : 'border-blue-500/40 bg-blue-600/20 text-blue-300 hover:bg-blue-600/30'
+                ? 'tibia-btn text-[#9e9785]'
+                : 'tibia-btn-mana text-[#bfdbfe]'
             }`}
           >
             {isAudioMuted ? (
               <>
-                <VolumeX className="h-3.5 w-3.5" />
+                <VolumeX className="h-3 w-3" />
                 <span>Muted</span>
               </>
             ) : (
               <>
-                <Volume2 className="h-3.5 w-3.5 text-blue-400 animate-pulse" />
+                <Volume2 className="h-3 w-3 text-[#93c5fd] animate-pulse" />
                 <span>Audio On</span>
               </>
             )}
@@ -287,7 +287,7 @@ export const App: React.FC = () => {
           {/* Leave room button */}
           <button
             onClick={handleLeaveRoom}
-            className="rounded-lg border border-zinc-800 bg-zinc-900/80 px-3 py-1.5 text-xs text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
+            className="rounded tibia-btn px-2.5 py-1 text-[9px] font-pixel uppercase transition text-[#9e9785] hover:text-[#dfd7c2]"
           >
             Change Room
           </button>

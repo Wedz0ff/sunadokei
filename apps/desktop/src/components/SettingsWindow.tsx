@@ -224,21 +224,21 @@ export function SettingsWindow() {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-zinc-950 text-zinc-200 select-none overflow-hidden font-sans">
+    <div className="w-screen h-screen flex flex-col bg-[#121316] text-[#dfd7c2] select-none overflow-hidden font-sans">
       {/* Top Window Header */}
-      <header className="px-5 py-3.5 border-b border-zinc-800/80 bg-zinc-900/70 flex items-center justify-between backdrop-blur-md">
+      <header className="px-5 py-3 border-b-2 border-[#090a0c] bg-[#16171c] flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
-          <div className="w-3.5 h-3.5 rounded-full bg-blue-500 shadow-md shadow-blue-500/40 flex items-center justify-center">
-            <div className="w-1.5 h-1.5 rounded-full bg-white/80" />
+          <div className="w-4 h-4 rounded bg-[#c89b3c] border border-[#fef08a] shadow flex items-center justify-center">
+            <div className="w-1.5 h-1.5 bg-[#2a1d04]" />
           </div>
           <div>
-            <h1 className="text-sm font-semibold text-white tracking-tight">Preferences</h1>
-            <p className="text-[11px] text-zinc-400">Hourglass Synchronized Timer</p>
+            <h1 className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] tibia-text-shadow">Preferences</h1>
+            <p className="text-[9px] font-pixel text-[#9e9785] mt-0.5">Tibia Hourglass Tracker</p>
           </div>
         </div>
         <button
           onClick={closeSettingsWindow}
-          className="px-3.5 py-1.5 text-xs font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white rounded-lg border border-zinc-700/80 transition active:scale-95 shadow-xs"
+          className="tibia-btn-gold px-3.5 py-1.5 font-pixel text-[10px] uppercase rounded transition active:scale-95 shadow"
         >
           Done
         </button>
@@ -246,13 +246,13 @@ export function SettingsWindow() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Left Navigation Sidebar */}
-        <nav className="w-56 border-r border-zinc-800/80 bg-zinc-900/30 p-3 flex flex-col justify-between">
-          <div className="space-y-1">
-            <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-              General Settings
+        <nav className="w-60 border-r-2 border-[#090a0c] bg-[#16171c] p-3 flex flex-col justify-between">
+          <div className="space-y-1.5">
+            <div className="px-2 py-1 text-[9px] font-pixel uppercase tracking-wider text-[#cca34c]">
+              Category
             </div>
             {[
-              { id: 'display' as const, label: 'Window & Display', desc: 'Layout, Pinning, Ghost', icon: Monitor },
+              { id: 'display' as const, label: 'Window & Display', desc: 'Layout & Ghost', icon: Monitor },
               { id: 'hotkeys' as const, label: 'Global Shortcuts', desc: 'Unfocused Hotkeys', icon: Keyboard },
               { id: 'sound' as const, label: 'Audio Alerts', desc: 'Tones & Volume', icon: Volume2 },
               { id: 'sync' as const, label: 'Live Session', desc: 'Relay & Viewer URLs', icon: Globe }
@@ -262,16 +262,16 @@ export function SettingsWindow() {
                 <button
                   key={id}
                   onClick={() => setActiveTab(id)}
-                  className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center gap-3 ${
+                  className={`w-full text-left px-3 py-2 rounded text-xs transition flex items-center gap-2.5 ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25 font-semibold'
-                      : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/60'
+                      ? 'tibia-btn-gold text-[#fef08a] shadow'
+                      : 'tibia-btn text-[#9e9785] hover:text-[#dfd7c2]'
                   }`}
                 >
-                  <Icon size={16} className={isActive ? 'text-white' : 'text-zinc-400'} />
+                  <Icon size={14} className={isActive ? 'text-[#fef08a]' : 'text-[#9e9785]'} />
                   <div className="overflow-hidden">
-                    <div className="truncate">{label}</div>
-                    <div className={`text-[10px] truncate ${isActive ? 'text-blue-100' : 'text-zinc-500'}`}>
+                    <div className="font-pixel text-[10px] truncate">{label}</div>
+                    <div className={`text-[9px] truncate font-pixel mt-0.5 ${isActive ? 'text-[#fef08a]/80' : 'text-[#6e695b]'}`}>
                       {desc}
                     </div>
                   </div>
@@ -280,34 +280,36 @@ export function SettingsWindow() {
             })}
           </div>
 
-          <div className="p-3 bg-zinc-900/60 rounded-xl border border-zinc-800/60 text-[11px] text-zinc-500 space-y-1">
-            <div className="flex items-center gap-1.5 text-zinc-400 font-medium">
-              <Sparkles size={12} className="text-amber-400" /> Instant Sync
+          <div className="tibia-inset p-3 rounded border border-[#3c3e4c] space-y-1">
+            <div className="flex items-center gap-1.5 text-[#cca34c] font-pixel text-[9px]">
+              <Sparkles size={11} className="text-[#f59e0b]" /> Instant Sync
             </div>
-            <p>All settings apply instantly to the main timer window in real time.</p>
+            <p className="text-[9px] font-pixel text-[#9e9785] leading-normal">
+              All settings apply immediately to the main timer window in real time.
+            </p>
           </div>
         </nav>
 
         {/* Content Area */}
-        <main className="flex-1 p-7 overflow-y-auto bg-zinc-950/70">
+        <main className="flex-1 p-6 overflow-y-auto bg-[#1b1c22]">
           {/* Window & Display Tab */}
           {activeTab === 'display' && (
-            <div className="space-y-6 max-w-2xl">
+            <div className="space-y-5 max-w-2xl">
               <div>
-                <h2 className="text-base font-semibold text-white">Window & Display</h2>
-                <p className="text-xs text-zinc-400 mt-0.5">Customize window appearance, always-on-top behavior, and mouse interaction.</p>
+                <h2 className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] tibia-text-shadow">Window & Display</h2>
+                <p className="text-[10px] font-pixel text-[#9e9785] mt-1">Customize window appearance, always-on-top behavior, and mouse interaction.</p>
               </div>
 
               <div className="space-y-3">
                 {/* Always on Top */}
-                <div className="flex items-center justify-between bg-zinc-900/80 p-4 rounded-xl border border-zinc-800/80 hover:border-zinc-700/80 transition">
+                <div className="flex items-center justify-between tibia-panel p-4 rounded-lg border border-[#3c3e4c]">
                   <div className="flex items-start gap-3.5">
-                    <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 mt-0.5">
-                      <Pin size={16} />
+                    <div className="p-2 rounded bg-[#262834] text-[#e8b855] border border-[#3c3e4c]">
+                      <Pin size={15} />
                     </div>
                     <div>
-                      <span className="text-xs font-semibold text-zinc-200">Always on Top</span>
-                      <p className="text-xs text-zinc-400 mt-0.5">
+                      <span className="font-pixel text-[10px] text-[#dfd7c2]">Always on Top</span>
+                      <p className="text-[9px] font-pixel text-[#9e9785] mt-1">
                         Keep the timer window floating above games, code editors, and full-screen windows.
                       </p>
                     </div>
@@ -319,20 +321,20 @@ export function SettingsWindow() {
                       onChange={(e) => handleUpdateAlwaysOnTop(e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    <div className="w-11 h-6 bg-[#262834] border border-[#3c3e4c] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-[#2b1f05] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#dfd7c2] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#c89b3c]"></div>
                   </label>
                 </div>
 
                 {/* Window Title Bar */}
-                <div className="flex items-center justify-between bg-zinc-900/80 p-4 rounded-xl border border-zinc-800/80 hover:border-zinc-700/80 transition">
+                <div className="flex items-center justify-between tibia-panel p-4 rounded-lg border border-[#3c3e4c]">
                   <div className="flex items-start gap-3.5">
-                    <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mt-0.5">
-                      <Eye size={16} />
+                    <div className="p-2 rounded bg-[#262834] text-[#e8b855] border border-[#3c3e4c]">
+                      <Eye size={15} />
                     </div>
                     <div>
-                      <span className="text-xs font-semibold text-zinc-200">Show Title Bar</span>
-                      <p className="text-xs text-zinc-400 mt-0.5">
-                        Toggle between native OS window borders and a sleek frameless minimalist window (still fully draggable).
+                      <span className="font-pixel text-[10px] text-[#dfd7c2]">Show Title Bar</span>
+                      <p className="text-[9px] font-pixel text-[#9e9785] mt-1">
+                        Toggle between native OS window borders and a sleek frameless minimalist window (still draggable).
                       </p>
                     </div>
                   </div>
@@ -343,19 +345,19 @@ export function SettingsWindow() {
                       onChange={(e) => handleUpdateDecorations(e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    <div className="w-11 h-6 bg-[#262834] border border-[#3c3e4c] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-[#2b1f05] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#dfd7c2] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#c89b3c]"></div>
                   </label>
                 </div>
 
                 {/* Compact Mode */}
-                <div className="flex items-center justify-between bg-zinc-900/80 p-4 rounded-xl border border-zinc-800/80 hover:border-zinc-700/80 transition">
+                <div className="flex items-center justify-between tibia-panel p-4 rounded-lg border border-[#3c3e4c]">
                   <div className="flex items-start gap-3.5">
-                    <div className="p-2 rounded-lg bg-teal-500/10 text-teal-400 border border-teal-500/20 mt-0.5">
-                      <Sliders size={16} />
+                    <div className="p-2 rounded bg-[#262834] text-[#e8b855] border border-[#3c3e4c]">
+                      <Sliders size={15} />
                     </div>
                     <div>
-                      <span className="text-xs font-semibold text-zinc-200">Compact Mode</span>
-                      <p className="text-xs text-zinc-400 mt-0.5">
+                      <span className="font-pixel text-[10px] text-[#dfd7c2]">Compact Mode</span>
+                      <p className="text-[9px] font-pixel text-[#9e9785] mt-1">
                         Shrink the timer into a sleek mini-widget (240px × 95px) taking minimal space on your desktop.
                       </p>
                     </div>
@@ -367,20 +369,20 @@ export function SettingsWindow() {
                       onChange={(e) => handleUpdateCompact(e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    <div className="w-11 h-6 bg-[#262834] border border-[#3c3e4c] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-[#2b1f05] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#dfd7c2] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#c89b3c]"></div>
                   </label>
                 </div>
 
                 {/* Click-Through Mode Info */}
-                <div className="bg-purple-950/30 border border-purple-800/40 rounded-xl p-4 flex items-start gap-3.5">
-                  <div className="p-2 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/30 mt-0.5">
-                    <Ghost size={16} />
+                <div className="bg-[#3b0764]/40 border border-[#a855f7]/50 rounded-lg p-4 flex items-start gap-3.5">
+                  <div className="p-2 rounded bg-[#581c87]/50 text-[#d8b4fe] border border-[#a855f7]/60">
+                    <Ghost size={15} />
                   </div>
-                  <div className="space-y-1 text-xs">
-                    <span className="font-semibold text-purple-200">Click-Through (Ghost Overlay Mode)</span>
-                    <p className="text-purple-300/80 text-[11px] leading-relaxed">
+                  <div className="space-y-1">
+                    <span className="font-pixel text-[10px] text-[#e9d5ff]">Click-Through (Ghost Overlay Mode)</span>
+                    <p className="text-[#d8b4fe] text-[9px] font-pixel leading-relaxed">
                       Allows mouse clicks and drags to pass directly through the timer to any window underneath. Use global hotkey{' '}
-                      <kbd className="px-2 py-0.5 bg-zinc-900 text-purple-200 rounded font-mono font-bold text-[11px] border border-purple-700/50 shadow-xs">
+                      <kbd className="px-1.5 py-0.5 bg-[#1b1c22] text-[#fef08a] rounded font-pixel text-[9px] border border-[#c89b3c]">
                         {formatHotkeyLabel(hotkeys.toggleClickThrough)}
                       </kbd>{' '}
                       to toggle ghost mode on and off at any time.
@@ -393,20 +395,20 @@ export function SettingsWindow() {
 
           {/* Hotkeys Tab */}
           {activeTab === 'hotkeys' && (
-            <div className="space-y-6 max-w-2xl">
+            <div className="space-y-5 max-w-2xl">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-base font-semibold text-white">Global Shortcuts</h2>
-                  <p className="text-xs text-zinc-400 mt-0.5">
+                  <h2 className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] tibia-text-shadow">Global Shortcuts</h2>
+                  <p className="text-[9px] font-pixel text-[#9e9785] mt-1">
                     These hotkeys trigger at the OS level even when the timer window is minimized or unfocused.
                   </p>
                 </div>
                 <button
                   onClick={() => handleUpdateHotkeys(DEFAULT_HOTKEYS)}
-                  className="px-2.5 py-1 text-xs text-zinc-400 hover:text-white bg-zinc-800 hover:bg-zinc-700 rounded-lg border border-zinc-700/70 flex items-center gap-1.5 transition"
+                  className="tibia-btn px-2.5 py-1 text-[9px] font-pixel rounded flex items-center gap-1.5 transition text-[#9e9785] hover:text-[#fef08a]"
                   title="Reset hotkeys to default"
                 >
-                  <RotateCcw size={12} /> Reset Defaults
+                  <RotateCcw size={10} /> Reset Defaults
                 </button>
               </div>
 
@@ -421,21 +423,21 @@ export function SettingsWindow() {
                   return (
                     <div
                       key={key}
-                      className="flex justify-between items-center bg-zinc-900/80 p-3.5 rounded-xl border border-zinc-800/80 hover:border-zinc-700/80 transition"
+                      className="flex justify-between items-center tibia-panel p-3.5 rounded-lg border border-[#3c3e4c]"
                     >
                       <div>
-                        <div className="text-xs font-semibold text-zinc-200">{label}</div>
-                        <div className="text-[11px] text-zinc-500 mt-0.5">{desc}</div>
+                        <div className="font-pixel text-[10px] text-[#dfd7c2]">{label}</div>
+                        <div className="text-[9px] font-pixel text-[#9e9785] mt-1">{desc}</div>
                       </div>
                       <button
                         onClick={() => setRecordingKey(isRecording ? null : key)}
-                        className={`px-3 py-1.5 font-mono text-xs rounded-lg transition border shadow-xs min-w-[140px] text-center ${
+                        className={`px-3 py-1.5 font-pixel text-[9px] uppercase rounded transition min-w-[140px] text-center ${
                           isRecording
-                            ? 'bg-blue-600 text-white border-blue-400 ring-2 ring-blue-500/50 animate-pulse'
-                            : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700 hover:text-white border-zinc-700'
+                            ? 'tibia-btn-ruby text-white animate-pulse'
+                            : 'tibia-btn text-[#fef08a]'
                         }`}
                       >
-                        {isRecording ? 'Press keys...' : formatHotkeyLabel(hotkeys[key])}
+                        {isRecording ? 'PRESS KEYS...' : formatHotkeyLabel(hotkeys[key])}
                       </button>
                     </div>
                   );
@@ -446,20 +448,20 @@ export function SettingsWindow() {
 
           {/* Audio Alerts Tab */}
           {activeTab === 'sound' && (
-            <div className="space-y-6 max-w-2xl">
+            <div className="space-y-5 max-w-2xl">
               <div>
-                <h2 className="text-base font-semibold text-white">Audio Alerts</h2>
-                <p className="text-xs text-zinc-400 mt-0.5">Select sound tone and playback volume when the countdown reaches zero.</p>
+                <h2 className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] tibia-text-shadow">Audio Alerts</h2>
+                <p className="text-[9px] font-pixel text-[#9e9785] mt-1">Select sound tone and playback volume when countdown reaches zero.</p>
               </div>
 
-              <div className="bg-zinc-900/80 p-5 rounded-xl border border-zinc-800/80 space-y-4">
+              <div className="tibia-panel p-5 rounded-lg border border-[#3c3e4c] space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-zinc-300 mb-1.5">Alert Tone</label>
+                    <label className="block text-[10px] font-pixel uppercase text-[#cca34c] mb-1.5">Alert Tone</label>
                     <select
                       value={soundTone}
                       onChange={(e) => handleUpdateSoundTone(e.target.value as SoundTone)}
-                      className="w-full bg-zinc-950 border border-zinc-700/80 rounded-lg px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-blue-500 shadow-xs"
+                      className="w-full tibia-inset border border-[#3c3e4c] rounded px-3 py-2 text-[10px] font-pixel uppercase text-[#dfd7c2] focus:outline-none focus:border-[#c89b3c]"
                     >
                       <option value="bell">Level Bell (D5 → A5)</option>
                       <option value="chime">Digital Chime (C5 → E5 → G5)</option>
@@ -469,9 +471,9 @@ export function SettingsWindow() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs font-medium text-zinc-300 mb-1.5">
+                    <div className="flex justify-between text-[10px] font-pixel uppercase text-[#cca34c] mb-1.5">
                       <label>Volume Level</label>
-                      <span className="text-zinc-400 font-mono">{Math.round(soundVolume * 100)}%</span>
+                      <span className="text-[#fef08a] font-digits text-sm">{Math.round(soundVolume * 100)}%</span>
                     </div>
                     <input
                       type="range"
@@ -481,7 +483,7 @@ export function SettingsWindow() {
                       value={soundVolume}
                       onChange={(e) => handleUpdateSoundVolume(parseFloat(e.target.value))}
                       disabled={soundTone === 'none'}
-                      className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-blue-500 disabled:opacity-30 mt-2"
+                      className="w-full h-2 rounded cursor-pointer accent-[#c89b3c] disabled:opacity-30 mt-2"
                     />
                   </div>
                 </div>
@@ -490,9 +492,9 @@ export function SettingsWindow() {
                   <button
                     onClick={() => playAlertSound(soundVolume, soundTone)}
                     disabled={soundTone === 'none'}
-                    className="px-3.5 py-1.5 text-xs font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white rounded-lg border border-zinc-700 flex items-center gap-2 transition disabled:opacity-40 shadow-xs"
+                    className="tibia-btn px-3.5 py-1.5 font-pixel text-[10px] uppercase rounded flex items-center gap-2 transition disabled:opacity-40"
                   >
-                    <Volume2 size={14} /> Play Preview Sound
+                    <Volume2 size={13} /> Play Preview Sound
                   </button>
                 </div>
               </div>
@@ -501,37 +503,37 @@ export function SettingsWindow() {
 
           {/* Live Sync Tab */}
           {activeTab === 'sync' && (
-            <div className="space-y-6 max-w-2xl">
+            <div className="space-y-5 max-w-2xl">
               <div>
-                <h2 className="text-base font-semibold text-white">Live Session Sharing</h2>
-                <p className="text-xs text-zinc-400 mt-0.5">Configure relay endpoints for broadcasting live synchronized timers to web viewers.</p>
+                <h2 className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] tibia-text-shadow">Live Session Sharing</h2>
+                <p className="text-[9px] font-pixel text-[#9e9785] mt-1">Configure relay endpoints for broadcasting live synchronized timers to web viewers.</p>
               </div>
 
-              <div className="bg-zinc-900/80 p-5 rounded-xl border border-zinc-800/80 space-y-4">
+              <div className="tibia-panel p-5 rounded-lg border border-[#3c3e4c] space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-zinc-300 mb-1.5">WebSocket Relay Server</label>
+                  <label className="block text-[10px] font-pixel uppercase text-[#cca34c] mb-1.5">WebSocket Relay Server</label>
                   <input
                     type="text"
                     value={serverUrl}
                     onChange={(e) => handleUpdateServerUrl(e.target.value)}
                     placeholder="ws://localhost:8080"
-                    className="w-full bg-zinc-950 border border-zinc-700/80 rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-blue-500 shadow-xs"
+                    className="w-full tibia-inset border border-[#3c3e4c] rounded px-3 py-1.5 text-sm font-digits text-[#fef08a] focus:outline-none focus:border-[#c89b3c]"
                   />
-                  <p className="text-[11px] text-zinc-500 mt-1">
+                  <p className="text-[9px] font-pixel text-[#9e9785] mt-1">
                     WebSocket server address that hosts rooms and syncs timer state with viewers.
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-zinc-300 mb-1.5">Web Viewer Base URL</label>
+                  <label className="block text-[10px] font-pixel uppercase text-[#cca34c] mb-1.5">Web Viewer Base URL</label>
                   <input
                     type="text"
                     value={webViewerBaseUrl}
                     onChange={(e) => handleUpdateWebViewerBaseUrl(e.target.value)}
                     placeholder="http://localhost:5173"
-                    className="w-full bg-zinc-950 border border-zinc-700/80 rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-blue-500 shadow-xs"
+                    className="w-full tibia-inset border border-[#3c3e4c] rounded px-3 py-1.5 text-sm font-digits text-[#fef08a] focus:outline-none focus:border-[#c89b3c]"
                   />
-                  <p className="text-[11px] text-zinc-500 mt-1">
+                  <p className="text-[9px] font-pixel text-[#9e9785] mt-1">
                     Base URL for the generated join links copied when sharing sessions (e.g. http://192.168.1.100:5173).
                   </p>
                 </div>
@@ -542,13 +544,13 @@ export function SettingsWindow() {
       </div>
 
       {/* Bottom Status Footer */}
-      <footer className="px-5 py-3 border-t border-zinc-800/80 bg-zinc-900/70 flex items-center justify-between text-xs text-zinc-400">
-        <span className="flex items-center gap-1.5 text-zinc-400 font-medium">
-          <Check size={14} className="text-green-400" /> Preferences are saved automatically
+      <footer className="px-5 py-2.5 border-t-2 border-[#090a0c] bg-[#16171c] flex items-center justify-between text-xs text-[#9e9785]">
+        <span className="flex items-center gap-1.5 font-pixel text-[9px] text-[#34d399]">
+          <Check size={12} className="text-[#34d399]" /> Preferences are saved automatically
         </span>
         <button
           onClick={closeSettingsWindow}
-          className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold transition active:scale-95 shadow-sm shadow-blue-600/30"
+          className="tibia-btn-gold px-4 py-1.5 text-[#fef08a] rounded font-pixel text-[10px] uppercase transition active:scale-95 shadow"
         >
           Done
         </button>

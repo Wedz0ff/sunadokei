@@ -133,92 +133,92 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 select-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 select-none">
       <div
-        className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 w-full max-w-md shadow-2xl relative text-zinc-200 animate-in fade-in zoom-in-95 duration-150"
+        className="tibia-window bg-[#1b1c22] border-2 border-[#090a0c] rounded-xl p-6 w-full max-w-md shadow-2xl relative text-[#dfd7c2] animate-in fade-in zoom-in-95 duration-150"
         role="dialog"
         aria-modal="true"
         aria-labelledby="settings-heading"
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+          className="tibia-btn absolute top-4 right-4 p-1 rounded text-[#9e9785] hover:text-[#dfd7c2]"
           aria-label="Close Settings"
         >
-          <X size={18} />
+          <X size={15} />
         </button>
 
-        <h2 id="settings-heading" className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          Settings
+        <h2 id="settings-heading" className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] mb-5 flex items-center gap-2 tibia-text-shadow">
+          Preferences
         </h2>
 
-        <div className="space-y-5 max-h-[75vh] overflow-y-auto pr-1">
+        <div className="space-y-5 max-h-[72vh] overflow-y-auto pr-1">
           {/* Window & Display Section */}
           <section className="space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-              <Monitor size={14} /> Window & Display
+            <h3 className="text-[10px] font-pixel uppercase tracking-wider text-[#cca34c] flex items-center gap-1.5">
+              <Monitor size={13} /> Window & Display
             </h3>
 
             <div className="space-y-2 text-xs">
               {/* Always on Top */}
-              <label className="flex items-center justify-between bg-zinc-800/60 p-2.5 rounded border border-zinc-700/60 cursor-pointer hover:bg-zinc-800">
-                <div className="flex items-center gap-2">
-                  <Pin size={14} className={alwaysOnTop ? 'text-blue-400' : 'text-zinc-500'} />
+              <label className="flex items-center justify-between tibia-panel p-2.5 rounded border border-[#3c3e4c] cursor-pointer hover:brightness-110">
+                <div className="flex items-center gap-2.5">
+                  <Pin size={13} className={alwaysOnTop ? 'text-[#e8b855]' : 'text-[#9e9785]'} />
                   <div>
-                    <span className="font-medium text-zinc-200">Always on Top</span>
-                    <p className="text-[11px] text-zinc-500">Keep timer floating above all other windows</p>
+                    <span className="font-pixel text-[10px] text-[#dfd7c2]">Always on Top</span>
+                    <p className="text-[9px] font-pixel text-[#9e9785] mt-0.5">Keep timer floating above all other windows</p>
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={alwaysOnTop}
                   onChange={(e) => onUpdateAlwaysOnTop(e.target.checked)}
-                  className="w-4 h-4 rounded bg-zinc-700 border-zinc-600 text-blue-600 focus:ring-0 cursor-pointer accent-blue-500"
+                  className="w-4 h-4 rounded cursor-pointer accent-[#c89b3c]"
                 />
               </label>
 
               {/* Window Title Bar */}
-              <label className="flex items-center justify-between bg-zinc-800/60 p-2.5 rounded border border-zinc-700/60 cursor-pointer hover:bg-zinc-800">
-                <div className="flex items-center gap-2">
-                  <Eye size={14} className={decorations ? 'text-blue-400' : 'text-zinc-500'} />
+              <label className="flex items-center justify-between tibia-panel p-2.5 rounded border border-[#3c3e4c] cursor-pointer hover:brightness-110">
+                <div className="flex items-center gap-2.5">
+                  <Eye size={13} className={decorations ? 'text-[#e8b855]' : 'text-[#9e9785]'} />
                   <div>
-                    <span className="font-medium text-zinc-200">Show Title Bar</span>
-                    <p className="text-[11px] text-zinc-500">Uncheck to remove OS borders (frameless mode)</p>
+                    <span className="font-pixel text-[10px] text-[#dfd7c2]">Show Title Bar</span>
+                    <p className="text-[9px] font-pixel text-[#9e9785] mt-0.5">Uncheck to remove OS borders (frameless mode)</p>
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={decorations}
                   onChange={(e) => onUpdateDecorations(e.target.checked)}
-                  className="w-4 h-4 rounded bg-zinc-700 border-zinc-600 text-blue-600 focus:ring-0 cursor-pointer accent-blue-500"
+                  className="w-4 h-4 rounded cursor-pointer accent-[#c89b3c]"
                 />
               </label>
 
               {/* Compact Mode */}
-              <label className="flex items-center justify-between bg-zinc-800/60 p-2.5 rounded border border-zinc-700/60 cursor-pointer hover:bg-zinc-800">
-                <div className="flex items-center gap-2">
-                  <Monitor size={14} className={compact ? 'text-blue-400' : 'text-zinc-500'} />
+              <label className="flex items-center justify-between tibia-panel p-2.5 rounded border border-[#3c3e4c] cursor-pointer hover:brightness-110">
+                <div className="flex items-center gap-2.5">
+                  <Monitor size={13} className={compact ? 'text-[#e8b855]' : 'text-[#9e9785]'} />
                   <div>
-                    <span className="font-medium text-zinc-200">Compact Mode</span>
-                    <p className="text-[11px] text-zinc-500">Slim mini-widget display for minimal screen footprint</p>
+                    <span className="font-pixel text-[10px] text-[#dfd7c2]">Compact Mode</span>
+                    <p className="text-[9px] font-pixel text-[#9e9785] mt-0.5">Slim mini-widget display for minimal footprint</p>
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={compact}
                   onChange={(e) => onUpdateCompact(e.target.checked)}
-                  className="w-4 h-4 rounded bg-zinc-700 border-zinc-600 text-blue-600 focus:ring-0 cursor-pointer accent-blue-500"
+                  className="w-4 h-4 rounded cursor-pointer accent-[#c89b3c]"
                 />
               </label>
 
               {/* Click-Through Mode */}
-              <label className="flex items-center justify-between bg-zinc-800/60 p-2.5 rounded border border-zinc-700/60 cursor-pointer hover:bg-zinc-800">
-                <div className="flex items-center gap-2">
-                  <Ghost size={14} className={clickThrough ? 'text-purple-400' : 'text-zinc-500'} />
+              <label className="flex items-center justify-between tibia-panel p-2.5 rounded border border-[#3c3e4c] cursor-pointer hover:brightness-110">
+                <div className="flex items-center gap-2.5">
+                  <Ghost size={13} className={clickThrough ? 'text-[#c084fc]' : 'text-[#9e9785]'} />
                   <div>
-                    <span className="font-medium text-zinc-200">Click-Through (Ghost Mode)</span>
-                    <p className="text-[11px] text-zinc-500">
-                      Clicks pass through to windows beneath. Toggle with {formatHotkeyLabel(hotkeys.toggleClickThrough)}
+                    <span className="font-pixel text-[10px] text-[#dfd7c2]">Click-Through (Ghost Mode)</span>
+                    <p className="text-[9px] font-pixel text-[#9e9785] mt-0.5">
+                      Clicks pass through. Hotkey: {formatHotkeyLabel(hotkeys.toggleClickThrough)}
                     </p>
                   </div>
                 </div>
@@ -226,26 +226,26 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   type="checkbox"
                   checked={clickThrough}
                   onChange={(e) => onUpdateClickThrough(e.target.checked)}
-                  className="w-4 h-4 rounded bg-zinc-700 border-zinc-600 text-purple-600 focus:ring-0 cursor-pointer accent-purple-500"
+                  className="w-4 h-4 rounded cursor-pointer accent-[#a855f7]"
                 />
               </label>
             </div>
           </section>
 
-          <hr className="border-zinc-800" />
+          <hr className="border-[#3c3e4c]" />
 
           {/* Hotkeys Section */}
           <section className="space-y-3">
             <div className="flex justify-between items-center">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-                <Keyboard size={14} /> Global Shortcuts
+              <h3 className="text-[10px] font-pixel uppercase tracking-wider text-[#cca34c] flex items-center gap-1.5">
+                <Keyboard size={13} /> Global Shortcuts
               </h3>
               <button
                 onClick={() => onUpdateHotkeys(DEFAULT_HOTKEYS)}
-                className="text-[11px] text-zinc-400 hover:text-white flex items-center gap-1 transition"
+                className="text-[9px] font-pixel text-[#9e9785] hover:text-[#fef08a] flex items-center gap-1 transition"
                 title="Reset hotkeys to default"
               >
-                <RotateCcw size={11} /> Reset Defaults
+                <RotateCcw size={10} /> Reset Defaults
               </button>
             </div>
 
@@ -260,122 +260,118 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 return (
                   <div
                     key={key}
-                    className="flex justify-between items-center bg-zinc-800/60 p-2 rounded border border-zinc-700/60"
+                    className="flex items-center justify-between tibia-panel p-2.5 rounded border border-[#3c3e4c]"
                   >
-                    <span className="font-medium text-zinc-300">{label}</span>
+                    <span className="font-pixel text-[10px] text-[#dfd7c2]">{label}</span>
                     <button
                       onClick={() => setRecordingKey(isRecording ? null : key)}
-                      className={`px-2 py-1 font-mono text-[11px] rounded transition border ${
+                      className={`font-pixel text-[9px] px-2.5 py-1.5 rounded transition ${
                         isRecording
-                          ? 'bg-blue-600 text-white border-blue-400 animate-pulse'
-                          : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-600'
+                          ? 'tibia-btn-ruby text-white animate-pulse'
+                          : 'tibia-btn text-[#fef08a]'
                       }`}
                     >
-                      {isRecording ? 'Press keys...' : formatHotkeyLabel(hotkeys[key])}
+                      {isRecording ? 'PRESS KEYS...' : formatHotkeyLabel(hotkeys[key])}
                     </button>
                   </div>
                 );
               })}
             </div>
-            <p className="text-[11px] text-zinc-500">
-              Shortcuts trigger globally even when the window is in the background.
-            </p>
           </section>
 
-          <hr className="border-zinc-800" />
+          <hr className="border-[#3c3e4c]" />
 
-          {/* Sound Selector Section */}
+          {/* Audio Alerts Section */}
           <section className="space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-              <Volume2 size={14} /> Completion Audio Alert
+            <h3 className="text-[10px] font-pixel uppercase tracking-wider text-[#cca34c] flex items-center gap-1.5">
+              <Volume2 size={13} /> Audio Alerts
             </h3>
 
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div>
-                <label className="block text-zinc-400 mb-1 text-[11px]">Sound Tone</label>
-                <select
-                  value={soundTone}
-                  onChange={(e) => onUpdateSoundTone(e.target.value as SoundTone)}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1.5 text-zinc-200 text-xs focus:outline-none focus:border-blue-500"
-                >
-                  <option value="bell">Bell (D5 → A5)</option>
-                  <option value="chime">Chime (C5 → E5 → G5)</option>
-                  <option value="sine">Sine Tone</option>
-                  <option value="none">Mute (No Sound)</option>
-                </select>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-zinc-400 mb-1 text-[11px]">
-                  <label>Volume</label>
-                  <span>{Math.round(soundVolume * 100)}%</span>
+            <div className="space-y-3 text-xs">
+              <div className="space-y-1.5">
+                <span className="font-pixel text-[9px] text-[#9e9785] uppercase">Sound Tone</span>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {(['bell', 'digital', 'chime', 'none'] as SoundTone[]).map((tone) => (
+                    <button
+                      key={tone}
+                      onClick={() => {
+                        onUpdateSoundTone(tone);
+                        if (tone !== 'none') {
+                          playAlertSound(soundVolume, tone);
+                        }
+                      }}
+                      className={`py-1.5 px-2 rounded font-pixel text-[9px] uppercase transition ${
+                        soundTone === tone
+                          ? 'tibia-btn-gold text-[#fef08a]'
+                          : 'tibia-btn text-[#9e9785]'
+                      }`}
+                    >
+                      {tone}
+                    </button>
+                  ))}
                 </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value={soundVolume}
-                  onChange={(e) => onUpdateSoundVolume(parseFloat(e.target.value))}
-                  disabled={soundTone === 'none'}
-                  className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500 disabled:opacity-40"
-                />
               </div>
-            </div>
 
-            <button
-              onClick={() => playAlertSound(soundVolume, soundTone)}
-              disabled={soundTone === 'none'}
-              className="px-2.5 py-1 text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded border border-zinc-700 flex items-center gap-1.5 transition disabled:opacity-40"
-            >
-              <Volume2 size={12} /> Play Test Alert
-            </button>
+              {soundTone !== 'none' && (
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-[9px] font-pixel text-[#9e9785]">
+                    <span>VOLUME</span>
+                    <span className="text-[#fef08a]">{Math.round(soundVolume * 100)}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.05"
+                    value={soundVolume}
+                    onChange={(e) => onUpdateSoundVolume(parseFloat(e.target.value))}
+                    className="w-full accent-[#c89b3c]"
+                  />
+                </div>
+              )}
+            </div>
           </section>
 
-          <hr className="border-zinc-800" />
+          <hr className="border-[#3c3e4c]" />
 
-          {/* Server Config Section */}
+          {/* Relay Server Section */}
           <section className="space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-              <Globe size={14} /> Live Sync Server
+            <h3 className="text-[10px] font-pixel uppercase tracking-wider text-[#cca34c] flex items-center gap-1.5">
+              <Globe size={13} /> Live Session Relay
             </h3>
 
-            <div>
-              <label className="block text-zinc-400 mb-1 text-[11px]">WebSocket URL</label>
-              <input
-                type="text"
-                value={serverUrl}
-                onChange={(e) => onUpdateServerUrl(e.target.value)}
-                placeholder="ws://localhost:8080"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded px-2.5 py-1.5 text-xs font-mono text-zinc-200 focus:outline-none focus:border-blue-500"
-              />
-              <p className="text-[11px] text-zinc-500 mt-1">
-                Used to host broadcast countdown sessions for remote viewers.
-              </p>
-            </div>
-
-            {webViewerBaseUrl !== undefined && onUpdateWebViewerBaseUrl && (
-              <div>
-                <label className="block text-zinc-400 mb-1 text-[11px]">Web Viewer Base URL</label>
+            <div className="space-y-2 text-xs">
+              <div className="space-y-1">
+                <span className="font-pixel text-[9px] text-[#9e9785] uppercase">WebSocket URL</span>
                 <input
                   type="text"
-                  value={webViewerBaseUrl}
-                  onChange={(e) => onUpdateWebViewerBaseUrl(e.target.value)}
-                  placeholder="http://localhost:5173"
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-2.5 py-1.5 text-xs font-mono text-zinc-200 focus:outline-none focus:border-blue-500"
+                  value={serverUrl}
+                  onChange={(e) => onUpdateServerUrl(e.target.value)}
+                  placeholder="ws://localhost:8080"
+                  className="w-full tibia-inset px-3 py-1.5 rounded font-digits text-sm text-[#fef08a] border border-[#3c3e4c] focus:outline-none focus:border-[#c89b3c]"
                 />
-                <p className="text-[11px] text-zinc-500 mt-1">
-                  Base URL for generated viewer links (e.g. http://192.168.1.100:5173).
-                </p>
               </div>
-            )}
+
+              {webViewerBaseUrl !== undefined && onUpdateWebViewerBaseUrl && (
+                <div className="space-y-1">
+                  <span className="font-pixel text-[9px] text-[#9e9785] uppercase">Web Viewer Base URL</span>
+                  <input
+                    type="text"
+                    value={webViewerBaseUrl}
+                    onChange={(e) => onUpdateWebViewerBaseUrl(e.target.value)}
+                    placeholder="http://localhost:5173"
+                    className="w-full tibia-inset px-3 py-1.5 rounded font-digits text-sm text-[#fef08a] border border-[#3c3e4c] focus:outline-none focus:border-[#c89b3c]"
+                  />
+                </div>
+              )}
+            </div>
           </section>
         </div>
 
         <div className="mt-5 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-medium transition"
+            className="px-4 py-2 tibia-btn-gold text-[#fef08a] rounded font-pixel text-[10px] uppercase transition active:scale-95 shadow"
           >
             Done
           </button>

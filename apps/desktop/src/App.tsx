@@ -288,14 +288,18 @@ function MainTimerApp() {
 
   return (
     <div
-      className={`relative w-screen h-screen flex flex-col justify-between items-center bg-zinc-950 text-white overflow-hidden select-none transition-all ${
-        clickThrough ? 'opacity-90 ring-2 ring-purple-500/60' : ''
+      className={`relative w-screen h-screen flex flex-col justify-between items-center bg-[#1b1c22] text-[#dfd7c2] overflow-hidden select-none transition-all tibia-window ${
+        clickThrough ? 'opacity-90 ring-2 ring-purple-500/80' : ''
       }`}
     >
-      {/* Background visual drain (Hourglass style) */}
+      {/* Background visual drain (Hourglass / Mana sand style) */}
       <div
-        className={`absolute bottom-0 left-0 right-0 transition-colors duration-200 pointer-events-none ${
-          status === 'finished' ? 'bg-rose-600/30' : 'bg-blue-600/25'
+        className={`absolute bottom-0 left-0 right-0 transition-all duration-150 pointer-events-none ${
+          status === 'finished'
+            ? 'bg-gradient-to-t from-[#5a0c0c]/80 to-[#991b1b]/50 border-t-2 border-[#ef4444]'
+            : status === 'paused'
+            ? 'bg-gradient-to-t from-[#572704]/80 to-[#b45309]/40 border-t-2 border-[#f59e0b]'
+            : 'bg-gradient-to-t from-[#0f2357]/85 to-[#1d4ed8]/45 border-t-2 border-[#60a5fa]'
         }`}
         style={{ height: `${progressPercent}%` }}
       />
@@ -304,28 +308,28 @@ function MainTimerApp() {
       {clickThrough && (
         <div
           data-tauri-drag-region
-          className="absolute top-0 left-0 right-0 z-30 bg-purple-900/90 text-purple-200 text-[10px] font-semibold py-0.5 px-2 flex items-center justify-between pointer-events-none backdrop-blur-xs"
+          className="absolute top-0 left-0 right-0 z-30 bg-[#3b0764]/95 text-[#f3e8ff] border-b border-[#a855f7] text-[9px] font-pixel py-1 px-2 flex items-center justify-between pointer-events-none"
         >
-          <span className="flex items-center gap-1">
-            <Ghost size={10} className="animate-pulse" /> Click-Through Active
+          <span className="flex items-center gap-1.5">
+            <Ghost size={11} className="animate-pulse text-[#d8b4fe]" /> CLICK-THROUGH ACTIVE
           </span>
-          <span>Press {hotkeys.toggleClickThrough.replace('CommandOrControl', '⌘/Ctrl')} to unlock</span>
+          <span className="font-sans text-[10px] text-[#e9d5ff]">Press {hotkeys.toggleClickThrough.replace('CommandOrControl', '⌘/Ctrl')} to unlock</span>
         </div>
       )}
 
-      {/* Header bar - clean draggable region (no text input here anymore) */}
+      {/* Header bar - Tibia stone titleplate & utility buttons */}
       <header
         data-tauri-drag-region
         className={`relative z-10 w-full flex justify-between items-center ${
-          compact ? 'p-1.5' : 'p-3'
+          compact ? 'p-1.5 px-2' : 'p-2.5 px-3'
         }`}
       >
         <div data-tauri-drag-region className="flex items-center gap-2">
           {isLive && (
-            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded text-[11px] font-medium text-green-400">
-              <Radio size={11} className="animate-pulse" />
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[#064e3b]/90 border border-[#059669] rounded text-[9px] font-pixel text-[#6ee7b7] shadow">
+              <Radio size={10} className="animate-pulse text-[#34d399]" />
               <span>LIVE</span>
-              <span className="text-zinc-400">({viewerCount})</span>
+              <span className="text-[#a7f3d0]">({viewerCount})</span>
             </div>
           )}
         </div>
@@ -336,11 +340,11 @@ function MainTimerApp() {
             onClick={toggleAlwaysOnTop}
             title={alwaysOnTop ? 'Disable Always on Top' : 'Enable Always on Top'}
             aria-label="Toggle Always on Top"
-            className={`p-1.5 rounded transition ${
-              alwaysOnTop ? 'text-blue-400 bg-blue-500/10 hover:bg-blue-500/20' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+            className={`tibia-btn p-1.5 rounded transition ${
+              alwaysOnTop ? 'text-[#fef08a] border-[#c89b3c] bg-[#3a2e12]' : 'text-[#9e9785] hover:text-[#dfd7c2]'
             }`}
           >
-            {alwaysOnTop ? <Pin size={compact ? 13 : 15} /> : <PinOff size={compact ? 13 : 15} />}
+            {alwaysOnTop ? <Pin size={compact ? 12 : 14} className="text-[#e8b855]" /> : <PinOff size={compact ? 12 : 14} />}
           </button>
 
           {/* Compact Toggle Button */}
@@ -348,9 +352,9 @@ function MainTimerApp() {
             onClick={toggleCompact}
             title={compact ? 'Expand to Full View' : 'Switch to Compact View'}
             aria-label="Toggle Compact Mode"
-            className="p-1.5 rounded text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+            className="tibia-btn p-1.5 rounded text-[#9e9785] hover:text-[#dfd7c2] transition"
           >
-            {compact ? <Maximize2 size={13} /> : <Minimize2 size={15} />}
+            {compact ? <Maximize2 size={12} /> : <Minimize2 size={14} />}
           </button>
 
           {/* Share Button */}
@@ -358,13 +362,13 @@ function MainTimerApp() {
             onClick={() => setIsShareOpen(true)}
             title="Live Session Sharing"
             aria-label="Live Session Sharing"
-            className={`relative p-1.5 hover:bg-zinc-800 rounded transition ${
-              isLive ? 'text-green-400 hover:text-green-300' : 'text-zinc-400 hover:text-white'
+            className={`tibia-btn relative p-1.5 rounded transition ${
+              isLive ? 'text-[#6ee7b7] border-[#059669]' : 'text-[#9e9785] hover:text-[#dfd7c2]'
             }`}
           >
-            <Share2 size={compact ? 13 : 15} />
+            <Share2 size={compact ? 12 : 14} />
             {isLive && (
-              <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[#34d399] animate-pulse" />
             )}
           </button>
 
@@ -373,18 +377,18 @@ function MainTimerApp() {
             onClick={openSettings}
             title="Settings"
             aria-label="Settings"
-            className="p-1.5 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition"
+            className="tibia-btn p-1.5 rounded text-[#9e9785] hover:text-[#dfd7c2] transition"
           >
-            <Settings size={compact ? 13 : 15} />
+            <Settings size={compact ? 12 : 14} />
           </button>
         </div>
       </header>
 
-      {/* Center time display - click directly on the time to edit! */}
+      {/* Center time display - sunken stone tablet with pixel numbers */}
       <main
         data-tauri-drag-region
         className={`relative z-10 flex flex-col items-center justify-center my-auto ${
-          compact ? 'py-0' : 'py-2'
+          compact ? 'py-0' : 'py-1'
         }`}
       >
         {isEditingTime ? (
@@ -400,15 +404,15 @@ function MainTimerApp() {
               onKeyDown={handleEditKeyDown}
               onBlur={handleSaveEditTime}
               placeholder="e.g. 1min40s"
-              className={`font-mono font-bold text-center bg-zinc-900/80 text-white rounded-xl px-4 py-1 border-2 shadow-2xl focus:outline-none ${
-                editError ? 'border-rose-500' : 'border-blue-500 ring-2 ring-blue-500/30'
-              } ${compact ? 'text-4xl w-48' : 'text-7xl w-80'}`}
+              className={`tibia-inset font-digits tracking-wider text-center text-[#fef08a] rounded-lg px-3 py-0.5 border-2 shadow-inner focus:outline-none ${
+                editError ? 'border-[#ef4444]' : 'border-[#c89b3c] ring-1 ring-[#f59e0b]'
+              } ${compact ? 'text-5xl w-44' : 'text-8xl w-72'}`}
             />
-            <div className="mt-1.5 text-[11px] text-zinc-400 flex items-center gap-1.5 font-sans">
+            <div className="mt-1.5 text-[9px] font-pixel text-[#9e9785] flex items-center gap-1.5">
               {editError ? (
-                <span className="text-rose-400">{editError}</span>
+                <span className="text-[#fca5a5]">{editError}</span>
               ) : (
-                <span>Press <kbd className="px-1 py-0.5 bg-zinc-800 rounded text-zinc-200 border border-zinc-700">Enter</kbd> to set, <kbd className="px-1 py-0.5 bg-zinc-800 rounded text-zinc-200 border border-zinc-700">Esc</kbd> to cancel</span>
+                <span>Press <kbd className="px-1 py-0.5 bg-[#262834] rounded text-[#dfd7c2] border border-[#3c3e4c]">Enter</kbd> to save, <kbd className="px-1 py-0.5 bg-[#262834] rounded text-[#dfd7c2] border border-[#3c3e4c]">Esc</kbd> to cancel</span>
               )}
             </div>
           </div>
@@ -416,39 +420,41 @@ function MainTimerApp() {
           <div
             onClick={handleStartEditing}
             title="Click to change duration"
-            className="group relative flex flex-col items-center cursor-pointer px-4 py-1.5 rounded-2xl hover:bg-white/5 transition"
+            className="group relative flex flex-col items-center cursor-pointer px-4 py-1 rounded-lg hover:brightness-110 transition"
           >
-            <div className="flex items-center gap-2">
+            <div className="tibia-inset px-4 py-1 rounded border border-[#3c3e4c] flex items-center gap-2">
               <span
                 data-tauri-drag-region
-                className={`font-mono font-bold tracking-tight select-none transition-transform group-hover:scale-[1.02] ${
-                  compact ? 'text-5xl' : 'text-7xl'
+                className={`font-digits tracking-wider select-none transition-transform tibia-text-shadow ${
+                  compact ? 'text-6xl' : 'text-8xl md:text-9xl'
                 } ${
-                  status === 'finished' ? 'text-rose-400 animate-pulse' : 'text-white'
+                  status === 'finished'
+                    ? 'text-[#fca5a5] animate-pulse'
+                    : 'text-[#fef08a]'
                 }`}
               >
                 {formatDuration(remainingMs)}
               </span>
               <Edit3
                 size={compact ? 12 : 16}
-                className="opacity-0 group-hover:opacity-60 text-zinc-400 transition-opacity"
+                className="opacity-0 group-hover:opacity-80 text-[#c89b3c] transition-opacity"
               />
             </div>
 
             {!compact && (
               <span
                 data-tauri-drag-region
-                className={`text-[11px] mt-1 uppercase font-semibold tracking-wider flex items-center gap-1.5 ${
+                className={`text-[9px] mt-1.5 uppercase font-pixel tracking-wider flex items-center gap-1.5 tibia-text-shadow ${
                   status === 'running'
-                    ? 'text-blue-400'
+                    ? 'text-[#60a5fa]'
                     : status === 'finished'
-                    ? 'text-rose-400'
+                    ? 'text-[#f87171]'
                     : status === 'paused'
-                    ? 'text-amber-400'
-                    : 'text-zinc-400 group-hover:text-blue-300'
+                    ? 'text-[#fbbf24]'
+                    : 'text-[#9e9785] group-hover:text-[#e8b855]'
                 }`}
               >
-                {status === 'idle' ? 'Click numbers to edit time' : status}
+                {status === 'idle' ? 'Click numbers to edit' : status}
               </span>
             )}
           </div>
@@ -459,7 +465,7 @@ function MainTimerApp() {
       <footer
         data-tauri-drag-region
         className={`relative z-10 flex items-center justify-center gap-2 ${
-          compact ? 'p-1.5 pb-2.5' : 'p-4 gap-3'
+          compact ? 'p-1.5 pb-2' : 'p-3 gap-3'
         }`}
       >
         {/* Running state */}
@@ -468,29 +474,29 @@ function MainTimerApp() {
             <button
               onClick={pause}
               title="Pause countdown"
-              className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg flex items-center justify-center gap-1.5 font-medium transition active:scale-95 text-zinc-100 ${
-                compact ? 'px-3 py-1 text-xs' : 'px-4 py-2 text-sm'
+              className={`tibia-btn rounded flex items-center justify-center gap-1.5 font-pixel text-[10px] uppercase active:scale-95 ${
+                compact ? 'px-2.5 py-1' : 'px-4 py-1.5'
               }`}
             >
-              <Pause size={compact ? 12 : 16} /> Pause
+              <Pause size={compact ? 11 : 13} /> Pause
             </button>
             <button
               onClick={stop}
               title="Stop and reset to beginning"
-              className={`bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/60 text-rose-300 rounded-lg flex items-center justify-center gap-1.5 font-medium transition active:scale-95 ${
-                compact ? 'px-2.5 py-1 text-xs' : 'px-3.5 py-2 text-sm'
+              className={`tibia-btn-ruby rounded flex items-center justify-center gap-1.5 font-pixel text-[10px] uppercase active:scale-95 ${
+                compact ? 'px-2.5 py-1' : 'px-3.5 py-1.5'
               }`}
             >
-              <Square size={compact ? 11 : 14} /> Stop
+              <Square size={compact ? 10 : 12} /> Stop
             </button>
             <button
               onClick={resetAndRestart}
               title="Reset and restart immediately (Cmd+Shift+R)"
-              className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-300 hover:text-white flex items-center justify-center gap-1 transition active:scale-95 ${
-                compact ? 'px-2 py-1 text-xs' : 'px-3 py-2 text-sm'
+              className={`tibia-btn rounded flex items-center justify-center gap-1 font-pixel text-[10px] uppercase active:scale-95 ${
+                compact ? 'px-2 py-1' : 'px-3 py-1.5'
               }`}
             >
-              <RotateCcw size={compact ? 11 : 14} /> Reset
+              <RotateCcw size={compact ? 10 : 12} /> Reset
             </button>
           </>
         )}
@@ -501,29 +507,29 @@ function MainTimerApp() {
             <button
               onClick={start}
               title="Resume countdown"
-              className={`bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center justify-center gap-1.5 font-medium shadow-lg shadow-blue-600/30 transition active:scale-95 ${
-                compact ? 'px-3 py-1 text-xs' : 'px-4 py-2 text-sm'
+              className={`tibia-btn-mana rounded flex items-center justify-center gap-1.5 font-pixel text-[10px] uppercase active:scale-95 ${
+                compact ? 'px-3 py-1' : 'px-4 py-1.5'
               }`}
             >
-              <Play size={compact ? 12 : 16} /> Resume
+              <Play size={compact ? 11 : 13} /> Resume
             </button>
             <button
               onClick={stop}
               title="Stop and reset to beginning"
-              className={`bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-lg flex items-center justify-center gap-1.5 font-medium transition active:scale-95 ${
-                compact ? 'px-2.5 py-1 text-xs' : 'px-3.5 py-2 text-sm'
+              className={`tibia-btn rounded flex items-center justify-center gap-1.5 font-pixel text-[10px] uppercase active:scale-95 ${
+                compact ? 'px-2.5 py-1' : 'px-3.5 py-1.5'
               }`}
             >
-              <Square size={compact ? 11 : 14} /> Stop
+              <Square size={compact ? 10 : 12} /> Stop
             </button>
             <button
               onClick={resetAndRestart}
               title="Reset and restart immediately (Cmd+Shift+R)"
-              className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-300 hover:text-white flex items-center justify-center gap-1 transition active:scale-95 ${
-                compact ? 'px-2 py-1 text-xs' : 'px-3 py-2 text-sm'
+              className={`tibia-btn rounded flex items-center justify-center gap-1 font-pixel text-[10px] uppercase active:scale-95 ${
+                compact ? 'px-2 py-1' : 'px-3 py-1.5'
               }`}
             >
-              <RotateCcw size={compact ? 11 : 14} /> Reset
+              <RotateCcw size={compact ? 10 : 12} /> Reset
             </button>
           </>
         )}
@@ -534,20 +540,20 @@ function MainTimerApp() {
             <button
               onClick={stop}
               title="Stop alarm and reset"
-              className={`bg-rose-600 hover:bg-rose-500 text-white rounded-lg flex items-center justify-center gap-1.5 font-medium shadow-lg shadow-rose-600/40 transition active:scale-95 animate-bounce ${
-                compact ? 'px-3 py-1 text-xs' : 'px-5 py-2 text-sm'
+              className={`tibia-btn-ruby rounded flex items-center justify-center gap-1.5 font-pixel text-[10px] uppercase active:scale-95 animate-bounce ${
+                compact ? 'px-3 py-1' : 'px-5 py-2'
               }`}
             >
-              <Square size={compact ? 12 : 16} /> Stop Alarm
+              <Square size={compact ? 11 : 13} /> Stop Alarm
             </button>
             <button
               onClick={resetAndRestart}
               title="Restart from beginning"
-              className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-200 flex items-center justify-center gap-1 transition active:scale-95 ${
-                compact ? 'px-2.5 py-1 text-xs' : 'px-3.5 py-2 text-sm'
+              className={`tibia-btn-gold rounded flex items-center justify-center gap-1 font-pixel text-[10px] uppercase active:scale-95 ${
+                compact ? 'px-2.5 py-1' : 'px-3.5 py-2'
               }`}
             >
-              <RotateCcw size={compact ? 11 : 14} /> Restart
+              <RotateCcw size={compact ? 10 : 12} /> Restart
             </button>
           </>
         )}
@@ -558,20 +564,20 @@ function MainTimerApp() {
             <button
               onClick={start}
               title="Start countdown"
-              className={`bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center justify-center gap-1.5 font-medium shadow-lg shadow-blue-600/30 transition active:scale-95 ${
-                compact ? 'px-4 py-1 text-xs' : 'px-6 py-2 text-sm'
+              className={`tibia-btn-mana rounded flex items-center justify-center gap-1.5 font-pixel text-[10px] uppercase active:scale-95 ${
+                compact ? 'px-3.5 py-1' : 'px-5 py-2'
               }`}
             >
-              <Play size={compact ? 12 : 16} /> Start
+              <Play size={compact ? 11 : 13} /> Start
             </button>
             <button
               onClick={resetAndRestart}
               title="Reset timer (Cmd+Shift+R)"
-              className={`bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-300 hover:text-white flex items-center justify-center gap-1 text-xs transition active:scale-95 ${
-                compact ? 'px-2.5 py-1' : 'px-3.5 py-2 text-sm'
+              className={`tibia-btn rounded flex items-center justify-center gap-1 font-pixel text-[10px] uppercase active:scale-95 ${
+                compact ? 'px-2.5 py-1' : 'px-3.5 py-2'
               }`}
             >
-              <RotateCcw size={compact ? 11 : 14} /> Reset
+              <RotateCcw size={compact ? 10 : 12} /> Reset
             </button>
           </>
         )}

@@ -72,42 +72,42 @@ export const ShareSessionModal: React.FC<ShareSessionModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 w-full max-w-sm shadow-2xl relative text-zinc-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 select-none">
+      <div className="tibia-window bg-[#1b1c22] border-2 border-[#090a0c] rounded-xl p-6 w-full max-w-sm shadow-2xl relative text-[#dfd7c2]">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-zinc-400 hover:text-white"
+          className="tibia-btn absolute top-3.5 right-3.5 p-1 rounded text-[#9e9785] hover:text-[#dfd7c2]"
           aria-label="Close"
         >
-          <X size={18} />
+          <X size={15} />
         </button>
-        <h2 className="text-base font-semibold text-white flex items-center gap-2 mb-4">
-          <Radio className={isLive ? 'text-green-400 animate-pulse' : 'text-zinc-500'} size={18} />
+        <h2 className="text-xs font-pixel uppercase tracking-wide text-[#fef08a] flex items-center gap-2 mb-4 tibia-text-shadow">
+          <Radio className={isLive ? 'text-[#34d399] animate-pulse' : 'text-[#9e9785]'} size={15} />
           Live Session Sharing
         </h2>
 
         {!isLive ? (
           <div>
-            <p className="text-xs text-zinc-400 mb-4">
+            <p className="text-[11px] font-pixel text-[#9e9785] leading-relaxed mb-5">
               Open a live session so remote viewers can watch your countdown in real time. Viewers cannot reset or change the timer.
             </p>
             <button
               onClick={onStartLive}
-              className="w-full py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-semibold transition"
+              className="w-full py-2.5 tibia-btn-gold rounded-lg font-pixel text-[11px] uppercase transition active:scale-95 shadow"
             >
               Start Live Room
             </button>
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="bg-zinc-800/80 p-3 rounded-lg border border-zinc-700">
-              <div className="flex justify-between items-center text-xs text-zinc-400 mb-1">
+            <div className="tibia-inset p-3 rounded-lg border border-[#3c3e4c]">
+              <div className="flex justify-between items-center text-[10px] font-pixel text-[#cca34c] mb-1">
                 <span>Room Code</span>
-                <span className="flex items-center gap-1 text-green-400">
-                  <Users size={12} /> {viewerCount} {viewerCount === 1 ? 'viewer' : 'viewers'}
+                <span className="flex items-center gap-1 text-[#6ee7b7]">
+                  <Users size={11} /> {viewerCount} {viewerCount === 1 ? 'viewer' : 'viewers'}
                 </span>
               </div>
-              <div className="text-2xl font-mono font-bold tracking-wider text-white">
+              <div className="text-3xl font-digits font-bold tracking-widest text-[#fef08a] tibia-text-shadow">
                 {roomCode}
               </div>
             </div>
@@ -116,20 +116,20 @@ export const ShareSessionModal: React.FC<ShareSessionModalProps> = ({
               <input
                 readOnly
                 value={shareUrl}
-                className="bg-zinc-950 border border-zinc-800 text-xs px-2.5 py-1.5 rounded flex-1 text-zinc-300 select-all"
+                className="tibia-inset font-digits text-base px-3 py-1.5 rounded flex-1 text-[#dfd7c2] border border-[#3c3e4c] select-all outline-none"
               />
               <button
                 onClick={copyToClipboard}
-                className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded text-xs flex items-center gap-1 text-zinc-300 hover:text-white"
+                className="tibia-btn px-3 py-1.5 rounded text-[10px] font-pixel uppercase flex items-center gap-1.5 text-[#dfd7c2] active:scale-95"
               >
-                {copied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
+                {copied ? <Check size={12} className="text-[#34d399]" /> : <Copy size={12} />}
                 {copied ? 'Copied' : 'Copy'}
               </button>
             </div>
 
             <button
               onClick={onStopLive}
-              className="w-full py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 rounded text-xs font-medium transition"
+              className="w-full py-2 tibia-btn-ruby rounded-lg font-pixel text-[10px] uppercase transition active:scale-95 shadow"
             >
               Stop Live Session
             </button>

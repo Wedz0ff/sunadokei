@@ -9,5 +9,53 @@ body,
   width: 100%;
   margin: 0;
   padding: 0;
-  background-color: #09090b;
+  background-color: #121316;
+  color: #dfd7c2;
+  user-select: none;
 }
+
+/* Tibia RPG Beveled Frames & Buttons */
+.tibia-window {
+  background-color: #1b1c22;
+  border: 2px solid #090a0c;
+  box-shadow: inset 1px 1px 0px #525567, inset -1px -1px 0px #090a0c, 0 10px 30px rgba(0, 0, 0, 0.85);
+}
+
+.tibia-panel {
+  background-color: #16171c;
+  border: 2px solid #090a0c;
+  box-shadow: inset 1px 1px 0px #3c3e4c, inset -1px -1px 0px #090a0c;
+}
+
+.tibia-inset {
+  background-color: #0e0f12;
+  border: 2px solid #07080a;
+  box-shadow: inset 2px 2px 0px #050507, inset -1px -1px 0px #353744;
+}
+
+.tibia-btn {
+  background-color: #262834;
+  border: 2px solid #090a0c;
+  box-shadow: inset 1px 1px 0px #5a5d72, inset -1px -1px 0px #131418;
+  color: #dfd7c2;
+  transition: all 75ms ease-out;
+}
+
+.tibia-btn:hover {
+  background-color: #313342;
+  color: #ffffff;
+}
+
+.tibia-btn:active {
+  box-shadow: inset 2px 2px 0px #090a0c, inset -1px -1px 0px #5a5d72;
+  transform: translateY(1px);
+}
+
+.tibia-gold-rim {
+  border: 1px solid #c89b3c;
+}
+
+.tibia-text-shadow {
+  text-shadow: 1px 1px 0px #000000, -1px -1px 0px #000000, 1px -1px 0px #000000, -1px 1px 0px #000000;
+}
+
