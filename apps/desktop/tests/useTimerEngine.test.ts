@@ -252,4 +252,57 @@ describe('useTimerEngine hook', () => {
     expect(result.current.durationMs).toBe(150000);
     expect(result.current.remainingMs).toBe(150000);
   });
+
+  it('updates duration and remaining time when user updates input string while finished', () => {
+    const { result } = renderHook(() => useTimerEngine('5s'));
+
+    let currentTime = 1000000;
+    vi.spyOn(Date, 'now').mockImplementation(() => currentTime);
+
+    act(() => {
+      result.current.start();
+    });
+
+    currentTime += 5000;
+    act(() => {
+      stepFrame(currentTime);
+    });
+
+    expect(result.current.status).toBe('finished');
+
+    act(() => {
+      result.current.setInputString('45s');
+    });
+
+    expect(result.current.inputString).toBe('45s');
+    expect(result.current.durationMs).toBe(45000);
+    expect(result.current.remainingMs).toBe(45000);
+  });
+
+  it('completes countdown via setTimeout fallback when requestAnimationFrame is suspended', () => {
+    vi.useFakeTimers();
+    const onFinish = vi.fn();
+
+    const { result } = renderHook(() =>
+      useTimerEngine('3s', { onFinish, soundEnabled: true })
+    );
+
+    act(() => {
+      result.current.start();
+    });
+
+    expect(result.current.status).toBe('running');
+
+    // Advance timers without stepping any animation frames (simulating suspended background tab/window)
+    act(() => {
+      vi.advanceTimersByTime(3100);
+    });
+
+    expect(result.current.status).toBe('finished');
+    expect(result.current.remainingMs).toBe(0);
+    expect(audioModule.playAlertSound).toHaveBeenCalled();
+    expect(onFinish).toHaveBeenCalledTimes(1);
+
+    vi.useRealTimers();
+  });
 });

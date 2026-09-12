@@ -45,7 +45,7 @@ export function useTimerEngine(
   const setInputString = useCallback(
     (newInput: string) => {
       setInputStringState(newInput);
-      if (status === 'idle') {
+      if (status === 'idle' || status === 'finished') {
         const parsed = parseTimeString(newInput);
         if (parsed.valid) {
           setDurationMs(parsed.durationMs);
@@ -96,28 +96,55 @@ export function useTimerEngine(
     }
   }, [status, pause, start]);
 
-  // Main high-precision animation loop
+  // Main high-precision animation loop with background setTimeout fallback
   useEffect(() => {
     if (status !== 'running' || !targetEndTime) return;
 
     let frameId: number;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let finished = false;
+
+    const handleFinish = () => {
+      if (finished) return;
+      finished = true;
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+      cancelAnimationFrame(frameId);
+      setRemainingMs(0);
+      setStatus('finished');
+      setTargetEndTime(null);
+      if (soundEnabledRef.current) {
+        playAlertSound(soundVolumeRef.current, soundToneRef.current);
+      }
+      onFinishRef.current?.();
+    };
+
     const tick = () => {
       const diff = Math.max(0, targetEndTime - Date.now());
       setRemainingMs(diff);
       if (diff <= 0) {
-        setStatus('finished');
-        setTargetEndTime(null);
-        if (soundEnabledRef.current) {
-          playAlertSound(soundVolumeRef.current, soundToneRef.current);
-        }
-        onFinishRef.current?.();
+        handleFinish();
       } else {
         frameId = requestAnimationFrame(tick);
       }
     };
 
     frameId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frameId);
+
+    // Parallel background timeout fallback: Ensures completion & audio fire reliably
+    // even if requestAnimationFrame is throttled/suspended when the window is minimized or occluded
+    const delay = Math.max(0, targetEndTime - Date.now());
+    timeoutId = setTimeout(() => {
+      handleFinish();
+    }, delay);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [status, targetEndTime]);
 
   return {

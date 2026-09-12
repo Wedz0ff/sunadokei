@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { register, unregisterAll } from '@tauri-apps/plugin-global-shortcut';
+import { isTauri } from '@tauri-apps/api/core';
 
 export interface ShortcutActions {
   onResetAndRestart: () => void;
@@ -67,64 +68,69 @@ export function useGlobalShortcuts(shortcuts: ShortcutMap, actions: ShortcutActi
   }, [shortcuts]);
 
   useEffect(() => {
-    let isTauri = true;
+    const inTauri = typeof window !== 'undefined' && isTauri();
 
-    async function bindShortcuts() {
-      try {
-        await unregisterAll();
+    if (inTauri) {
+      let isMounted = true;
 
-        if (shortcuts.resetAndRestart) {
-          await register(shortcuts.resetAndRestart, (event) => {
-            if (event.state === 'Pressed') actionsRef.current.onResetAndRestart();
-          });
+      async function bindShortcuts() {
+        try {
+          await unregisterAll();
+          if (!isMounted) return;
+
+          if (shortcuts.resetAndRestart) {
+            await register(shortcuts.resetAndRestart, (event) => {
+              if (event.state === 'Pressed') actionsRef.current.onResetAndRestart();
+            });
+          }
+
+          if (shortcuts.resetAndPause) {
+            await register(shortcuts.resetAndPause, (event) => {
+              if (event.state === 'Pressed') actionsRef.current.onResetAndPause();
+            });
+          }
+
+          if (shortcuts.togglePause) {
+            await register(shortcuts.togglePause, (event) => {
+              if (event.state === 'Pressed') actionsRef.current.onTogglePause();
+            });
+          }
+        } catch (err) {
+          console.warn('Failed to register native Tauri global shortcuts:', err);
         }
-
-        if (shortcuts.resetAndPause) {
-          await register(shortcuts.resetAndPause, (event) => {
-            if (event.state === 'Pressed') actionsRef.current.onResetAndPause();
-          });
-        }
-
-        if (shortcuts.togglePause) {
-          await register(shortcuts.togglePause, (event) => {
-            if (event.state === 'Pressed') actionsRef.current.onTogglePause();
-          });
-        }
-      } catch (err) {
-        isTauri = false;
-        // Running in browser or tests where Tauri plugin is not available
-      }
-    }
-
-    bindShortcuts();
-
-    // Fallback for browser preview / development
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger shortcuts if user is typing in an input or textarea
-      const target = e.target as HTMLElement | null;
-      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
-        return;
       }
 
-      if (matchesBrowserEvent(e, shortcutsRef.current.resetAndRestart)) {
-        e.preventDefault();
-        actionsRef.current.onResetAndRestart();
-      } else if (matchesBrowserEvent(e, shortcutsRef.current.resetAndPause)) {
-        e.preventDefault();
-        actionsRef.current.onResetAndPause();
-      } else if (matchesBrowserEvent(e, shortcutsRef.current.togglePause)) {
-        e.preventDefault();
-        actionsRef.current.onTogglePause();
-      }
-    };
+      bindShortcuts();
 
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      if (isTauri) {
+      return () => {
+        isMounted = false;
         unregisterAll().catch(() => {});
-      }
-    };
+      };
+    } else {
+      // Browser preview / web environment fallback: attach DOM keydown listener
+      const handleKeyDown = (e: KeyboardEvent) => {
+        const target = e.target as HTMLElement | null;
+        if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+          return;
+        }
+
+        if (matchesBrowserEvent(e, shortcutsRef.current.resetAndRestart)) {
+          e.preventDefault();
+          actionsRef.current.onResetAndRestart();
+        } else if (matchesBrowserEvent(e, shortcutsRef.current.resetAndPause)) {
+          e.preventDefault();
+          actionsRef.current.onResetAndPause();
+        } else if (matchesBrowserEvent(e, shortcutsRef.current.togglePause)) {
+          e.preventDefault();
+          actionsRef.current.onTogglePause();
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
   }, [shortcuts.resetAndRestart, shortcuts.resetAndPause, shortcuts.togglePause]);
 }

@@ -111,7 +111,7 @@ export default function App() {
     <div className="relative w-screen h-screen flex flex-col justify-between items-center bg-zinc-950 text-white overflow-hidden select-none">
       {/* Background visual drain (Hourglass style) */}
       <div
-        className={`absolute bottom-0 left-0 right-0 transition-all duration-100 ease-linear pointer-events-none ${
+        className={`absolute bottom-0 left-0 right-0 transition-colors duration-200 pointer-events-none ${
           status === 'finished' ? 'bg-rose-600/30' : 'bg-blue-600/25'
         }`}
         style={{ height: `${progressPercent}%` }}
