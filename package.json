@@ -1,0 +1,19 @@
+{
+  "name": "brachio-tracker-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "dev:server": "pnpm --filter @brachio/server dev",
+    "dev:web": "pnpm --filter @brachio/web dev",
+    "dev:desktop": "pnpm --filter @brachio/desktop dev"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}
