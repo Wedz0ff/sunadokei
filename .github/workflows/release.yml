@@ -5,8 +5,9 @@ on:
     inputs:
       release_tag:
         description: 'Release tag (e.g. v0.1.0)'
-        required: false
+        required: true
         default: 'v0.1.0'
+        type: string
 
 permissions:
   contents: write
@@ -67,8 +68,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           projectPath: './apps/desktop'
-          tagName: ${{ github.event.inputs.release_tag || 'v0.1.0' }}
-          releaseName: 'Sunadokei ${{ github.event.inputs.release_tag || 'v0.1.0' }}'
+          tagName: ${{ inputs.release_tag }}
+          releaseName: 'Sunadokei ${{ inputs.release_tag }}'
           releaseBody: 'Download Sunadokei for Windows (.exe / .msi) below.'
           releaseDraft: true
           prerelease: false
