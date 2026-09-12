@@ -75,13 +75,18 @@ export function SettingsWindow() {
   });
 
   const [serverUrl, setServerUrl] = useState<string>(() => {
-    return localStorage.getItem(STORAGE_KEYS.SERVER_URL) || 'ws://localhost:8080';
+    return (
+      localStorage.getItem(STORAGE_KEYS.SERVER_URL) ||
+      import.meta.env.VITE_DEFAULT_SERVER_URL ||
+      'wss://sunadokei.wed.tf'
+    );
   });
 
   const [webViewerBaseUrl, setWebViewerBaseUrl] = useState<string>(() => {
     return (
       localStorage.getItem(STORAGE_KEYS.WEB_VIEWER_BASE_URL) ||
-      `http://${typeof window !== 'undefined' && window.location?.hostname ? window.location.hostname : 'localhost'}:5173`
+      import.meta.env.VITE_DEFAULT_WEB_VIEWER_URL ||
+      'https://sunadokei.wed.tf'
     );
   });
 
@@ -563,7 +568,7 @@ export function SettingsWindow() {
                     type="text"
                     value={serverUrl}
                     onChange={(e) => handleUpdateServerUrl(e.target.value)}
-                    placeholder="ws://localhost:8080"
+                    placeholder="wss://sunadokei.wed.tf"
                     className="w-full tibia-slot px-2 py-1 text-xs text-[#ffffff] font-tibia outline-none"
                   />
                   <p className="text-[10px] text-[#888888] mt-0.5">
@@ -577,11 +582,11 @@ export function SettingsWindow() {
                     type="text"
                     value={webViewerBaseUrl}
                     onChange={(e) => handleUpdateWebViewerBaseUrl(e.target.value)}
-                    placeholder="http://localhost:5173"
+                    placeholder="https://sunadokei.wed.tf"
                     className="w-full tibia-slot px-2 py-1 text-xs text-[#ffffff] font-tibia outline-none"
                   />
                   <p className="text-[10px] text-[#888888] mt-0.5">
-                    Base URL for the generated join links copied when sharing sessions (e.g. http://192.168.1.100:5173).
+                    Base URL for the generated join links copied when sharing sessions (e.g. https://sunadokei.wed.tf).
                   </p>
                 </div>
               </div>

@@ -364,7 +364,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   type="text"
                   value={serverUrl}
                   onChange={(e) => onUpdateServerUrl(e.target.value)}
-                  placeholder="ws://localhost:8080"
+                  placeholder="wss://sunadokei.wed.tf"
                   className="w-full tibia-slot px-2 py-1 text-xs text-[#ffffff] font-tibia outline-none"
                 />
               </div>
@@ -376,7 +376,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     type="text"
                     value={webViewerBaseUrl}
                     onChange={(e) => onUpdateWebViewerBaseUrl(e.target.value)}
-                    placeholder="http://localhost:5173"
+                    placeholder="https://sunadokei.wed.tf"
                     className="w-full tibia-slot px-2 py-1 text-xs text-[#ffffff] font-tibia outline-none"
                   />
                 </div>

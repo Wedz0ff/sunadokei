@@ -12,11 +12,19 @@ export interface UseViewerTimerResult {
   error: string | null;
 }
 
+function getDefaultWsUrl(): string {
+  if (typeof window === 'undefined') return 'wss://sunadokei.wed.tf';
+  const hostname = window.location.hostname;
+  if (!hostname || hostname === 'localhost' || hostname === '127.0.0.1') {
+    return `ws://${hostname || 'localhost'}:8080`;
+  }
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  return `${protocol}//${window.location.host}`;
+}
+
 export function useViewerTimer(
   roomCode: string,
-  wsUrl = typeof window !== 'undefined' && window.location.hostname
-    ? `ws://${window.location.hostname}:8080`
-    : 'ws://localhost:8080'
+  wsUrl = getDefaultWsUrl()
 ): UseViewerTimerResult {
   const [snapshot, setSnapshot] = useState<TimerSnapshot | null>(null);
   const [viewerCount, setViewerCount] = useState<number>(1);

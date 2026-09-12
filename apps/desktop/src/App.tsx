@@ -87,9 +87,13 @@ function MainTimerApp() {
 
   const [serverUrl, setServerUrl] = useState<string>(() => {
     try {
-      return localStorage.getItem(STORAGE_KEYS.SERVER_URL) || 'ws://localhost:8080';
+      return (
+        localStorage.getItem(STORAGE_KEYS.SERVER_URL) ||
+        import.meta.env.VITE_DEFAULT_SERVER_URL ||
+        'wss://sunadokei.wed.tf'
+      );
     } catch {
-      return 'ws://localhost:8080';
+      return 'wss://sunadokei.wed.tf';
     }
   });
 
@@ -97,10 +101,11 @@ function MainTimerApp() {
     try {
       return (
         localStorage.getItem(STORAGE_KEYS.WEB_VIEWER_BASE_URL) ||
-        `http://${typeof window !== 'undefined' && window.location?.hostname ? window.location.hostname : 'localhost'}:5173`
+        import.meta.env.VITE_DEFAULT_WEB_VIEWER_URL ||
+        'https://sunadokei.wed.tf'
       );
     } catch {
-      return 'http://localhost:5173';
+      return 'https://sunadokei.wed.tf';
     }
   });
 
