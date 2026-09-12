@@ -17,6 +17,10 @@ export function createRelayServer(port = 8080): Promise<{ httpServer: http.Serve
 
   const wss = new WebSocketServer({ server });
 
+  wss.on('error', (err) => {
+    console.error('WebSocketServer error:', err);
+  });
+
   server.on('close', () => {
     wss.close();
   });
@@ -24,6 +28,10 @@ export function createRelayServer(port = 8080): Promise<{ httpServer: http.Serve
   wss.on('connection', (ws: WebSocket) => {
     let currentRoomCode: string | null = null;
     let isHost = false;
+
+    ws.on('error', (err) => {
+      console.error('WebSocket connection error:', err);
+    });
 
     ws.on('message', (raw) => {
       try {
@@ -44,7 +52,7 @@ export function createRelayServer(port = 8080): Promise<{ httpServer: http.Serve
           }
 
           case 'HOST_UPDATE_STATE': {
-            if (!currentRoomCode) return;
+            if (!isHost || !currentRoomCode) return;
             roomManager.updateState(currentRoomCode, msg.hostToken, {
               status: msg.status,
               durationMs: msg.durationMs,
@@ -55,7 +63,7 @@ export function createRelayServer(port = 8080): Promise<{ httpServer: http.Serve
           }
 
           case 'HOST_CLOSE_ROOM': {
-            if (!currentRoomCode) return;
+            if (!isHost || !currentRoomCode) return;
             roomManager.deleteRoom(currentRoomCode, msg.hostToken);
             currentRoomCode = null;
             break;

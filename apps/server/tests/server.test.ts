@@ -336,6 +336,47 @@ describe('Relay Server WebSocket', () => {
     viewerWs.close();
   });
 
+  it('rejects HOST_UPDATE_STATE if sender is not host', async () => {
+    const hostWs = new WebSocket(`ws://localhost:${port}`);
+    await new Promise((res) => hostWs.on('open', res));
+
+    hostWs.send(JSON.stringify({ type: 'HOST_CREATE_ROOM', durationMs: 10000, inputString: '10s' }));
+    const roomData = await new Promise<any>((res) => {
+      hostWs.once('message', (msg) => res(JSON.parse(msg.toString())));
+    });
+
+    const viewerWs = new WebSocket(`ws://localhost:${port}`);
+    await new Promise((res) => viewerWs.on('open', res));
+    viewerWs.send(JSON.stringify({ type: 'VIEWER_JOIN', roomCode: roomData.roomCode }));
+    await new Promise<any>((res) => {
+      viewerWs.once('message', (msg) => res(JSON.parse(msg.toString())));
+    });
+
+    let stateChangedReceived = false;
+    hostWs.on('message', (msg) => {
+      const parsed = JSON.parse(msg.toString());
+      if (parsed.type === 'STATE_CHANGED') {
+        stateChangedReceived = true;
+      }
+    });
+
+    // Viewer sends HOST_UPDATE_STATE even if it knew the hostToken
+    viewerWs.send(JSON.stringify({
+      type: 'HOST_UPDATE_STATE',
+      hostToken: roomData.hostToken,
+      status: 'running',
+      durationMs: 10000,
+      remainingMs: 8000,
+      targetEndTime: Date.now() + 8000
+    }));
+
+    await new Promise((res) => setTimeout(res, 50));
+    expect(stateChangedReceived).toBe(false);
+
+    hostWs.close();
+    viewerWs.close();
+  });
+
   it('responds with 200 ok on /health endpoint', async () => {
     const res = await fetch(`http://localhost:${port}/health`);
     expect(res.status).toBe(200);
