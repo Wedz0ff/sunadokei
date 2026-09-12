@@ -38,5 +38,14 @@
       "csp": null
     }
   },
-  "plugins": {}
+  "plugins": {},
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/icon.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
 }
