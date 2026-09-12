@@ -22,11 +22,13 @@
       },
       {
         "label": "settings",
-        "title": "Preferences",
+        "title": "Hourglass Preferences",
         "url": "/?window=settings",
-        "width": 480,
-        "height": 590,
-        "resizable": false,
+        "width": 760,
+        "height": 540,
+        "minWidth": 680,
+        "minHeight": 480,
+        "resizable": true,
         "visible": false,
         "decorations": true,
         "center": true
