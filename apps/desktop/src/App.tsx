@@ -252,6 +252,7 @@ function MainTimerApp() {
 
   // Start inline editing of the duration directly on the time display
   const handleStartEditing = () => {
+    if (ultraCompact) return;
     if (status === 'running') {
       pause();
     }
@@ -337,49 +338,23 @@ function MainTimerApp() {
           </button>
         </div>
 
-        {/* Time Digits - Click to edit */}
-        {isEditingTime ? (
-          <div className="w-full flex items-center justify-center">
-            <input
-              ref={editInputRef}
-              type="text"
-              value={editTimeValue}
-              onChange={(e) => {
-                setEditTimeValue(e.target.value);
-                setEditError(null);
-              }}
-              onKeyDown={handleEditKeyDown}
-              onBlur={handleSaveEditTime}
-              placeholder="1min40s"
-              className={`tibia-slot w-full text-center text-[#ffffff] px-1 py-0 outline-none font-tibia text-2xl ${
-                editError ? 'text-[#ff5454]' : 'text-[#ffffff]'
-              }`}
-              style={{ textShadow: '1px 1px 0 #000' }}
-            />
-          </div>
-        ) : (
-          <div
-            onClick={handleStartEditing}
-            title="Click to edit duration (Double-click to expand)"
-            className="relative w-full flex items-center justify-center cursor-pointer"
+        {/* Time Digits - Read-only display (editing disabled in shrink mode) */}
+        <div
+          data-tauri-drag-region
+          className="relative w-full flex items-center justify-center select-none"
+        >
+          <span
+            data-tauri-drag-region
+            className={`w-full text-center font-tibia font-bold select-none block leading-none text-3xl tracking-normal pointer-events-none ${
+              status === 'finished'
+                ? 'text-[#ff5454] animate-pulse'
+                : 'text-[#ffffff]'
+            }`}
+            style={{ textShadow: '2px 2px 0 #000000' }}
           >
-            <span
-              data-tauri-drag-region
-              className={`w-full text-center font-tibia font-bold select-none block leading-none text-3xl tracking-normal ${
-                status === 'finished'
-                  ? 'text-[#ff5454] animate-pulse'
-                  : 'text-[#ffffff]'
-              }`}
-              style={{ textShadow: '2px 2px 0 #000000' }}
-            >
-              {formatDuration(remainingMs)}
-            </span>
-            <Edit3
-              size={10}
-              className="absolute right-0 opacity-0 group-hover:opacity-75 text-[#909090] transition-opacity pointer-events-none"
-            />
-          </div>
-        )}
+            {formatDuration(remainingMs)}
+          </span>
+        </div>
 
         {/* Authentic Tibia Health / Progress Bar */}
         <div className="w-full tibia-bar-bg mt-1 rounded-xs overflow-hidden h-[3px]">
