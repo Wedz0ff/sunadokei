@@ -323,17 +323,19 @@ function MainTimerApp() {
       {/* Top Header Bar - Authentic Tibia Client Widget Top */}
       <header
         data-tauri-drag-region
-        className="relative z-10 w-full tibia-widget-top flex justify-between items-center px-2 py-1 cursor-move"
+        className={`relative z-10 w-full tibia-widget-top flex justify-between items-center cursor-move ${
+          compact ? 'px-2 py-0.5' : 'px-2.5 py-1'
+        }`}
       >
-        <div data-tauri-drag-region className="flex items-center gap-2">
+        <div data-tauri-drag-region className="flex items-center gap-1.5">
           {/* Red dragon icon / title */}
-          <span className="text-sm">🐲</span>
-          <span data-tauri-drag-region className="tibia-widget-top-text text-[11px] text-[#c0c0c0]">
+          <span className={compact ? 'text-xs' : 'text-sm'}>🐲</span>
+          <span data-tauri-drag-region className={`tibia-widget-top-text text-[#c0c0c0] ${compact ? 'text-[10px]' : 'text-[11px]'}`}>
             Hourglass Tracker
           </span>
           {isLive && (
-            <span className="px-1.5 py-0.2 bg-[#064e3b] text-[#54e054] text-[10px] border border-[#10b981]/50 rounded-xs">
-              LIVE ({viewerCount})
+            <span className="px-1.5 py-0.2 bg-[#064e3b] text-[#54e054] text-[9px] border border-[#10b981]/50 rounded-xs">
+              LIVE{viewerCount > 0 ? ` (${viewerCount})` : ''}
             </span>
           )}
         </div>
@@ -344,11 +346,11 @@ function MainTimerApp() {
             onClick={toggleAlwaysOnTop}
             title={alwaysOnTop ? 'Disable Always on Top' : 'Enable Always on Top'}
             aria-label="Toggle Always on Top"
-            className={`tibia-btn px-1.5 py-0.5 text-[10px] rounded-xs ${
+            className={`tibia-btn ${compact ? 'px-1 py-0.5' : 'px-1.5 py-0.5'} text-[10px] rounded-xs ${
               alwaysOnTop ? 'text-[#ffcc00]' : 'text-[#c0c0c0]'
             }`}
           >
-            {alwaysOnTop ? <Pin size={11} className="text-[#ffcc00]" /> : <PinOff size={11} />}
+            {alwaysOnTop ? <Pin size={compact ? 10 : 11} className="text-[#ffcc00]" /> : <PinOff size={compact ? 10 : 11} />}
           </button>
 
           {/* Compact Toggle Button */}
@@ -356,9 +358,9 @@ function MainTimerApp() {
             onClick={toggleCompact}
             title={compact ? 'Expand to Full View' : 'Switch to Compact View'}
             aria-label="Toggle Compact Mode"
-            className="tibia-btn px-1.5 py-0.5 text-[10px] rounded-xs text-[#c0c0c0]"
+            className={`tibia-btn ${compact ? 'px-1 py-0.5' : 'px-1.5 py-0.5'} text-[10px] rounded-xs text-[#c0c0c0]`}
           >
-            {compact ? <Maximize2 size={11} /> : <Minimize2 size={11} />}
+            {compact ? <Maximize2 size={compact ? 10 : 11} /> : <Minimize2 size={compact ? 10 : 11} />}
           </button>
 
           {/* Share Button */}
@@ -366,11 +368,11 @@ function MainTimerApp() {
             onClick={() => setIsShareOpen(true)}
             title="Live Session Sharing"
             aria-label="Live Session Sharing"
-            className={`tibia-btn px-1.5 py-0.5 text-[10px] rounded-xs ${
+            className={`tibia-btn ${compact ? 'px-1 py-0.5' : 'px-1.5 py-0.5'} text-[10px] rounded-xs ${
               isLive ? 'text-[#54e054]' : 'text-[#c0c0c0]'
             }`}
           >
-            <Share2 size={11} />
+            <Share2 size={compact ? 10 : 11} />
           </button>
 
           {/* Settings Button */}
@@ -378,9 +380,9 @@ function MainTimerApp() {
             onClick={openSettings}
             title="Settings"
             aria-label="Settings"
-            className="tibia-btn px-1.5 py-0.5 text-[10px] rounded-xs text-[#c0c0c0]"
+            className={`tibia-btn ${compact ? 'px-1 py-0.5' : 'px-1.5 py-0.5'} text-[10px] rounded-xs text-[#c0c0c0]`}
           >
-            <Settings size={11} />
+            <Settings size={compact ? 10 : 11} />
           </button>
         </div>
       </header>
@@ -388,11 +390,13 @@ function MainTimerApp() {
       {/* Main Body - Sunken Stone Panel with Health/Progress Bar */}
       <main
         data-tauri-drag-region
-        className={`relative z-10 flex flex-col items-center justify-center my-auto w-full px-3 ${
-          compact ? 'py-1' : 'py-2'
+        className={`relative z-10 flex flex-col items-center justify-center w-full ${
+          compact ? 'px-2 my-auto' : 'px-3 my-auto'
         }`}
       >
-        <div className="w-full max-w-sm tibia-panel p-3 flex flex-col items-center shadow-lg">
+        <div className={`w-full max-w-sm tibia-panel flex flex-col items-center shadow-lg ${
+          compact ? 'p-1.5' : 'p-3'
+        }`}>
           {isEditingTime ? (
             <div className="flex flex-col items-center w-full">
               <input
@@ -406,12 +410,12 @@ function MainTimerApp() {
                 onKeyDown={handleEditKeyDown}
                 onBlur={handleSaveEditTime}
                 placeholder="e.g. 1min40s"
-                className={`tibia-slot w-full text-center text-[#ffffff] px-2 py-1 outline-none font-tibia ${
+                className={`tibia-slot w-full text-center text-[#ffffff] px-2 py-0.5 outline-none font-tibia ${
                   editError ? 'text-[#ff5454]' : 'text-[#ffffff]'
-                } ${compact ? 'text-4xl' : 'text-6xl'}`}
+                } ${compact ? 'text-3xl' : 'text-6xl'}`}
                 style={{ textShadow: '1px 1px 0 #000' }}
               />
-              <div className="mt-1 text-[10px] text-[#909090]">
+              <div className="mt-0.5 text-[9px] text-[#909090]">
                 {editError ? (
                   <span className="text-[#ff5454]">{editError}</span>
                 ) : (
@@ -423,13 +427,13 @@ function MainTimerApp() {
             <div
               onClick={handleStartEditing}
               title="Click to edit duration"
-              className="cursor-pointer group flex flex-col items-center w-full"
+              className="cursor-pointer group relative flex flex-col items-center w-full"
             >
-              <div className="flex items-center gap-2">
+              <div className="relative w-full flex items-center justify-center">
                 <span
                   data-tauri-drag-region
-                  className={`font-tibia font-bold tracking-wider select-none ${
-                    compact ? 'text-5xl' : 'text-7xl md:text-8xl'
+                  className={`w-full text-center font-tibia font-bold select-none block leading-none ${
+                    compact ? 'text-4xl' : 'text-7xl md:text-8xl'
                   } ${
                     status === 'finished'
                       ? 'text-[#ff5454] animate-pulse'
@@ -440,13 +444,13 @@ function MainTimerApp() {
                   {formatDuration(remainingMs)}
                 </span>
                 <Edit3
-                  size={compact ? 12 : 15}
-                  className="opacity-0 group-hover:opacity-80 text-[#909090] transition-opacity"
+                  size={compact ? 11 : 14}
+                  className="absolute right-1 opacity-0 group-hover:opacity-75 text-[#909090] transition-opacity pointer-events-none"
                 />
               </div>
 
               {/* Authentic Tibia Health / Progress Bar */}
-              <div className="w-full tibia-bar-bg mt-1.5 rounded-xs overflow-hidden">
+              <div className={`w-full tibia-bar-bg rounded-xs overflow-hidden ${compact ? 'mt-1' : 'mt-1.5'}`}>
                 <div
                   className={`h-full transition-all duration-100 ${
                     status === 'finished'
@@ -492,8 +496,8 @@ function MainTimerApp() {
       {/* Bottom controls with Authentic Tibia Buttons */}
       <footer
         data-tauri-drag-region
-        className={`relative z-10 w-full flex items-center justify-center gap-2 pb-3 ${
-          compact ? 'pt-1' : 'pt-2'
+        className={`relative z-10 w-full flex items-center justify-center gap-1.5 ${
+          compact ? 'pb-1.5 pt-0' : 'pb-3 pt-2'
         }`}
       >
         {/* Running state */}
@@ -502,23 +506,23 @@ function MainTimerApp() {
             <button
               onClick={pause}
               title="Pause countdown"
-              className="tibia-btn px-4 py-1.5 text-xs font-tibia uppercase flex items-center gap-1.5"
+              className={`tibia-btn ${compact ? 'px-2.5 py-1 text-[11px]' : 'px-4 py-1.5 text-xs'} font-tibia uppercase flex items-center gap-1`}
             >
-              <Pause size={12} /> Pause
+              <Pause size={compact ? 10 : 12} /> Pause
             </button>
             <button
               onClick={stop}
               title="Stop and reset to beginning"
-              className="tibia-btn-red px-3.5 py-1.5 text-xs font-tibia uppercase flex items-center gap-1.5"
+              className={`tibia-btn-red ${compact ? 'px-2.5 py-1 text-[11px]' : 'px-3.5 py-1.5 text-xs'} font-tibia uppercase flex items-center gap-1`}
             >
-              <Square size={11} /> Stop
+              <Square size={compact ? 10 : 11} /> Stop
             </button>
             <button
               onClick={resetAndRestart}
               title="Reset and restart immediately (Cmd+Shift+R)"
-              className="tibia-btn px-3 py-1.5 text-xs font-tibia uppercase flex items-center gap-1"
+              className={`tibia-btn ${compact ? 'px-2 py-1 text-[11px]' : 'px-3 py-1.5 text-xs'} font-tibia uppercase flex items-center gap-1`}
             >
-              <RotateCcw size={11} /> Reset
+              <RotateCcw size={compact ? 10 : 11} /> Reset
             </button>
           </>
         )}
@@ -529,23 +533,23 @@ function MainTimerApp() {
             <button
               onClick={start}
               title="Resume countdown"
-              className="tibia-btn-green px-4 py-1.5 text-xs font-tibia uppercase flex items-center gap-1.5"
+              className={`tibia-btn-green ${compact ? 'px-3 py-1 text-[11px]' : 'px-4 py-1.5 text-xs'} font-tibia uppercase flex items-center gap-1`}
             >
-              <Play size={12} /> Resume
+              <Play size={compact ? 10 : 12} /> Resume
             </button>
             <button
               onClick={stop}
               title="Stop and reset to beginning"
-              className="tibia-btn px-3.5 py-1.5 text-xs font-tibia uppercase flex items-center gap-1.5"
+              className={`tibia-btn ${compact ? 'px-2.5 py-1 text-[11px]' : 'px-3.5 py-1.5 text-xs'} font-tibia uppercase flex items-center gap-1`}
             >
-              <Square size={11} /> Stop
+              <Square size={compact ? 10 : 11} /> Stop
             </button>
             <button
               onClick={resetAndRestart}
               title="Reset and restart immediately (Cmd+Shift+R)"
-              className="tibia-btn px-3 py-1.5 text-xs font-tibia uppercase flex items-center gap-1"
+              className={`tibia-btn ${compact ? 'px-2 py-1 text-[11px]' : 'px-3 py-1.5 text-xs'} font-tibia uppercase flex items-center gap-1`}
             >
-              <RotateCcw size={11} /> Reset
+              <RotateCcw size={compact ? 10 : 11} /> Reset
             </button>
           </>
         )}
@@ -556,16 +560,16 @@ function MainTimerApp() {
             <button
               onClick={stop}
               title="Stop alarm and reset"
-              className="tibia-btn-red px-5 py-1.5 text-xs font-tibia uppercase flex items-center gap-1.5 animate-bounce"
+              className={`tibia-btn-red ${compact ? 'px-3 py-1 text-[11px]' : 'px-5 py-1.5 text-xs'} font-tibia uppercase flex items-center gap-1 animate-bounce`}
             >
-              <Square size={12} /> Stop Alarm
+              <Square size={compact ? 10 : 12} /> Stop Alarm
             </button>
             <button
               onClick={resetAndRestart}
               title="Restart from beginning"
-              className="tibia-btn-green px-4 py-1.5 text-xs font-tibia uppercase flex items-center gap-1"
+              className={`tibia-btn-green ${compact ? 'px-2.5 py-1 text-[11px]' : 'px-4 py-1.5 text-xs'} font-tibia uppercase flex items-center gap-1`}
             >
-              <RotateCcw size={11} /> Restart
+              <RotateCcw size={compact ? 10 : 11} /> Restart
             </button>
           </>
         )}
@@ -576,20 +580,21 @@ function MainTimerApp() {
             <button
               onClick={start}
               title="Start countdown"
-              className="tibia-btn-green px-6 py-1.5 text-xs font-tibia uppercase flex items-center gap-1.5"
+              className={`tibia-btn-green ${compact ? 'px-4 py-1 text-[11px]' : 'px-6 py-1.5 text-xs'} font-tibia uppercase flex items-center gap-1`}
             >
-              <Play size={12} /> Start
+              <Play size={compact ? 10 : 12} /> Start
             </button>
             <button
               onClick={resetAndRestart}
               title="Reset timer (Cmd+Shift+R)"
-              className="tibia-btn px-3.5 py-1.5 text-xs font-tibia uppercase flex items-center gap-1"
+              className={`tibia-btn ${compact ? 'px-2.5 py-1 text-[11px]' : 'px-3.5 py-1.5 text-xs'} font-tibia uppercase flex items-center gap-1`}
             >
-              <RotateCcw size={11} /> Reset
+              <RotateCcw size={compact ? 10 : 11} /> Reset
             </button>
           </>
         )}
       </footer>
+
 
       {/* Settings In-App Modal (Fallback for non-Tauri browser previews) */}
       <SettingsModal

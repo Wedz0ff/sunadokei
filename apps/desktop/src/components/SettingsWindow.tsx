@@ -132,7 +132,7 @@ export function SettingsWindow() {
     if (isTauri()) {
       import('@tauri-apps/api/window').then(({ Window, LogicalSize }) => {
         Window.getByLabel('main').then((mainWin) => {
-          mainWin?.setSize(val ? new LogicalSize(240, 95) : new LogicalSize(420, 280));
+          mainWin?.setSize(val ? new LogicalSize(280, 150) : new LogicalSize(420, 280));
         });
       });
     }

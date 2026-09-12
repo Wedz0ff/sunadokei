@@ -59,13 +59,14 @@ export const HourglassDisplay: React.FC<HourglassDisplayProps> = ({
         <div className="w-full tibia-panel p-6 md:p-8 flex flex-col items-center shadow-xl">
           <span
             data-testid="digital-time"
-            className={`text-7xl md:text-9xl font-tibia font-bold tracking-wider leading-none select-none ${
+            className={`w-full text-center block text-7xl md:text-9xl font-tibia font-bold leading-none select-none ${
               isFinished ? 'text-[#ff5454] animate-pulse' : 'text-[#ffffff]'
             }`}
             style={{ textShadow: '2px 2px 0 #000000' }}
           >
             {formattedTime}
           </span>
+
 
           {/* Authentic Tibia Health / Progress Bar */}
           <div className="w-full tibia-bar-bg mt-4 rounded-xs overflow-hidden">

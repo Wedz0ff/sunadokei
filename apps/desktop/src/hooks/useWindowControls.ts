@@ -63,7 +63,7 @@ export function useWindowControls() {
     import('@tauri-apps/api/window')
       .then(({ getCurrentWindow, LogicalSize }) => {
         const win = getCurrentWindow();
-        const size = compact ? new LogicalSize(240, 95) : new LogicalSize(420, 280);
+        const size = compact ? new LogicalSize(280, 150) : new LogicalSize(420, 280);
         win.setSize(size).catch((err) => {
           console.warn('Failed to set window size:', err);
         });
