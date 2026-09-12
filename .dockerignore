@@ -4,7 +4,7 @@ dist
 .gitignore
 .superpowers
 docs
-tests
+**/tests
 apps/desktop
 **/.DS_Store
 *.log

@@ -1,11 +1,11 @@
 # Stage 1: Build packages
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 
 RUN npm install -g pnpm@9
 
-# Copy workspace manifests
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
+# Copy workspace manifests and base configs
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* tsconfig.base.json ./
 COPY packages/shared/package.json ./packages/shared/
 COPY apps/server/package.json ./apps/server/
 COPY apps/web/package.json ./apps/web/
@@ -24,7 +24,7 @@ RUN pnpm --filter @brachio/shared build && \
     pnpm --filter @brachio/server build
 
 # Stage 2: Production runner
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 
 RUN npm install -g pnpm@9
