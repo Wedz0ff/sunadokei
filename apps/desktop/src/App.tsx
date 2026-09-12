@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useTimerEngine } from './hooks/useTimerEngine';
 import { useGlobalShortcuts } from './hooks/useGlobalShortcuts';
+import { useHostSync } from './hooks/useHostSync';
 import { TimerInput } from './components/TimerInput';
 import { SettingsModal } from './components/SettingsModal';
+import { ShareSessionModal } from './components/ShareSessionModal';
 import { formatDuration } from '@brachio/shared';
 import { SoundTone } from './utils/audio';
-import { Play, Pause, RotateCcw, Settings, Share2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, Settings, Share2, Radio } from 'lucide-react';
 
 const STORAGE_KEYS = {
   HOTKEYS: 'brachio_hotkeys',
@@ -56,6 +58,7 @@ export default function App() {
   });
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
 
   // Persist settings
   useEffect(() => {
@@ -88,6 +91,7 @@ export default function App() {
     durationMs,
     remainingMs,
     status,
+    targetEndTime,
     start,
     pause,
     resetAndRestart,
@@ -97,6 +101,20 @@ export default function App() {
     soundEnabled: soundTone !== 'none',
     soundTone,
     soundVolume
+  });
+
+  const {
+    isLive,
+    roomCode,
+    viewerCount,
+    openSession,
+    closeSession
+  } = useHostSync(serverUrl, {
+    status,
+    durationMs,
+    remainingMs,
+    targetEndTime,
+    inputString
   });
 
   useGlobalShortcuts(hotkeys, {
@@ -127,12 +145,25 @@ export default function App() {
         />
 
         <div className="flex gap-2 items-center">
+          {isLive && (
+            <div className="flex items-center gap-1.5 px-2 py-1 bg-green-500/10 border border-green-500/20 rounded text-xs font-medium text-green-400">
+              <Radio size={12} className="animate-pulse" />
+              <span>LIVE</span>
+              <span className="text-zinc-400">({viewerCount})</span>
+            </div>
+          )}
           <button
+            onClick={() => setIsShareOpen(true)}
             title="Live Session Sharing"
             aria-label="Live Session Sharing"
-            className="p-1.5 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition"
+            className={`relative p-1.5 hover:bg-zinc-800 rounded transition ${
+              isLive ? 'text-green-400 hover:text-green-300' : 'text-zinc-400 hover:text-white'
+            }`}
           >
             <Share2 size={16} />
+            {isLive && (
+              <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            )}
           </button>
           <button
             onClick={() => setIsSettingsOpen(true)}
@@ -206,6 +237,17 @@ export default function App() {
         onUpdateSoundVolume={setSoundVolume}
         serverUrl={serverUrl}
         onUpdateServerUrl={setServerUrl}
+      />
+
+      {/* Share Session Modal */}
+      <ShareSessionModal
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        isLive={isLive}
+        roomCode={roomCode}
+        viewerCount={viewerCount}
+        onStartLive={openSession}
+        onStopLive={closeSession}
       />
     </div>
   );
