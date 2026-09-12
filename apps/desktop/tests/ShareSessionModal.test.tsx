@@ -86,6 +86,20 @@ describe('ShareSessionModal component', () => {
     expect(await screen.findByText('Copied')).toBeDefined();
   });
 
+  it('respects configurable webViewerBaseUrl prop', () => {
+    render(
+      <ShareSessionModal
+        {...defaultProps}
+        isLive={true}
+        roomCode="ROOM123"
+        webViewerBaseUrl="https://custom-timer.example.com"
+      />
+    );
+
+    const input = screen.getByDisplayValue('https://custom-timer.example.com/join/ROOM123');
+    expect(input).toBeDefined();
+  });
+
   it('closes modal when Escape key is pressed', () => {
     render(<ShareSessionModal {...defaultProps} />);
 

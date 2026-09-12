@@ -1,10 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createRelayServer } from '../apps/server/src/server.js';
 import { parseTimeString } from '../packages/shared/src/parser.js';
-import ws from '../apps/server/node_modules/ws/index.js';
+import { WebSocket } from 'ws';
 import type { Server } from 'http';
-
-const WebSocket = (ws as any).WebSocket || ws || globalThis.WebSocket;
 
 describe('End-to-End Timer Broadcast Synchronization', () => {
   let server: Server;

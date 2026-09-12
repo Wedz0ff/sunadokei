@@ -9,6 +9,7 @@ export interface ShareSessionModalProps {
   viewerCount: number;
   onStartLive: () => void;
   onStopLive: () => void;
+  webViewerBaseUrl?: string;
 }
 
 export const ShareSessionModal: React.FC<ShareSessionModalProps> = ({
@@ -18,7 +19,8 @@ export const ShareSessionModal: React.FC<ShareSessionModalProps> = ({
   roomCode,
   viewerCount,
   onStartLive,
-  onStopLive
+  onStopLive,
+  webViewerBaseUrl
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -33,7 +35,27 @@ export const ShareSessionModal: React.FC<ShareSessionModalProps> = ({
 
   if (!isOpen) return null;
 
-  const shareUrl = roomCode ? `http://localhost:5173/join/${roomCode}` : '';
+  const getShareUrl = () => {
+    if (!roomCode) return '';
+    if (webViewerBaseUrl) {
+      if (webViewerBaseUrl.includes('${roomCode}')) {
+        return webViewerBaseUrl.replace('${roomCode}', roomCode);
+      }
+      if (webViewerBaseUrl.includes(':roomCode')) {
+        return webViewerBaseUrl.replace(':roomCode', roomCode);
+      }
+      const base = webViewerBaseUrl.replace(/\/+$/, '');
+      const joinPath = base.endsWith('/join') ? '' : '/join';
+      return `${base}${joinPath}/${roomCode}`;
+    }
+    const host =
+      typeof window !== 'undefined' && window.location?.hostname
+        ? window.location.hostname
+        : 'localhost';
+    return `http://${host}:5173/join/${roomCode}`;
+  };
+
+  const shareUrl = getShareUrl();
 
   const copyToClipboard = () => {
     if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {

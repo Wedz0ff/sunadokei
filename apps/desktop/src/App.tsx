@@ -13,7 +13,8 @@ const STORAGE_KEYS = {
   HOTKEYS: 'brachio_hotkeys',
   SOUND_TONE: 'brachio_sound_tone',
   SOUND_VOLUME: 'brachio_sound_volume',
-  SERVER_URL: 'brachio_server_url'
+  SERVER_URL: 'brachio_server_url',
+  WEB_VIEWER_BASE_URL: 'brachio_web_viewer_base_url'
 };
 
 const DEFAULT_HOTKEYS = {
@@ -57,6 +58,17 @@ export default function App() {
     }
   });
 
+  const [webViewerBaseUrl, setWebViewerBaseUrl] = useState<string>(() => {
+    try {
+      return (
+        localStorage.getItem(STORAGE_KEYS.WEB_VIEWER_BASE_URL) ||
+        `http://${typeof window !== 'undefined' && window.location?.hostname ? window.location.hostname : 'localhost'}:5173`
+      );
+    } catch {
+      return 'http://localhost:5173';
+    }
+  });
+
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
 
@@ -84,6 +96,12 @@ export default function App() {
       localStorage.setItem(STORAGE_KEYS.SERVER_URL, serverUrl);
     } catch {}
   }, [serverUrl]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.WEB_VIEWER_BASE_URL, webViewerBaseUrl);
+    } catch {}
+  }, [webViewerBaseUrl]);
 
   const {
     inputString,
@@ -237,6 +255,8 @@ export default function App() {
         onUpdateSoundVolume={setSoundVolume}
         serverUrl={serverUrl}
         onUpdateServerUrl={setServerUrl}
+        webViewerBaseUrl={webViewerBaseUrl}
+        onUpdateWebViewerBaseUrl={setWebViewerBaseUrl}
       />
 
       {/* Share Session Modal */}
@@ -248,6 +268,7 @@ export default function App() {
         viewerCount={viewerCount}
         onStartLive={openSession}
         onStopLive={closeSession}
+        webViewerBaseUrl={webViewerBaseUrl}
       />
     </div>
   );

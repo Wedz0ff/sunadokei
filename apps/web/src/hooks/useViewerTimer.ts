@@ -14,7 +14,9 @@ export interface UseViewerTimerResult {
 
 export function useViewerTimer(
   roomCode: string,
-  wsUrl = 'ws://localhost:8080'
+  wsUrl = typeof window !== 'undefined' && window.location.hostname
+    ? `ws://${window.location.hostname}:8080`
+    : 'ws://localhost:8080'
 ): UseViewerTimerResult {
   const [snapshot, setSnapshot] = useState<TimerSnapshot | null>(null);
   const [viewerCount, setViewerCount] = useState<number>(1);

@@ -2,8 +2,13 @@ import http from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { RoomManager } from './roomManager.js';
 
-export function createRelayServer(port = 8080): Promise<{ httpServer: http.Server; wss: WebSocketServer; port: number }> {
+export function createRelayServer(port = 8080): Promise<{ httpServer: http.Server; wss: WebSocketServer; port: number; roomManager: RoomManager }> {
   const roomManager = new RoomManager();
+  const cleanupInterval = setInterval(() => {
+    roomManager.cleanInactiveRooms();
+  }, 60000);
+  cleanupInterval.unref?.();
+
   const server = http.createServer((req, res) => {
     // Health check endpoint
     if (req.url === '/health') {
@@ -22,6 +27,7 @@ export function createRelayServer(port = 8080): Promise<{ httpServer: http.Serve
   });
 
   server.on('close', () => {
+    clearInterval(cleanupInterval);
     wss.close();
   });
 
@@ -109,10 +115,7 @@ export function createRelayServer(port = 8080): Promise<{ httpServer: http.Serve
     ws.on('close', () => {
       if (currentRoomCode) {
         if (isHost) {
-          roomManager.broadcastToViewers(currentRoomCode, {
-            type: 'HOST_STATUS',
-            online: false
-          });
+          roomManager.handleHostDisconnect(currentRoomCode);
         } else {
           roomManager.removeViewer(currentRoomCode, ws);
         }
@@ -123,7 +126,7 @@ export function createRelayServer(port = 8080): Promise<{ httpServer: http.Serve
   return new Promise((resolve) => {
     server.listen(port, () => {
       const actualPort = (server.address() as any).port;
-      resolve({ httpServer: server, wss, port: actualPort });
+      resolve({ httpServer: server, wss, port: actualPort, roomManager });
     });
   });
 }

@@ -383,4 +383,67 @@ describe('Relay Server WebSocket', () => {
     const body = await res.json();
     expect(body).toEqual({ status: 'ok' });
   });
+
+  it('cleans up room immediately when host closes connection without viewers', async () => {
+    const hostWs = new WebSocket(`ws://localhost:${port}`);
+    await new Promise((res) => hostWs.on('open', res));
+
+    hostWs.send(JSON.stringify({ type: 'HOST_CREATE_ROOM', durationMs: 15000, inputString: '15s' }));
+    const roomData = await new Promise<any>((res) => {
+      hostWs.once('message', (msg) => res(JSON.parse(msg.toString())));
+    });
+
+    // Close host without any viewer joined
+    hostWs.close();
+    await new Promise((res) => setTimeout(res, 50));
+
+    // Subsequent viewer attempt should fail
+    const viewerWs = new WebSocket(`ws://localhost:${port}`);
+    await new Promise((res) => viewerWs.on('open', res));
+    viewerWs.send(JSON.stringify({ type: 'VIEWER_JOIN', roomCode: roomData.roomCode }));
+
+    const errMsg = await new Promise<any>((res) => {
+      viewerWs.once('message', (msg) => res(JSON.parse(msg.toString())));
+    });
+    expect(errMsg.type).toBe('ERROR');
+    expect(errMsg.message).toBe('Room not found');
+
+    viewerWs.close();
+  });
+
+  it('reaps inactive rooms past TTL via cleanInactiveRooms', async () => {
+    const hostWs = new WebSocket(`ws://localhost:${port}`);
+    await new Promise((res) => hostWs.on('open', res));
+
+    hostWs.send(JSON.stringify({ type: 'HOST_CREATE_ROOM', durationMs: 20000, inputString: '20s' }));
+    const roomData = await new Promise<any>((res) => {
+      hostWs.once('message', (msg) => res(JSON.parse(msg.toString())));
+    });
+
+    const viewerWs = new WebSocket(`ws://localhost:${port}`);
+    await new Promise((res) => viewerWs.on('open', res));
+    viewerWs.send(JSON.stringify({ type: 'VIEWER_JOIN', roomCode: roomData.roomCode }));
+    await new Promise<any>((res) => {
+      viewerWs.once('message', (msg) => res(JSON.parse(msg.toString())));
+    });
+
+    // Host disconnects while viewer is still connected
+    hostWs.close();
+    await new Promise((res) => setTimeout(res, 50));
+
+    // Retrieve roomManager from server
+    const serverInstance = await createRelayServer(0);
+    const rm = serverInstance.roomManager;
+    // Test reaper method on roomManager directly
+    const dummySocket = {} as any;
+    const { roomCode } = rm.createRoom(dummySocket, 10000, '10s');
+    const room = rm.getRoom(roomCode)!;
+    room.disconnectedAt = Date.now() - 5000;
+    const cleaned = rm.cleanInactiveRooms(1000);
+    expect(cleaned).toBe(1);
+    expect(rm.getRoom(roomCode)).toBeUndefined();
+
+    await new Promise<void>((resolve) => serverInstance.httpServer.close(() => resolve()));
+    viewerWs.close();
+  });
 });

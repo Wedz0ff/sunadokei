@@ -11,6 +11,7 @@ export interface Room {
   hostSocket: WebSocket | null;
   state: TimerSnapshot;
   viewers: Set<WebSocket>;
+  disconnectedAt: number | null;
 }
 
 export class RoomManager {
@@ -32,7 +33,8 @@ export class RoomManager {
         targetEndTime: null,
         serverTime: Date.now()
       },
-      viewers: new Set()
+      viewers: new Set(),
+      disconnectedAt: null
     };
 
     this.rooms.set(roomCode, room);
@@ -41,6 +43,10 @@ export class RoomManager {
 
   getRoom(roomCode: string): Room | undefined {
     return this.rooms.get(roomCode.toUpperCase());
+  }
+
+  getRoomCount(): number {
+    return this.rooms.size;
   }
 
   updateState(roomCode: string, hostToken: string, update: Partial<TimerSnapshot>): boolean {
@@ -81,6 +87,46 @@ export class RoomManager {
     if (!room) return;
     room.viewers.delete(socket);
     this.notifyHostViewerCount(room);
+
+    // If host has disconnected and there are no remaining viewers, clean up room
+    if (room.disconnectedAt !== null && room.viewers.size === 0) {
+      this.rooms.delete(roomCode.toUpperCase());
+    }
+  }
+
+  handleHostDisconnect(roomCode: string): void {
+    const room = this.rooms.get(roomCode.toUpperCase());
+    if (!room) return;
+
+    room.hostSocket = null;
+    room.disconnectedAt = Date.now();
+
+    this.broadcastToViewers(roomCode, {
+      type: 'HOST_STATUS',
+      online: false
+    });
+
+    // If host closes connection without viewers, clean up inactive room immediately
+    if (room.viewers.size === 0) {
+      this.rooms.delete(roomCode.toUpperCase());
+    }
+  }
+
+  cleanInactiveRooms(ttlMs = 1000 * 60 * 5): number {
+    const now = Date.now();
+    let cleaned = 0;
+    for (const [code, room] of this.rooms.entries()) {
+      if (room.disconnectedAt !== null && now - room.disconnectedAt >= ttlMs) {
+        for (const viewer of room.viewers) {
+          try {
+            viewer.close();
+          } catch {}
+        }
+        this.rooms.delete(code);
+        cleaned++;
+      }
+    }
+    return cleaned;
   }
 
   deleteRoom(roomCode: string, hostToken: string): boolean {

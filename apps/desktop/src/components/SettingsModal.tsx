@@ -21,6 +21,8 @@ export interface SettingsModalProps {
   onUpdateSoundVolume: (volume: number) => void;
   serverUrl: string;
   onUpdateServerUrl: (url: string) => void;
+  webViewerBaseUrl?: string;
+  onUpdateWebViewerBaseUrl?: (url: string) => void;
 }
 
 const DEFAULT_HOTKEYS = {
@@ -39,7 +41,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   soundVolume,
   onUpdateSoundVolume,
   serverUrl,
-  onUpdateServerUrl
+  onUpdateServerUrl,
+  webViewerBaseUrl,
+  onUpdateWebViewerBaseUrl
 }) => {
   const [recordingKey, setRecordingKey] = useState<keyof typeof DEFAULT_HOTKEYS | null>(null);
 
@@ -248,6 +252,22 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 Used to host broadcast countdown sessions for remote viewers.
               </p>
             </div>
+
+            {webViewerBaseUrl !== undefined && onUpdateWebViewerBaseUrl && (
+              <div>
+                <label className="block text-zinc-400 mb-1 text-[11px]">Web Viewer Base URL</label>
+                <input
+                  type="text"
+                  value={webViewerBaseUrl}
+                  onChange={(e) => onUpdateWebViewerBaseUrl(e.target.value)}
+                  placeholder="http://localhost:5173"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-2.5 py-1.5 text-xs font-mono text-zinc-200 focus:outline-none focus:border-blue-500"
+                />
+                <p className="text-[11px] text-zinc-500 mt-1">
+                  Base URL for generated viewer links (e.g. http://192.168.1.100:5173).
+                </p>
+              </div>
+            )}
           </section>
         </div>
 
