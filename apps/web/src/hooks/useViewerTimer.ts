@@ -35,6 +35,10 @@ export function useViewerTimer(
   const [error, setError] = useState<string | null>(null);
 
   const wsRef = useRef<WebSocket | null>(null);
+  const snapshotRef = useRef(snapshot);
+  const clockOffsetRef = useRef(clockOffset);
+  snapshotRef.current = snapshot;
+  clockOffsetRef.current = clockOffset;
 
   useEffect(() => {
     if (!roomCode) {
@@ -118,14 +122,18 @@ export function useViewerTimer(
     };
   }, [roomCode, wsUrl]);
 
-  // High precision animation loop for running timer
+  // Interpolate remaining time in the server clock domain.
+  // remainingMs is a duration from the host; serverTime is when the relay stamped it.
+  // Do not subtract clockOffset from host targetEndTime — those are different clocks.
   useEffect(() => {
-    if (!snapshot || snapshot.status !== 'running' || !snapshot.targetEndTime) return;
+    if (!snapshot || snapshot.status !== 'running') return;
 
     let frameId: number;
     const tick = () => {
-      const nowSynced = Date.now() + clockOffset;
-      const rem = Math.max(0, snapshot.targetEndTime! - nowSynced);
+      const snap = snapshotRef.current;
+      if (!snap || snap.status !== 'running') return;
+      const nowSynced = Date.now() + clockOffsetRef.current;
+      const rem = Math.max(0, snap.remainingMs - (nowSynced - snap.serverTime));
       setDisplayRemainingMs(rem);
       if (rem > 0) {
         frameId = requestAnimationFrame(tick);
@@ -134,7 +142,7 @@ export function useViewerTimer(
 
     frameId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frameId);
-  }, [snapshot?.status, snapshot?.targetEndTime, clockOffset]);
+  }, [snapshot?.status]);
 
   const progressPercent =
     snapshot && snapshot.durationMs > 0

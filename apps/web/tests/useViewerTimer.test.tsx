@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useViewerTimer } from '../src/hooks/useViewerTimer';
 import type { TimerSnapshot } from '@brachio/shared';
@@ -167,6 +167,73 @@ describe('useViewerTimer hook', () => {
     expect(result.current.progressPercent).toBe(50);
 
     unmount();
+  });
+
+  it('keeps running display aligned with host remainingMs when server clock is 5s ahead', () => {
+    vi.useFakeTimers();
+    vi.stubGlobal(
+      'requestAnimationFrame',
+      (cb: FrameRequestCallback) => window.setTimeout(() => cb(0), 16) as unknown as number
+    );
+    vi.stubGlobal('cancelAnimationFrame', (id: number) => window.clearTimeout(id));
+
+    const now = 1_700_000_000_000;
+    vi.setSystemTime(now);
+
+    const { result, unmount } = renderHook(() => useViewerTimer('TRK-100'));
+    const ws = MockWebSocket.instances[0];
+
+    try {
+      act(() => {
+        ws.simulateOpen();
+        ws.simulateMessage({
+          type: 'SYNC_PONG',
+          clientSendTime: now,
+          serverTime: now + 5000
+        });
+        ws.simulateMessage({
+          type: 'ROOM_SNAPSHOT',
+          snapshot: {
+            status: 'idle',
+            inputString: '1m',
+            durationMs: 60000,
+            remainingMs: 60000,
+            targetEndTime: null,
+            serverTime: now + 5000
+          },
+          viewerCount: 1
+        });
+      });
+
+      act(() => {
+        ws.simulateMessage({
+          type: 'STATE_CHANGED',
+          status: 'running',
+          durationMs: 60000,
+          remainingMs: 60000,
+          targetEndTime: now + 60000,
+          serverTime: now + 5000
+        });
+      });
+
+      act(() => {
+        vi.advanceTimersByTime(16);
+      });
+
+      expect(result.current.displayRemainingMs).toBeGreaterThanOrEqual(59900);
+      expect(result.current.displayRemainingMs).toBeLessThanOrEqual(60000);
+
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+
+      expect(result.current.displayRemainingMs).toBeGreaterThanOrEqual(58900);
+      expect(result.current.displayRemainingMs).toBeLessThanOrEqual(59016);
+    } finally {
+      unmount();
+      vi.useRealTimers();
+      vi.unstubAllGlobals();
+    }
   });
 
   it('handles SYNC_PONG and calculates clock offset', () => {
